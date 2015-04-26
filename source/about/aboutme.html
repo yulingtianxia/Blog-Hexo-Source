@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+    <head>
+        <title>关于玉令天下</title>
+        <meta charset="utf-8" />
+        <link href="http://yulingtianxia.com/js/aboutMe.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="impress-not-supported">
+            <div class="fallback-message">
+                <p>iPad和PC上浏览效果更佳</p>
+            </div>
+        </div>
+        <div id="impress">
+            <div id="welcome" class="step" data-x="0" data-y="0" data-scale="0.5">
+                <center>关于玉令天下</center>
+            </div>
+            <div class="step" data-x="0" data-y="500" >
+              <p>90后，本科就读于哈工大软件学院</p>
+              <p>保研党，继续在贵院“深造”</p>
+              <p>在大二时接触了Android，并对iOS感兴趣</p>
+            </div>
+            <div class="step" data-x="-1500" data-y="-400" data-rotate="90" data-scale="2">
+              <p>摆弄过一点HTML5，Python，Shell</p>
+              <p>从事过一年的JavaEE商业项目开发，熟悉Struts2框架</p>
+              <p>熟悉iOS开发和Android开发</p>
+            </div>
+            <div class="step" data-x="-100" data-y="-500" data-rotate-x="30" data-rotate-y="-30" data-scale="0.5">
+              <p>曾在微软创投旗下的Sensoro实习，工作是iOS开发</p>
+              <p>实习后感觉自己更应巩固充实自己</p>
+              <p>于是开始写博客，学知识，很后悔没有把以前的知识记下来</p>
+            </div>
+            <div class="step" data-x="200" data-y="-1500" data-scale="2">
+              <p>在编代码之余也会看看设计模式和算法</p>
+              <p>参加过一些比赛，得过些奖</p>
+              <p>略懂视频制作，Prezi，演讲</p>
+              <p>为了美化博客也会弄弄前端和脚本</p>
+            </div>
+            <div class="step" data-x="1500" data-y="-500" data-rotate-x="0" data-rotate-y="-30" data-rotate-z="-90" data-scale="2">
+              <p>用SpriteKit做过两个小游戏</p>
+              <p>最近开始开发Watch上的小玩意</p>
+              <p>你可以在我的<a href="http://yulingtianxia.com">主页</a>上联系到我</p>
+                Let's make friends!
+            </div>
+
+            <div id="overview" class="step" data-x="-200" data-y="-500" data-scale="3"></div>
+        </div>
+        <div class="hint">
+            <p>使用空格或方向键继续</p>
+        </div>
+        <script>
+        if ("ontouchstart" in document.documentElement) {
+            document.querySelector(".hint").innerHTML = "<p>在左侧或右侧点击继续</p>";
+        }
+        </script>
+        <script src="http://bartaz.github.com/impress.js/js/impress.js"></script>
+        <script>impress().init();</script>
+        <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-49704553-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    </body>
+</html>
