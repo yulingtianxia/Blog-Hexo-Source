@@ -22,6 +22,15 @@ date: 2015-02-07 19:19:08
 	![](http://yulingtianxia.qiniudn.com/qrcode-ios.png)
 
 ###Donate to me
+####用我的链接注册以下应用，你和我都能得到一些优惠  
+- [云梯(可节省10元)](http://tizipro.com/?r=ee0508bc191f5651)  
+- [Dropbox(获取额外500M空间)](https://db.tt/qpgWW1VU)
+- [V2EX(获取2银币)](http://www.v2ex.com/?r=yulingtianxia)
+- [七牛云存储(5G流量)](https://portal.qiniu.com/signup?code=3l9qmmes7kimq)
+- [OneDrive(0.5G容量)](https://onedrive.live.com/?invref=71b98deb9fa7a559&invsrc=90)
+- [DigitalOcean(获得$10)](https://www.digitalocean.com/?refcode=2c163841a4f4)
+
+####或者更直接些，捐助我一杯咖啡
 ![向我付款](http://yulingtianxia.qiniudn.com/zhifubao.png)  
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
