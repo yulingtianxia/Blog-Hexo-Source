@@ -365,7 +365,7 @@ PS：动态方法解析会在消息转发机制浸入前执行。如果 `respond
 
 ##消息转发
 
-![](http://yulingtianxia.qiniudn.com/QQ20141113-1@2x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141113-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 ###重定向
 在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载`- (id)forwardingTargetForSelector:(SEL)aSelector`方法替换消息的接受者为其他对象：  

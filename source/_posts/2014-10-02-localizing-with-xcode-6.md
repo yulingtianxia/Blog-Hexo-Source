@@ -12,7 +12,7 @@ iOS和OSX支持40种语言的本地化，Xcode无疑为这一过程提供了强�
 <!--more-->
 ##国际化--准备你的APP
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-9%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-9%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 在将你的APP适配各种语言本地化之前，你得先让你的APP富有国际范儿，也就是说国际化是一条通往本地化的必经之路。在国际化阶段，你需要让你的APP与语言和区域独立。  
 
@@ -57,27 +57,27 @@ NSFormatter算是老朋友了，它把数据转化成人们易读的字符串，
 
 点选一个xib或storyboard文件后，在File Inspector中的Localization中可以设置支持的语言。Xcode会自动从界面元素中提取出文字到strings文件中，翻译人员可以根据注释来在对应语言的strings文件中进行翻译。当然也可以直观化的转换成界面形式的文件来直观化翻译工作：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-2%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-2%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 其他诸如图片、声音、影片等资源文件也可以通过类似的方法本地化：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-3%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-3%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 在Xcode6中我们可以在Debug时预览不同语言和地区APP的界面效果，这样我们就不用在debug阶段不断的切换模拟器或真机的系统语言了！首先要在scheme中更改下运行APP的语言和地区：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-4%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-4%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 注意到后面还有两项：双倍长度的模拟语言和从右到左的模拟语言，这两种是模拟极端状况下来考验我们UI效果的。比如在表达相同语义时英语的长度要比汉语长很多，而德语又比英语长一些，这很可能让APP的界面造成混乱；而还有语言是从右到作的（古汉语的写法？），这也都是一些APP需要考虑的地方。  
 
 在Xcode6的Assistent Editor中我们可以无须在模拟器或真机上运行APP就可以在设计界面时预览界面的本地化效果，并在右下角的语言选项中切换语言：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-5%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-5%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 PS：语言和地区这两个选项是有差别的，比如当我们将地区设置成瑞典，虽然我们没有提供对应的瑞典版本的界面文字翻译，但是时间日期的显示方式等还是会遵从瑞典的习惯来显示。所以地区这一项可供选择的选项包含了所有地区，而语言这一选项只包含了我们在国际化工作中所支持的语言，因为只有国际化中支持的语言（比如上图，我只加入了英语和汉语）才有相应的资源文件；而NSFormatter地区格式优化是内建的，无需我们提供格式。  
 
 ##本地化--翻译你的APP
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-8%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-8%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 之前国际化的工作就是将工程变得有国际范儿，建立起了支持多语种的架构，那么接下来就是苦逼的翻译工作和本地资源准备工作，说好听点儿就叫本地化。  
 
@@ -85,13 +85,13 @@ PS：语言和地区这两个选项是有差别的，比如当我们将地区设
 
 就算妹子再萌，也不能因为这占用了程序猿们宝贵的工作时间！Xcode6简化了导入导出这些资源的流程，它会检查IB资源和源文件并提取“source strings”，并生成XLIFF文件。翻译好的XLIFF文件也可以通过Xcode导入到工程中来生成和更新资源。嗯，可以把省下来的时间干一些其他的事情咯。  
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-6%402x.png)    
+![](http://yulingtianxia.qiniudn.com/QQ20141002-6%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)    
 
 PS：XLIFF是由软件开发商、本地化服务提供商、本地化工具提供商等团体共同倡议和设计，由OASIS标准组织发布的用于本地化数据交换的格式标准。它基于XML技术制定软件资源文件格式的转换规格，其目的在于提高软件的本地化作业效率。  
 
 导出和导出XLIFF就是如此简单，选中项目，在Editor菜单中可以就找到：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-7%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-7%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 也可以通过命令行的方式进行导入导出XLIFF文件操作：  
 
@@ -102,7 +102,7 @@ xcodebuide -importLocalizations -project <project> -localizationPath <path>
 
 ##迭代开发--更新你的APP
 
-![](http://yulingtianxia.qiniudn.com/QQ20141002-10%402x.png)  
+![](http://yulingtianxia.qiniudn.com/QQ20141002-10%402x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 无需把翻译工作推到最后去做，因为导入和导出XLIFF文件是可以持续集成的，一边写代码，一边把现有内容导出XLIFF给他人翻译，这样能提高效率。每当有新的翻译修改时也可以及时更新，Xcode会把XLIFF文件内容与当前翻译进度合并；在导出XLIFF时可以选择导出当前开发使用的语言还是已经翻译中的语言，这些强大的服务无疑是Xcode6所赐予我们的。  
 
