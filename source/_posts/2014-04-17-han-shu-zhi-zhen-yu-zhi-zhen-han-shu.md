@@ -8,6 +8,8 @@ tags:
 - C
 
 ---
+本文摘自[周立功](http://blog.sina.com.cn/s/blog_5e8facd20100qn20.html)  
+
 <!--more-->
 ##定义
 顾名思义，指针函数即返回指针的函数。其一般定义形式如下：  
@@ -64,5 +66,3 @@ typedef int (*PF)(int *, int);
 ``` 
 PF ff(int);
 ``` 
-
-本文摘自[周立功](http://blog.sina.com.cn/s/blog_5e8facd20100qn20.html)

@@ -15,13 +15,13 @@ tags:
 
 更改后的提交架构是这样的：(来自官方图片)  
 
-![](http://yulingtianxia.qiniudn.com/140353388207.png)  
+![](http://blog.cocoapods.org/assets/blog_img/trunk/architecture-diagram.png)  
 
 <!--more-->
 
 以前的podspec文件都是ruby格式，而trunk为我们带来了更轻便的json格式，你后你可以用json来配置你的pod了。不用担心过去我们发布的pod，他们依然健在，并且trunk会将podspec文件转化为podspec.json文件。    
 
-这里给出一个官方的介绍链接（自备梯子）：http://blog.cocoapods.org/CocoaPods-Trunk/#transition  
+这里给出一个官方的介绍链接：http://blog.cocoapods.org/CocoaPods-Trunk/#transition  
 
 **废话不多说，简要介绍下如何使用trunk新建我们的pod：**  
 

@@ -10,17 +10,20 @@ tags:
 - 碰撞检测
 
 ---
-##引子
-在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了`4*3/2+4`种http://yulingtianxia.qiniudn.com/情形（一枚导弹撞上另一枚导弹）。这种排列组合计算出的结果会随着物体种类N的增多爆炸性增长，如果这个时候还用一堆if－else来检测碰撞，那真是`Naive`了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要`double dispatch`（双分派），`Visitor`模式就是`double dispatch`的一种应用。  
-![Visitor模式](http://yulingtianxia.qiniudn.com/14035338896.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)   
-
-DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if...else...枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。  
 ##本文内容
+- 引子
 - C++中的Double Dispatch实例
 - Java中的Double Dispatch实例
 - Objective-C中实现碰撞检测用到的Visitor模式
  
 <!-- more-->
+
+##引子
+在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了`4*3/2+4`种情形（一枚导弹撞上另一枚导弹）。这种排列组合计算出的结果会随着物体种类N的增多爆炸性增长，如果这个时候还用一堆if－else来检测碰撞，那真是`Naive`了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要`double dispatch`（双分派），`Visitor`模式就是`double dispatch`的一种应用。  
+![Visitor模式](http://yulingtianxia.qiniudn.com/14035338896.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)   
+
+DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if...else...枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。  
+
 
 ##C++中的Double Dispatch实例
 本节内容摘自[这里](http://www.cnblogs.com/west-link/archive/2011/07/26/2116887.html?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
