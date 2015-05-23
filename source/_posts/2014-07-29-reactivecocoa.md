@@ -25,36 +25,36 @@ RAC一个重要的优点就是它提供了单独的、统一的方法来处理�
 
 这有一个简单的例子：
 
-```objc
+``` objc
 // When self.username changes, logs the new name to the console.
 //
 // RACObserve(self, username) creates a new RACSignal that sends the current
 // value of self.username, then the new value whenever it changes.
 // -subscribeNext: will execute the block whenever the signal sends a value.
 [RACObserve(self, username) subscribeNext:^(NSString *newName) {
-	NSLog(@"%@", newName);
+   NSLog(@"%@", newName);
 }];
 ```
 
 但是不同于KVO通知，signals可以链接在一起操作：
 
-```objc
+```
 // Only logs names that starts with "j".
 //
 // -filter returns a new RACSignal that only sends a new value when its block
 // returns YES.
 [[RACObserve(self, username)
-	filter:^(NSString *newName) {
-		return [newName hasPrefix:@"j"];
-	}]
-	subscribeNext:^(NSString *newName) {
-		NSLog(@"%@", newName);
-	}];
+   filter:^(NSString *newName) {
+       return [newName hasPrefix:@"j"];
+   }]
+   subscribeNext:^(NSString *newName) {
+       NSLog(@"%@", newName);
+   }];
 ```
 
 Signals也可以被用于导出状态。不必观察属性然后设置其他属性来响应这个属性新的值，RAC可以依照signals和操作来表达属性：
 
-```objc
+```
 // Creates a one-way binding so that self.createEnabled will be
 // true whenever self.password and self.passwordConfirmation
 // are equal.
@@ -65,15 +65,15 @@ Signals也可以被用于导出状态。不必观察属性然后设置其他属�
 // latest value from each signal whenever any of them changes, and returns a new
 // RACSignal that sends the return value of that block as values.
 RAC(self, createEnabled) = [RACSignal 
-	combineLatest:@[ RACObserve(self, password), RACObserve(self, passwordConfirmation) ] 
-	reduce:^(NSString *password, NSString *passwordConfirm) {
-		return @([passwordConfirm isEqualToString:password]);
-	}];
+   combineLatest:@[ RACObserve(self, password), RACObserve(self, passwordConfirmation) ] 
+   reduce:^(NSString *password, NSString *passwordConfirm) {
+      return @([passwordConfirm isEqualToString:password]);
+   }];
 ```
 
 Signals可以建立在任意值随时间的流动上，不仅仅是KVO。比如，它们也能表示按钮被按下：
 
-```objc
+```
 // Logs a message whenever the button is pressed.
 //
 // RACCommand creates signals to represent UI actions. Each signal can
@@ -83,31 +83,31 @@ Signals可以建立在任意值随时间的流动上，不仅仅是KVO。比如�
 // -rac_command is an addition to NSButton. The button will send itself on that
 // command whenever it's pressed.
 self.button.rac_command = [[RACCommand alloc] initWithSignalBlock:^(id _) {
-	NSLog(@"button was pressed!");
-	return [RACSignal empty];
+   NSLog(@"button was pressed!");
+   return [RACSignal empty];
 }];
 ```
 
 或者异步网络操作：
 
-```objc
+```
 // Hooks up a "Log in" button to log in over the network.
 //
 // This block will be run whenever the login command is executed, starting
 // the login process.
 self.loginCommand = [[RACCommand alloc] initWithSignalBlock:^(id sender) {
-	// The hypothetical -logIn method returns a signal that sends a value when
-	// the network request finishes.
-	return [client logIn];
+   // The hypothetical -logIn method returns a signal that sends a value when
+   // the network request finishes.
+   return [client logIn];
 }];
 
 // -executionSignals returns a signal that includes the signals returned from
 // the above block, one for each time the command is executed.
 [self.loginCommand.executionSignals subscribeNext:^(RACSignal *loginSignal) {
-	// Log a message whenever we log in successfully.
-	[loginSignal subscribeCompleted:^{
-		NSLog(@"Logged in successfully!");
-	}];
+   // Log a message whenever we log in successfully.
+   [loginSignal subscribeCompleted:^{
+      NSLog(@"Logged in successfully!");
+   }];
 }];
 
 // Executes the login command when the button is pressed.
@@ -118,7 +118,7 @@ Signals也能表示定时器，其他UI事件，或者任何其他随时间而�
 
 通过链接和转换这些Signals，可以为异步操作建立更加复杂的行为。在一组操作完成后，后续工作能容易地被触发：
 
-```objc
+```
 // Performs 2 network operations and logs a message to the console when they are
 // both completed.
 //
@@ -128,15 +128,15 @@ Signals也能表示定时器，其他UI事件，或者任何其他随时间而�
 //
 // -subscribeCompleted: will execute the block when the signal completes.
 [[RACSignal 
-	merge:@[ [client fetchUserRepos], [client fetchOrgRepos] ]] 
-	subscribeCompleted:^{
-		NSLog(@"They're both done!");
-	}];
+   merge:@[ [client fetchUserRepos], [client fetchOrgRepos] ]] 
+   subscribeCompleted:^{
+      NSLog(@"They're both done!");
+   }];
 ```
 
 Signals可以被链接起来按顺序地执行异步操作，而不用嵌套回调blocks。这类似[futures and promises][]是如何经常使用的：
 
-```objc
+```
 // Logs in the user, then loads any cached messages, then fetches the remaining
 // messages from the server. After that's all done, logs a message to the
 // console.
@@ -148,25 +148,25 @@ Signals可以被链接起来按顺序地执行异步操作，而不用嵌套回�
 // returns a new RACSignal that merges all of the signals returned from the block
 // into a single signal.
 [[[[client 
-	logInUser] 
-	flattenMap:^(User *user) {
-		// Return a signal that loads cached messages for the user.
-		return [client loadCachedMessagesForUser:user];
-	}]
-	flattenMap:^(NSArray *messages) {
-		// Return a signal that fetches any remaining messages.
-		return [client fetchMessagesAfterMessage:messages.lastObject];
-	}]
-	subscribeNext:^(NSArray *newMessages) {
-		NSLog(@"New messages: %@", newMessages);
-	} completed:^{
-		NSLog(@"Fetched all messages.");
-	}];
+   logInUser] 
+   flattenMap:^(User *user) {
+      // Return a signal that loads cached messages for the user.
+      return [client loadCachedMessagesForUser:user];
+   }]
+   flattenMap:^(NSArray *messages) {
+      // Return a signal that fetches any remaining messages.
+      return [client fetchMessagesAfterMessage:messages.lastObject];
+   }]
+   subscribeNext:^(NSArray *newMessages) {
+      NSLog(@"New messages: %@", newMessages);
+   } completed:^{
+      NSLog(@"Fetched all messages.");
+   }];
 ```
 
 RAC甚至使绑定到异步操作结果更加容易：
 
-```objc
+```
 // Creates a one-way binding so that self.imageView.image will be set the user's
 // avatar as soon as it's downloaded.
 //
@@ -179,14 +179,14 @@ RAC甚至使绑定到异步操作结果更加容易：
 // -map: calls its block with each user that's fetched and returns a new
 // RACSignal that sends values returned from the block.
 RAC(self.imageView, image) = [[[[client 
-	fetchUserWithUsername:@"joshaber"]
-	deliverOn:[RACScheduler scheduler]]
-	map:^(User *user) {
-		// Download the avatar (this is done on a background queue).
-		return [[NSImage alloc] initWithContentsOfURL:user.avatarURL];
-	}]
-	// Now the assignment will be done on the main thread.
-	deliverOn:RACScheduler.mainThreadScheduler];
+   fetchUserWithUsername:@"joshaber"]
+   deliverOn:[RACScheduler scheduler]]
+   map:^(User *user) {
+      // Download the avatar (this is done on a background queue).
+      return [[NSImage alloc] initWithContentsOfURL:user.avatarURL];
+   }]
+   // Now the assignment will be done on the main thread.
+   deliverOn:RACScheduler.mainThreadScheduler];
 ```
 
 上面示范了RAC能做什么，但它没示范RAC为何这么强大。用README的篇幅的例子很难赞美RAC，但是它让编程有更加简化的状态，更少的饮用，更好的代码位置和更好的表达意图。

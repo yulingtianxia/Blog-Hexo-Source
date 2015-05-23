@@ -1,9 +1,14 @@
-title: "ReactiveCocoa and MVVM, an Introduction"
+title: "ReactiveCocoa 和 MVVM 入门"
 date: 2015-05-21 21:43:37
 tags:
 - 翻译
+- RAC
 
 ---
+
+翻译自[ReactiveCocoa and MVVM, an Introduction](http://www.sprynthesis.com/2014/12/06/reactivecocoa-mvvm-introduction)  
+<!--more-->
+
 ## MVC
 任何一个正经开发过一阵子软件的人都熟悉**MVC**.它意思是**Model View Controller**,是一个在复杂应用设计中组织代码的公认模式.它也被证实在 iOS 开发中有着第二种含义: **Massive View Controller(重量级视图控制器)**.它让许多程序员绞尽脑汁如何去使代码被解耦和组织地让人满意.总的来说,iOS 开发者已经得出结论:他们需要[给view controller 瘦身](http://www.objc.io/issue-1/),并进一步分离事物;但该怎么做呢?  
 
@@ -154,3 +159,141 @@ view-model 会在视图控制器上以一个属性的方式存在.视图控制�
 至于我们的推特 cell,当数据驱动屏幕(在这个例子中或许是通过网络服务调用)聚到一起时,我将会代表性地提前为对应的 cell 创建所有的 view-model. 所以在我们这个方案中, `tweets` 将会是一个 `MYTweetCellViewModel` 对象数组.在我的表格视图中的 `cellForRowAtIndexPath` 方法中,我将会在正确的索引上简单地抓取 view-model, 并把它赋值给我的 cell 上的 view-model 属性.  
 
 ## Functional Core, Imperative Shell
+
+view-model 这种通往应用设计的方法是一块应用设计之路上的垫脚石,这种被称作["Functional Core, Imperative Shell"](https://www.destroyallsoftware.com/screencasts/catalog/functional-core-imperative-shell)的应用设计由[Gary Bernhardt](https://twitter.com/garybernhardt)创造.(我最近十分有幸去听[Andy Matuschak](http://andymatuschak.org)关于这方面的演讲,他为"胖的数值层,瘦的对象层"提出充分理由.虽然观点相似,但关注于我们怎样移除对象和它们状态的边界影响性质,并用 Swift 中的新数据结构构建更加函数式,可测试的数值层.)
+
+### Functional Core
+
+view-model 就是 [“functional core”](http://www.smashingmagazine.com/2014/07/02/dont-be-scared-of-functional-programming/),尽管实际上在 iOS/Objective-C 中达到纯函数水平是很棘手的(Swift 提供了一些附加的函数性,这会让我们更接近).大意是让我们的 view-model 尽可能少的对剩余的"应用世界"的依赖和影响.那意味着什么?想起你第一次学编程时可能学到的简单函数吧.它们可能接受一两个参数并输出一个结果.**数据输入,数据输出.**这个函数可能是做一些数学运算或是将姓和名结合到一起.无论应用的其他地方发生啥,这个函数总是对相同的输入产生相同的输出.这就是函数式方面.  
+
+这就是我们为 view-model 谋求的东西.他们富有逻辑和转换数据并将结果存到属性的功能.理想上相同的输入(比如网络服务响应)将会导出相同的输出(属性的值).这意味着尽可能多地消除由"应用世界"剩余部分带来的可能影响输出的因素,[比如使用一堆状态.](http://www.sprynthesis.com/2014/06/15/why-reactivecocoa/)**一个好的第一步就是不要再 view-model 头文件中引入 UIKit.h.**(这是个重大原则,但也有些灰色区域.比如,你可能认为 `UIImage` 是数据而不是展示信息.PS: 我爱这么干.既然这样的话就得引入 UIKit.h 以便使用 `UIImage` 类)UIKit 其性质就是将要影响许多应用世界.它包含很多"边界效应",凭借改变一个值或调用一个函数将触发很多间接(甚至未知)的改变.  
+
+**更新:**刚刚看了 Andy 在[函数式 Swift 会议](http://2014.funswiftconf.com)上给出的另一个超赞的演讲,于是又想到了一些.要清楚你的 view-model *仍然*只是一个对象,而不用维护一些状态(否则它将不会是你视图中非常好用的模型了.)但你仍该努力将尽可能多的逻辑移到无状态的函数"值"中.再重复一次,Swift在这方面比 Objective-C 更加可行.
+
+### Imperative (Declarative?) Shell
+
+紧迫的外壳 (Imperative Shell) 是我们需要做所有的状态转换,应用世界改变的苦差事的地方,为的是将 view-model 数据转成给用户在屏幕上看到的东西.这是我们的视图(控制器),实际上我们在这分离 UIKit 的工作.我仍将特别注意尽可能消除状态并用 ReactiveCocoa 这种陈述性质的东西做这方面工作,而 iOS 和 UIKit 在设计上势在必行. (表格的 data source 就是个很好的例子,因为它的委托模式强制将状态应用到委托中,为了当请求发生时能够为表格视图提供信息.实际上委托模式通常强制一大堆状态的使用)
+
+### 可测试的核心
+
+iOS 的单元测试是个脏,苦,乱的活儿.至少我去做的时候得出的是这么个结论.就这方面我还度过一两本书,但当开始做视图控制器的 mocking 和 swizzling 使其一些逻辑可测试时,我目光呆滞.我最终把单元测试归入模型和任何同类别模型管理类中.(译者注: mock 是测试常用的手段,而 method swizzling 是基于 Objective-C Runtime 交换方法实现的黑魔法)  
+
+这个函数式核心一样的 view-model 的最大优点,除了 bug 数量随着状态数递减之外,就是*变得非常能够进行单元测试*.如果你有那种每次输入相同而产生的输出也相同的方法,那就非常适合单元测试的世界.我们现在将我们的数据用获取/逻辑/转换提取出,避免了视图控制器的复杂性.那意味着构建棒棒哒测试时不需要用疯狂的 mock 对象, method swizzling, 或其他疯癫的变通方法(希望能有).  
+
+## 连接一切
+
+**那么当 view-model 的共有属性发生变化时我们如何更新我们的视图呢?**  
+
+绝大部分时间我们用对应的 view-model 来初始化视图控制器,有点类似我们刚刚在上文见到的:  
+
+```
+MYTwitterUserProfileViewController *profileViewController =
+    [[MYTwitterUserProfileViewController alloc] initWithViewModel: userProfileViewModel];
+```
+
+有时你无法在初始化时将 view-model 传入,比如在 storyboard segue 或 cell dequeuing 的情况下.这时你应该在讨论中的视图(控制器)中暴露一个公有可写的 view-model 属性.  
+
+```
+MYTwitterUserCell *cell =
+    [self.tableView dequeueReusableCellWithIdentifier:@"MYTwitterUserCell" forIndexPath:indexPath];
+// grab the cell view-model from the vc view-model and assign it
+cell.viewModel = self.viewModel.tweets[indexPath.row];
+```
+
+有时我们可以在钩子程序调用前传入 view-model, 比如 `init` 和 `viewDidLoad`, 我们可以从view-model 的属性初始化所有 UI 元素的状态.  
+
+<script src="https://gist.github.com/sprynmr/cead1f81935f18b2acb5.js"></script>
+
+好棒!我们已经配置好了初始值.当 view-model 上的数据改变时怎么办? 当"go" 按钮在什么时候可用了怎么办?当用户标签和头像在什么时候从网络上下载并填充了怎么办?  
+
+我们可以将视图控制器暴露给 view-model, 以便于当相关数据变化或类似事件发送时它可以调用一个 "updateUI" 方法.(别这么干.)在 view-model 上将视图控制器作为一个委托?当 view-model 内容有变化时发个通知?(不不不不.)
+
+我们的视图控制器会感知一些变化的发生.我们可以使用从 `UITextfield` 得来的委托方法在每当有字符变化时通过检查 view-model 来更新按钮的状态.  
+
+<script src="https://gist.github.com/sprynmr/8a019580d7a3fc829746.js"></script>
+
+这种方法解决的场景是在只有再文本框发生变化时才会影响 view-model 中的 `isUsernameValid` 值.假使还有其他变量/动作改变 `isUsernameValid` 的状态将会怎么样?对于 view-model 中的网络调用会怎么样?或许我们该为 view-model 上的方法加一个完成后回调处理,这样我们此时就可以更新 UI 的一切东西了?使用珍贵而笨重的 KVO 方法怎么样?
+
+我们或许最终使用多种多样我们熟悉的机制将 view-model 和视图控制器所有的接触点都连起来,但你已经知道了[标题上不是这么写的](http://www.sprynthesis.com/2014/06/15/why-reactivecocoa/).这样在代码中创建了大量的入口点,仅仅为了简单的更新 UI 就要在代码中完全重新创建应用状态上下文.
+
+## 进入 ReactiveCocoa
+
+ReactiveCocoa(RAC) 是来拯救我们的,并恰好返回给我们一点理智.让我们看看如何做到.  
+
+思考在一个新的用户页面上控制信息的流动,当表单合法时更新提交按钮的状态.你现在可能会照下面这么做:  
+
+![](http://www.sprynthesis.com/assets/images/new-user-form-imperative.svg)  
+
+你最后通过使用状态,小心翼翼地代码中许多不同且零碎无关的内容穿到简单的逻辑上.看看你信息流中所有不同的入口点?(这还只是*一个* UI 元素中的*一条*逻辑线.)[我们程序中现在用的抽象概念还不够厉害](http://www.sprynthesis.com/2014/06/15/why-reactivecocoa/),不能为我们追踪所有事物的关系,所以我们停止自己去干这蛋疼事儿.  
+
+让我们看看陈述版本:
+
+![](http://www.sprynthesis.com/assets/images/new-user-form-declarative.svg)  
+
+这看起来可能像是为我们应用流程文档中的一张老旧的计算机科学图解.通过陈述式的编程,我们使用了更高层次的抽象,来让我们实际编程更靠近我们在脑海中设计流程的方式.我们让电脑为我们做更多工作.实际的代码更加像这幅图了.  
+
+### RACSignal
+
+`RACSignal` (信号)就 RAC 来说是构造单元.它代表我们最终将要收到的信息.当你能将未来某时刻收到的消息具体表示出来时,**你可以开始预先(陈述性)运用逻辑并构建你的信息流,**而不是必须等到事件发生(紧迫的).  
+
+**信号会为了控制通过应用的信息流而获得所有这些异步方法(委托,回调 block, 通知, KVO,target/action 事件观察,等)并将它们统一到一个接口下.**这只是直观理解.不仅是这些,因为信息会流过你的应用,它还提供给你轻松转换/分解/合并/过滤信息的能力.  
+
+![](http://www.sprynthesis.com/assets/images/replace-async-tools.svg)  
+
+#### 那么什么是信号呢?这是一个信号:
+
+![](http://www.sprynthesis.com/assets/images/signal-no-subscribers.svg)  
+
+信号是一个发送一连串值的物体.但是我们这儿的信号啥也不干,因为它还没有订阅者.如果有订阅者监听时(已订阅)信号才会发信息.它将会向那个订阅者发送0或多个载有数值的"next"事件,后面跟着一个"complete"事件或一个"error"事件.(信号类似于其他语言/工具包中的 "promise",但更强大,因为它不仅限于向它的订阅者一次只传递一个返回值.)  
+
+![](http://www.sprynthesis.com/assets/images/signal-with-subscriber.svg)  
+
+正如我之前提到的,如果觉得需要的话你可以过滤,转换,分解和合并那些值.不同的订阅者可能需要使用信号通过不同方式发送的值.  
+
+![](http://www.sprynthesis.com/assets/images/signal-map.svg)  
+
+#### 信号发送的值是从哪获得的?
+
+信号是一些等待某事发生的异步代码,然后把结果值发送给它们的订阅者.你可以用 `RACSignal` 的类方法 `createSignal:` 手动创建信号:  
+
+<script src="https://gist.github.com/sprynmr/fedd52e32a6ead20369c.js"></script>
+
+我在这用一个具有成功和失败 block (伪造)的网络操作创建了一个信号.(如果我想让信号在被订阅时才让网络请求发生,还可以用 `RACSignal` 的类方法 `defer`.)我在成功的 block 里使用提供的 `subscriber` 对象调用 `sendNext:` 和 `sendCompleted:` 方法,或在失败的 block 中调用 `sendError:`.现在我可以订阅这个信号并将在响应返回时接收到 json 值或是 error.  
+
+幸运的是, RAC 的创造者实际上使用它们自己的库来创建真的事物(捉摸一下),所以对于我们在日常需要什么,他们有很强烈的想法.他们为我们提供了很多机制,来从我们通常使用的现存的异步模式中拉取信号.别忘了如果你有一个没有被某个内建信号覆盖到的异步任务,你可以*很容易地*用 `createSignal:` 或类似方法来创建信号.  
+
+一个被提供的机制就是 `RACObserve()` 宏.(如果你不喜欢宏,你可以简单地看看罩子下面并用稍微多些冗杂的描述.这也非常好.在我们得到 [Swift 版本的替代](https://github.com/ReactiveCocoa/ReactiveCocoa/pull/1382)之前,这也有[在 Swift 中使用 RAC](http://blog.scottlogic.com/2014/07/24/mvvm-reactivecocoa-swift.html) 的解决方案.)这个宏是 RAC 中对 KVO 中那些悲惨的 API 的替代.你只需要传入对象和你想观察的那个对象某属性的 keypath.给出这些参数后, `RACObserve` 会创建一个信号,一旦它有了订阅者,它就立刻发送那个属性的当前值,并在发送那个属性在这之后的任何变化.  
+
+```
+RACSignal *usernameValidSignal = RACObserve(self.viewModel, usernameIsValid);
+```
+
+![](http://www.sprynthesis.com/assets/images/signal-racobserve.svg)  
+
+这仅是提供用于创建信号的一个工具.这里有几个立即可用的方式,来从内置控制流机制中拉取信号:  
+
+<script src="https://gist.github.com/sprynmr/94472f0285139056da26.js"></script>
+
+记住你也能轻松创建自己的信号,包括[替代那些没有内建支持的其他委托](http://spin.atomicobject.com/2014/02/03/objective-c-delegate-pattern/).我们现在能够从所有这些不连贯的异步/控制流工具中拉取出信号并将他们合并,试想想这该多酷!这些会成为我们之前看到的陈述性图表中的节点.真是兴奋.
+
+#### 什么是订阅者?
+
+简言之,订阅者就是一段代码,它等待信号给它发送一些值,然后订阅者就能处理这些值了.(它也可以作用于 "complete" 和 "error" 事件.)
+
+这有一个简单的订阅者,是通过向信号的实例方法 `subscribeNext` 传入一个 block 来创建的.我们在这通过 `RACObserve()` 宏创建信号来观察一个对象上属性的当前值,并把它赋值给一个内部属性.  
+
+```
+- (void) viewDidLoad {
+  // ...
+  // create and get a reference to the signal
+  RACSignal *usernameValidSignal = RACObserve(self.viewModel, isUsernameValid);
+  // update the local property when this value changes
+  [usernameValidSignal subscribeNext:^(NSNumber *isValidNumber) {
+          self.usernameIsValid = isValidNumber.boolValue
+      }];
+}
+```
+
+注意 RAC 只处理对象,而不处理像 `BOOL` 这样的原始值.不过不用担心, RAC 通常会帮你这些转换.  
+
+
