@@ -1,4 +1,4 @@
-title: about
+title: About me
 date: 2015-02-07 19:19:08
 ---
 >哈尔滨工业大学 软件学院，毕业后保送贵院MSE。。。  

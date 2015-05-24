@@ -31,7 +31,7 @@ footer
   width w=(110/16)em
   height w
   margin 0 auto
-  background no-repeat url(root+author-img) left top 
+  background no-repeat url("../"+author-img) left top 
   background-size w w
   border-radius (w/2)
   transition transform 2s ease-out
@@ -131,3 +131,15 @@ footer
     &:hover
       color color-blue
       text-decoration underline
+
+.cc-license
+  width 100%
+  float left
+  text-align center
+  .cc-opacity 
+    opacity 0.7
+    border-bottom none
+    &:hover
+      opacity 0.9
+  img
+    display inline-block

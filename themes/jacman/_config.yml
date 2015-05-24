@@ -1,8 +1,8 @@
 ##### Menu
 menu:
-  主页: /
-  归档: /archives
-  关于: /about
+  Home: /
+  Archives: /archives
+  About: /about
 ## you can create `tags` and `categories` folders in `../source`.
 ## And create a `index.md` file in each of them.
 ## set `front-matter`as
@@ -11,7 +11,7 @@ menu:
 ## ---
 
 #### Widgets
-widgets: 
+widgets:
 - category
 - links
 - tagcloud
@@ -20,38 +20,49 @@ widgets:
 ## provide seven widgets:category,tag,rss,archive,tagcloud,links,weibo,douban
 
 
-#### RSS 
+#### RSS
 rss: /atom.xml ## RSS address.
 
 #### Image
 imglogo:
   enable: true             ## display image logo true/false.
   src: img/logo.png        ## `.svg` and `.png` are recommended,please put image into the theme folder `/jacman/source/img`.
-favicon: img/favicon.png   ## size:32px*32px,`.ico` is recommended,please put image into the theme folder `/jacman/source/img`.     
+favicon: img/favicon.png   ## size:32px*32px,`.ico` is recommended,please put image into the theme folder `/jacman/source/img`.
 apple_icon: img/jacman.jpg ## size:114px*114px,please put image into the theme folder `/jacman/source/img`.
 author_img: img/author.jpg ## size:220px*220px.display author avatar picture.if don't want to display,please don't set this.
+banner_img: #img/banner.jpg ## size:1920px*200px+. Banner Picture
+### Theme Color
+theme_color:
+    theme: '#a787d4'    ##the defaut theme color is blue
 
-#### index post is expanding or not 
+#### index post is expanding or not
 index:
   expand: true           ## default is unexpanding,so you can only see the short description of each post.
-  excerpt_link: Read More  
-  
+  excerpt_link: Read More
+
+close_aside: false  #close sidebar in post page if true
+mathjax: false      #enable mathjax if true
+
+### Creative Commons License Support, see http://creativecommons.org/
+### you can choose: by , by-nc , by-nc-nd , by-nc-sa , by-nd , by-sa , zero
+creative_commons: by-nc-nd
+
 #### Author information
 author:
   intro_line1:  "Stay hungry, stay foolish"    ## your introduction on the bottom of the page
   intro_line2:  "Talk is cheap, show me the code."  ## the 2nd line
-  weibo: 1680627603
-  weibo_verifier: c09974f5
-  tsina: 1680627603
-  douban: 53279288
-  zhihu: yulingtianxia
-  email: yulingtianxia@gmail.com
-  twitter: yulingtianxia
-  github: yulingtianxia
-  facebook: yulingtianxia
-  linkedin: yulingtianxia
-  google_plus: "106642427004837273341"
-  stackoverflow: 2374982
+  weibo: 1680627603     ## e.g. wuchong1014 or 2176287895 for http://weibo.com/2176287895
+  weibo_verifier: c09974f5 ## e.g. b3593ceb Your weibo-show widget verifier ,if you use weibo-show it is needed.
+  tsina: 1680627603     ## e.g. 2176287895  Your weibo ID,It will be used in share button.
+  douban: 53279288    ## e.g. wuchong1014 or your id for https://www.douban.com/people/wuchong1014
+  zhihu: yulingtianxia     ## e.g. jark  for http://www.zhihu.com/people/jark
+  email: yulingtianxia@gmail.com     ## e.g. imjark@gmail.com
+  twitter: yulingtianxia   ## e.g. jarkwu for https://twitter.com/jarkwu
+  github: yulingtianxia    ## e.g. wuchong for https://github.com/wuchong
+  facebook: yulingtianxia  ## e.g. imjark for https://facebook.com/imjark
+  linkedin: yulingtianxia  ## e.g. wuchong1014 for https://www.linkedin.com/in/wuchong1014
+  google_plus: "106642427004837273341"   ## e.g. "111190881341800841449" for https://plus.google.com/u/0/111190881341800841449, the "" is needed!
+  stackoverflow: 2374982 ## e.g. 3222790 for http://stackoverflow.com/users/3222790/jark
 ## if you set them, the corresponding  share button will show on the footer
 
 #### Toc
@@ -67,27 +78,29 @@ links:
   ColorAtom: http://coloratom.yulingtianxia.com
   畅游导航: http://changyou.yulingtianxia.com
   养小鱼的水塘: http://fish.yulingtianxia.com
-  我的简历: http://resume.yulingtianxia.com 
+  我的简历: http://resume.yulingtianxia.com
+
+
 #### Comment
-duoshuo_shortname: yulingtianxia
-disqus_shortname: yulingtianxia
+duoshuo_shortname: yulingtianxia   ## e.g. wuchong   your duoshuo short name.
+disqus_shortname: yulingtianxia    ## e.g. wuchong   your disqus short name.
 
 #### Share button
 jiathis:
   enable: false ## if you use jiathis as your share tool,the built-in share tool won't be display.
-  id:    ## e.g. 1889330 your jiathis ID. 
+  id:    ## e.g. 1889330 your jiathis ID.
   tsina: ## e.g. 2176287895 Your weibo id,It will be used in share button.
 
 #### Analytics
 google_analytics:
   enable: true
-  id: UA-49704553-1
-  site: auto
+  id: UA-49704553-1       ## e.g. UA-46321946-2 your google analytics ID.
+  site: auto     ## e.g. wuchong.me your google analytics site or set the value as auto.
 ## You MUST upgrade to Universal Analytics first!
 ## https://developers.google.com/analytics/devguides/collection/upgrade/?hl=zh_CN
 baidu_tongji:
   enable: true
-  sitecode: b5cb508df15ee6247a8c32c64eadb075
+  sitecode: b5cb508df15ee6247a8c32c64eadb075 ## e.g. e6d1f421bbc9962127a50488f9ed37d1 your baidu tongji site code
 cnzz_tongji:
   enable: false
   siteid:    ## e.g. 1253575964 your cnzz tongji site id
@@ -99,17 +112,20 @@ totop: true           ## if you want to scroll to top in every post set the valu
 
 
 #### Custom Search
-google_cse: 
+google_cse:
   enable: true
-  cx: 007120364111268919138:tex1pcfht90
-## https://www.google.com/cse/ 
+  cx: 007120364111268919138:tex1pcfht90  ## e.g. 018294693190868310296:abnhpuysycw your Custom Search ID.
+## https://www.google.com/cse/
 ## To enable the custom search You must create a "search" folder in '/source' and a "index.md" file
 ## set the 'front-matter' as
-## layout: search 
+## layout: search
 ## title: search
-## ---
+# ---
 baidu_search:     ## http://zn.baidu.com/
   enable: false
   id:   ## e.g. "783281470518440642"  for your baidu search id
-  site:   ## your can change to your site instead of the default site
-  
+  site: http://zhannei.baidu.com/cse/search  ## your can change to your site instead of the default site
+
+tinysou_search:     ## http://tinysou.com/
+  enable: false
+  id:  ## e.g. "4ac092ad8d749fdc6293" for your tiny search id
