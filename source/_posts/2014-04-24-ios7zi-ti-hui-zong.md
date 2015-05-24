@@ -15,7 +15,7 @@ tags:
 3. 在工程->Targets(选一个target)->Build Phases->Copy Bundle Resources中加入字体文件  
 4. 运行下面的代码可以获得所有的字体样式  
 
-``` objc
+```objc
 		NSArray *familyNames = [UIFont familyNames];
         for( NSString *familyName in familyNames ){
             printf( "Family: %s \n", [familyName UTF8String] );
@@ -24,7 +24,7 @@ tags:
                 printf( "\tFont: %s \n", [fontName UTF8String] );
             }  
         }
-``` 
+```
 
 在iOS7运行，获得结果如下，从中找出你新添加的字体名吧：  
 

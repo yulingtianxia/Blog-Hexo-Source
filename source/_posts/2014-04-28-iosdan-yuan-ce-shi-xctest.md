@@ -17,13 +17,13 @@ tags:
 5. 通过重写`tearDown`方法来在测试后清除
 测试方法没有参数和返回值，用test作为前缀，比如：
 
-``` objc
+```objc
  - (void) testSomething;
-``` 
+```
 会自动被`XCTest`架构识别为测试用例，每个`XCTestCase`的子类中的`defaultTestSuite`都是一个`XCTestSuite`，它包含了这些测试用例。  
 测试方法的实现经常包含断言，必须通过验证才能通过测试，举个例子：
 
-``` 
+```
  @interface MathTest : XCTestCase {
  @private
     float f1;
@@ -47,7 +47,7 @@ tags:
     XCTAssertTrue (f1 + f2 == 5.0, @"%f + %f should equal 5.0", f1, f2);
  }
  @end
-``` 
+```
 感觉这根JUnit很像的，下面列出所有的断言：  
 XCTFail(format…) 生成一个失败的测试；
 

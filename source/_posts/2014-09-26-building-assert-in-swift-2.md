@@ -17,7 +17,7 @@ tags:
 
 然而这并不能帮助我们探索实现`assert()`。如果我们这样实现断言(assert)：  
 
-``` objc
+```objc
 func assert(predicate : @autoclosure () -> Bool) { 
 	#if DEBUG
 		if !predicate() {
@@ -26,13 +26,13 @@ func assert(predicate : @autoclosure () -> Bool) {
 		}
 	#endif
 }
-``` 
+```
 上面的代码将会输出实现`assert()`方法所在文件的文件/行数(file/line)位置，而不是调用者的位置信息。这并不管用。  
 
 ##获取调用者位置
 Swift从D语言借鉴了一个非常聪明的特性：当标识符在默认参数列表中被赋值时，它们会在调用者的位置被展开。为了实现这个行为，`assert()`被如下这样定义：  
 
-``` 
+```
 func assert(condition: @autoclosure () -> Bool, _ message: String = "",
 	file: String = __FILE__, line: Int = __LINE__) {
 		#if DEBUG
@@ -42,17 +42,17 @@ func assert(condition: @autoclosure () -> Bool, _ message: String = "",
 			}
 		#endif
 }
-``` 
+```
 Swift的`assert()`函数第二个参数是一个供你指明的可选字符串，而第三、四个参数默认为调用者上下文的位置。这就让`assert()`能默认获得调用者的原始位置。如果你想在断言顶层构建你自己的抽象层，你可以将调用者的位置传递下去。作为一个简易的例子，你可以定义一个日志和断言方法：  
 
-``` 
+```
 func logAndAssert(condition: @autoclosure () -> Bool, _ message: StaticString = "",
 	file: StaticString = __FILE__, line: UWord = __LINE__) {
 
 	logMessage(message)
 	assert(condition, message, file: file, line: line)
 }
-``` 
+```
 这正确的将`logAndAssert()`调用者的file/line位置传递给了`assert()`的实现。注意上面代码中的`StaticString`，它是一个类似于`String`的类型，用于存储像`__FILE__`这种不受内存管理约束的字符串字面量。  
 
 除此之外，这种实用设计也用于Swift中实现高级XCTest框架，也可以在你自己实现的函数库中发挥作用。  

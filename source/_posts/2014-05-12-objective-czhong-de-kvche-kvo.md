@@ -24,30 +24,30 @@ tags:
 
 最简单的 KVC 能让我们通过以下的形式访问属性：  
 
-``` objc
+```objc
 @property (nonatomic, copy) NSString *name;
-``` 
+```
 
 取值：   
 
-``` 
+```
 NSString *n = [object valueForKey:@"name"];
-``` 
+```
 设定：  
 
-``` 
+```
 [object setValue:@"Daniel" forKey:@"name"];
-``` 
+```
 值得注意的是这个不仅可以访问作为对象属性，而且也能访问一些标量（例如 `int` 和 `CGFloat`）和 struct（例如 `CGRect`）。Foundation 框架会为我们自动封装它们。举例来说，如果有以下属性：  
 
-``` 
+```
 @property (nonatomic) CGFloat height;
-``` 
+```
 我们可以这样设置它：  
 
-``` 
+```
 [object setValue:@(20) forKey:@"height"];
-``` 
+```
 
 有关KVC的更多用法，参看下面的文章：  
 
@@ -87,7 +87,7 @@ KVO是Cocoa框架使用**观察者模式**的一种途径。
 ####注册成为观察者
 你可以通过发送`addObserver:forKeyPath:options:context:`消息来注册观察者  
 
-``` objc
+```objc
 - (void)registerAsObserver {
     /*
      Register 'inspector' to receive change notifications for the "openingBalance" property of
@@ -100,14 +100,14 @@ KVO是Cocoa框架使用**观察者模式**的一种途径。
                             NSKeyValueObservingOptionOld)
                     context:NULL];
 }
-``` 
+```
 
 `inspector`注册成为了`account`的观察者，被观察属性的KeyPath是`@"openingBalance"`，也就是`account`的`openingBalance`属性，`NSKeyValueObservingOptionNew`和`NSKeyValueObservingOptionOld`选项分别标识在观察者接收通知时`change`字典对应入口提供更改后的值和更改前的值。更简单的办法是用 `NSKeyValueObservingOptionPrior` 选项，随后我们就可以用以下方式提取出改变前后的值：(`change`是个字典，详细介绍请看下节)  
 
-``` 
+```
 id oldValue = change[NSKeyValueChangeOldKey];
 id newValue = change[NSKeyValueChangeNewKey];
-``` 
+```
   
 
 我们常常需要当一个值改变的时候更新 UI，但是我们也要在第一次运行代码的时候更新一次 UI。我们可以用 KVO 并添加 `NSKeyValueObservingOptionInitial` 的选项 来一箭双雕地做好这样的事情。这将会让 KVO 通知在调用`-addObserver:forKeyPath:...` 到时候也被触发。  
@@ -121,7 +121,7 @@ id newValue = change[NSKeyValueChangeNewKey];
 当被观察的属性变更时，观察者会接到`observeValueForKeyPath:ofObject:change:context:`消息，所有的观察者都必须实现这个方法。  
 观察者会被提供触发通知的对象和`keyPath`，一个包含变更详细信息的字典，还有一个注册观察者时提供的`context`指针。  
 
-``` 
+```
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
                         change:(NSDictionary *)change
@@ -140,7 +140,7 @@ id newValue = change[NSKeyValueChangeNewKey];
                            change:change
                            context:context];
 }
-``` 
+```
 关于change参数，它是一个字典，有五个常量作为它的键：  
 
 ```
@@ -162,7 +162,7 @@ enum {
    NSKeyValueChangeReplacement = 4
 };
 typedef NSUInteger NSKeyValueChange;
-``` 
+```
 **NSKeyValueChangeNewKey**  
 如果 `NSKeyValueChangeKindKey`的值为 `NSKeyValueChangeSetting`，并且 `NSKeyValueObservingOptionNew`选项在注册观察者时也指定了，那么这个键的值就是属性变更后的新值。  
 对于 `NSKeyValueChangeInsertion`或者`NSKeyValueChangeReplacement`，如果 `NSKeyValueObservingOptionNew`选项在注册观察者时也指定了，这个键的值是一个数组，其包含了插入或替换的对象。  
@@ -174,23 +174,23 @@ typedef NSUInteger NSKeyValueChange;
 **NSKeyValueChangeNotificationIsPriorKey**  
 如果注册观察者时`NSKeyValueObservingOptionPrior`选项被指明了，此通知会在变更发生前被发出。其类型为`NSNumber`，包含的值为`YES`。我们可以像以下这样区分通知是在改变之前还是之后被触发的：  
 
-``` 
+```
 if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {
     // 改变之前
 } else {
     // 改变之后
 }
-``` 
+```
   
 
 ####移除观察者  
 你可以通过发送`removeObserver:forKeyPath:`消息来移除观察者，你需要指明观察对象和路径。  
 
-``` 
+```
 - (void)unregisterForChangeNotification {
     [observedObject removeObserver:inspector forKeyPath:@"openingBalance"];
 }
-``` 
+```
 上面的代码将`openingBalance`属性的观察者`inspector`移除，移除后观察者再也不会收到`observeValueForKeyPath:ofObject:change:context:`消息。  
 在移除观察者之前，如果`context`是一个对象的引用，那么必须保持对它的强引用直到观察者被移除。  
 
@@ -203,7 +203,7 @@ if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {
 
 下面代码中的方法都能导致KVO变更消息发出  
 
-``` 
+```
 // Call the accessor method.
 [account setName:@"Savings"];
  
@@ -217,13 +217,13 @@ if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {
 Transaction *newTransaction = <#Create a new transaction for the account#>;
 NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"];
 [transactions addObject:newTransaction];
-``` 
+```
 
 ####Manual Change Notification（手动通知）
 
 下面的代码为`openingBalance`属性开启了人工通知，并让父类决定其他属性的通知方式。  
 
-``` 
+```
 + (BOOL)automaticallyNotifiesObserversForKey:(NSString *)theKey {
  
     BOOL automatic = NO;
@@ -235,20 +235,20 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
     }
     return automatic;
 }
-``` 
+```
 
 要实现人工观察者通知，你要执行在变更前执行` willChangeValueForKey:`方法，在变更后执行`didChangeValueForKey:`方法：  
 
-``` 
+```
 - (void)setOpeningBalance:(double)theBalance {
     [self willChangeValueForKey:@"openingBalance"];
     _openingBalance = theBalance;
     [self didChangeValueForKey:@"openingBalance"];
 }
-``` 
+```
 为了使不必要的通知最小化我们应该在变更前先检查一下值是否变了：  
 
-``` 
+```
 - (void)setOpeningBalance:(double)theBalance {
     if (theBalance != _openingBalance) {
         [self willChangeValueForKey:@"openingBalance"];
@@ -256,10 +256,10 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
         [self didChangeValueForKey:@"openingBalance"];
     }
 }
-``` 
+```
 如果一个操作导致了多个键的变化，你必须嵌套变更通知：  
 
-``` 
+```
 - (void)setOpeningBalance:(double)theBalance {
     [self willChangeValueForKey:@"openingBalance"];
     [self willChangeValueForKey:@"itemChanged"];
@@ -268,11 +268,11 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
     [self didChangeValueForKey:@"itemChanged"];
     [self didChangeValueForKey:@"openingBalance"];
 }
-``` 
+```
 在to-many关系操作的情形中，你不仅必须表明key是什么，还要表明变更类型和影响到的索引。变更类型是一个 `NSKeyValueChange`值，被影响对象的索引是一个 `NSIndexSet`对象。  
 下面的代码示范了在to-many关系`transactions`对象中的删除操作：  
 
-``` 
+```
 - (void)removeTransactionsAtIndexes:(NSIndexSet *)indexes {
     [self willChange:NSKeyValueChangeRemoval
         valuesAtIndexes:indexes forKey:@"transactions"];
@@ -282,7 +282,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
     [self didChange:NSKeyValueChangeRemoval
         valuesAtIndexes:indexes forKey:@"transactions"];
 }
-``` 
+```
 
 ###Registering Dependent Keys（注册依赖键）
 
@@ -294,16 +294,16 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 
 例如一个人的全名是由姓氏和名子组成的：  
 
-``` 
+```
 - (NSString *)fullName {
     return [NSString stringWithFormat:@"%@ %@",firstName, lastName];
 }
-``` 
+```
 一个观察`fullName`的程序在`firstName`或者`lastName`变化时也应该接收到通知。  
 
 一种解决方法是重写`keyPathsForValuesAffectingValueForKey:`方法来表明`fullname`属性是依赖于`firstname`和`lastname`的：  
 
-``` 
+```
 + (NSSet *)keyPathsForValuesAffectingValueForKey:(NSString *)key {
  
     NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];
@@ -314,16 +314,16 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
     }
     return keyPaths;
 }
-``` 
+```
 相当于在影响`fullName`值的`keypath`中新加了两个key：`lastName`和`firstName`，很容易理解。  
 
 另一种实现同样结果的方法是实现一个遵循命名方式为`keyPathsForValuesAffecting<Key>`的类方法，`<Key>`是依赖于其他值的属性名（首字母大写），用上面代码的例子来重新实现一下：  
 
-``` 
+```
 + (NSSet *)keyPathsForValuesAffectingFullName {
     return [NSSet setWithObjects:@"lastName", @"firstName", nil];
 }
-``` 
+```
 
 有时在类别中我们不能添加`keyPathsForValuesAffectingValueForKey:`方法，因为不能再类别中重写方法，所以这时可以实现`keyPathsForValuesAffecting<Key> `方法来代替。  
 
@@ -337,7 +337,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 1. 你可以用KVO将parent（比如`Department`）作为所有children（比如`Employee`）相关属性的观察者。你必须在把child添加或删除到parent时也把parent作为child的观察者添加或删除。在`observeValueForKeyPath:ofObject:change:context:`方法中我们可以针对被依赖项的变更来更新依赖项的值： 
 
 
-``` 
+```
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
  
     if (context == totalSalaryContext) {
@@ -363,7 +363,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 - (NSNumber *)totalSalary {
     return _totalSalary;
 }
-``` 
+```
 
 2.如果你在使用Core Data，你可以在应用的notification center中将parent注册为它的 managed object context的观察者，parent应该回应相应的变更通知，这些通知是children以类似KVO的形式发出的。  
 
@@ -373,9 +373,9 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 
 你可以在 lldb 里查看一个被观察对象的所有观察信息。  
 
-``` 
+```
 (lldb) po [observedObject observationInfo]
-``` 
+```
 这会打印出有关谁观察谁之类的很多信息。  
 
 这个信息的格式不是公开的，我们不能让任何东西依赖它，因为苹果随时都可以改变它。不过这是一个很强大的排错工具。  

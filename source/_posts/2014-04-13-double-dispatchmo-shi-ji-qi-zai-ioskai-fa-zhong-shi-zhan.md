@@ -30,7 +30,7 @@ DD模式适合于处理多个对象之间的相互作用。假如不用DD模式�
 我们先从字面上去理解它吧，直观地说，它指的是两次dispatch。这里的dispatch指的是什么呢？举个例子：  
 
 
-``` cpp
+```cpp
 class Event
    {
        public:
@@ -57,18 +57,18 @@ class Event
                 cout<<"我是单击事件"<<endl;           
            }
    }
-```   
+```
 
 多态性是动态的，被调用的方法由对象的真正类型确定，这个过程就被称之为dispatch。例如在C++中，每个对象都有一个虚函数表，当用基类的类型引用子类对象时，虚函数指针指向的是子类的虚函数表，调用的虚函数都是子类中的版本，所以下面代码输出的是：“我是按键事件”，这就算是一次dispatch的过程，即根据对象类型来动态确定调用哪个函数的过程。  
 
-``` 
+```
 Event* pEvent = new KeyEvent();
 pEvent->PrintName();
-``` 
+```
 
 什么时候会用到两次dispatch呢? 继续往下看：  
 
-``` 
+```
 class EventRecorder
    {
        public:
@@ -106,32 +106,32 @@ class EventRecorder
                cout<<"使用高级EventRecorder记录单击事件"<< endl;           
            }
    }
-``` 
+```
 
 这两个类中分别包含三个重载函数，多态是动态的，而函数重载则是静态的，它在编译时期就确定下来了，所以，下面代码片段的运行结果并不是我们所期望的:  
 
-``` 
+```
 	EventRecorder* pRecorder = new AdvanceEventRecorder();
 	Event* pEvent = new KeyEvent();
 	pRecorder->RecordEvent(pEvent);
-``` 
+```
 输出内容为：使用高级EventRecorder记录通用事件  
 实际上，在这个场景中，我们期望调用的是：AdvanceEventRecorder::RecordEvent(KeyEvent* event)  
 下面我们使用Double Dispatch设计模式来达到上面的代码片段的目的，在所有Event对象中增加下面的函数：  
 
-``` 
+```
    virtual void RecordEvent(EventRecorder* recorder)
    {
       recorder->RecordEvent(this);
    }
-``` 
+```
 下面的代码片段将输出：使用高级EventRecorder记录按键事件  
 
-``` 
+```
 	EventRecorder* pRecorder = new AdvanceEventRecorder();
    	Event* pEvent = new KeyEvent();
    	pEvent->RecordEvent(pRecorder);
-``` 
+```
 可以看出，第一次dispatch正确地找到了`KeyEvent`的`RecordEvent(EventRecorder* recorder)`，第二次dispatch找到了`AdvanceEventRecorder`的`RecordEvent(KeyEvent* event)`。
    Visitor模式就是对Double Dispatch的应用，另外，在碰撞检测算法中也会经常用到。
 ##Java中的Double Dispatch实例
@@ -139,7 +139,7 @@ class EventRecorder
 相对于C++中使用继承来说，Java提供的接口和函数重载让Double Dispatch模式更容易实现  
 ###1 根据对象来选择行为问题  
 
-``` java
+```java
 public interface Event {
 }
 public class BlueEvent implements Event {
@@ -163,7 +163,7 @@ Event evt=new BlueEvent();
 new Handler().handle(evt);
 }
 }
-``` 
+```
 
 你认为运行结果是什么呢？  
 结果：It is event  
@@ -172,7 +172,7 @@ new Handler().handle(evt);
 由于Java,C++及C#都具有上述局限，通常我们只能通过Switch或if结构来实现，当然这种实现方式既不优雅而且影响代码的可维护性。  
 通过以下的Double Dispatch Pattern便可以优雅的实现。  
 
-``` 
+```
 public interface Event {
 public void injectHandler(EventHandler v);
 }
@@ -200,7 +200,7 @@ Event evt=new BlueEvent();
 evt.injectHandler(new EventHandler());
 }
 }
-``` 
+```
 ##Objective-C中实现碰撞检测用到的Visitor模式
 
 虽然OC不支持函数重载，但是我们可以老老实实的用方法名来区分类似`visitXXX`的访问方法，并利用OC其独有的SEL类型可以很好的在运行时判断该调用哪个方法  
@@ -214,7 +214,7 @@ evt.injectHandler(new EventHandler());
 首先新建一个访问者基本类`ContactVisitor`，其本质为对SKPhysicsBody和SKPhysicsContact对象的封装，而SKPhysicsContact在本例中虽未用到（因为碰撞检测后啥也没干，只输出了碰撞双方name），但其保存着碰撞坐标等信息，也很重要。两次dispatch都是在访问者基本类实现的，而碰撞后具体操作则卸载了访问者具体类（如AtomNodeContactVisitor）
 
 
-``` objc
+```objc
 
 //  ContactVisitor.h
 //  ColorAtom
@@ -234,12 +234,12 @@ evt.injectHandler(new EventHandler());
 - (void)visit:(SKPhysicsBody *)body;
 
 @end
-``` 
+```
 
 属性body即为访问者的SKPhysicsBody，而方法`visit:`的参数为被访问者的SKPhysicsBody  
 `contactVisitorWithBody:forContact:`方法的作用是根据掩码类型初始化对应类型的访问者具体类  
 
-``` 
+```
 //
 //  ContactVisitor.m
 //  ColorAtom
@@ -297,11 +297,11 @@ evt.injectHandler(new EventHandler());
     
 }
 
-``` 
+```
 
 以访问者具体类以`AtomNodeContactVisitor`类为例，它继承自访问者基本类ContactVisitor  
 
-``` 
+```
 
 //
 //  AtomNodeContactVisitor.h
@@ -321,11 +321,11 @@ evt.injectHandler(new EventHandler());
 -(void) visitPlayFieldScene:(SKPhysicsBody*) playfieldBody;
 @end
 
-``` 
+```
 
 在处理碰撞后的visitXXX方法中，我将碰撞双方的访问者和被访问者的关系输出  
 
-``` 
+```
 //
 //  AtomNodeContactVisitor.m
 //  ColorAtom
@@ -352,10 +352,10 @@ evt.injectHandler(new EventHandler());
     NSLog(@"%@->%@",atom.name,playfield.name);
 }
 @end
-``` 
+```
 下面建立被访问者类，其本质就是对SKPhysicsBody的封装，并接受Visitor的注入  
 
-``` 
+```
 //
 //  VisitablePhysicsBody.h
 //  ColorAtom
@@ -373,11 +373,11 @@ evt.injectHandler(new EventHandler());
 - (void) acceptVisitor:(ContactVisitor *)visitor;
 
 @end
-``` 
+```
 
 关键的一步：在`acceptVisitor:`方法中调用访问者的`visit:`方法  
 
-``` 
+```
 //
 //  VisitablePhysicsBody.m
 //  ColorAtom
@@ -405,12 +405,12 @@ evt.injectHandler(new EventHandler());
 
 @end
 
-``` 
+```
 
 可能有人会有疑问，`visit:`方法穿入的参数类型永远是`SKPhysicsBody`，这哪里是动态绑定啊，其实是由于本例的特殊性，碰撞检测时区分物体类型不是靠`SKPhysicsBody`子类化来区分和绑定，而是靠SKPhysicsBody类中的`categoryBitMask`属性来区分，这也就免不了需要在`ContactVisitor`初始化的时候通过if语句来判断具体初始化哪个子类  
 最后，在Scene实现SKPhysicsContactDelegate协议  
 
-``` 
+```
 #pragma mark SKPhysicsContactDelegate
 -(void)didBeginContact:(SKPhysicsContact *)contact
 {
@@ -424,7 +424,7 @@ evt.injectHandler(new EventHandler());
     [visitableBodyA acceptVisitor:visitorB];
     
 }
-``` 
+```
 物理老师总说力的作用时相互的，所以我们需要两次访问：A访问B和B访问A，但是这样会调用两次visitXXX方法，原则上这两个逻辑上对称的方法我们只需要实现其中一个就可以，但必须得像上面代码一样，A->B和B->A缺一不可，因为碰撞的时候我们不知道bodyA和bodyB的类型，也就无法判断visitXXX方法是A->B时能调用还是B->A时能调用到  
 当然，你也可以两个visit方法都实现，但只对visitor的node做操作，或只对visitable的node操作，总之仁者见仁智者见智啦
 

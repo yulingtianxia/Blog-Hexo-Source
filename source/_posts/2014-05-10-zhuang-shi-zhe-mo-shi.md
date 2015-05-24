@@ -41,7 +41,7 @@ tags:
 
 Beverage是一个抽象类，有两个方法：getDescrip-tion()及cost（）  
  
-``` java
+```java
 public abstract class Beverage {
 String description = "Unknown Beverage";
 public String getDescription() {
@@ -49,19 +49,19 @@ return description;
 }
 public abstract double cost();
 }
-``` 
+```
 Beverage很简单。让我们也来实现Condiment（配料）抽象类，也就是装饰者类吧：  
 
-``` 
+```
 public abstract class CondimentDecorator extends Beverage {
 public abstract String getDescription();
 }
-``` 
+```
 必须让Condiment Decorator能够取代Beverage，所以将CondimentDecorator扩展自 Beverage 类  
 
 现在，已经有了基类，让我们开始开始实现一些饮料吧！先从浓缩咖啡（Espresso）开始。别忘了，我们需要为具体的饮料设置描述，而且还必须实现cost()方法    
 
-``` 
+```
 public class Espresso extends Beverage {
 public Espresso() {
 description = "Espresso";
@@ -70,7 +70,7 @@ public double cost() {
 return 1.99;
 }
 }
-``` 
+```
 
 其他几种具体的饮料就不写了  
 
@@ -78,7 +78,7 @@ return 1.99;
 
   
 
-``` 
+```
 public class Mocha extends CondimentDecorator {
 Beverage beverage;
 public Mocha(Beverage beverage) {
@@ -91,7 +91,7 @@ public double cost() {
 return .20 + beverage.cost();
 }
 }
-``` 
+```
 
 你会发现在装饰者类中，完成了描述和价格的效果添加，也就是完成了拓展  
 
@@ -99,7 +99,7 @@ return .20 + beverage.cost();
 
 下面进行测试：  
 
-``` 
+```
 public class StarbuzzCoffee {
 public static void main(String args[]) {
 Beverage beverage = new Espresso();
@@ -119,18 +119,18 @@ System.out.println(beverage3.getDescription()
 + " $" + beverage3.cost());
 }
 }
-``` 
+```
 
 输出结果： 
 
-``` 
+```
 % java StarbuzzCoffee  
 Espresso $1.99  
 Dark Roast Coffee, Mocha, Mocha, Whip $1.49  
 House Blend Coffee, Soy, Mocha, Whip $1.34  
 %
 
-``` 
+```
 果然是一层套一层吧：  
 
 ![](http://yulingtianxia.qiniudn.com/140353407345.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
@@ -172,7 +172,7 @@ Objective-C中也可以实现基于继承和接口的装饰者模式，但这里
 UIImage(BaseFilter)中的方法定义，用户绘制图像，相当于装饰者抽象类，而UIImage则是被装饰的组件:  
 
 
-``` objc
+```objc
 #import "UIImage+BaseFilter.h"
 
 @implementation UIImage (BaseFilter)
@@ -201,11 +201,11 @@ UIImage(BaseFilter)中的方法定义，用户绘制图像，相当于装饰者�
     UIGraphicsEndImageContext();
 }
 @end
-``` 
+```
 
 Transform类别定义了一个`imageWithTransform:transform`方法，接受一个转换引用，然后把应用于内部的图像引用，并让它把自己画出来，然后返回变换后的图像:  
 
-``` 
+```
 #import "UIImage+Transform.h"
 #import "UIImage+BaseFilter.h"
 @implementation UIImage (Transform)
@@ -224,11 +224,11 @@ Transform类别定义了一个`imageWithTransform:transform`方法，接受一�
     return imageOut;
 }
 @end
-``` 
+```
 
 Shadow类别定义了一个`imageWithDropShadow`方法，向图像的内部引用添加阴影效果，并返回应用效果之后的最终图像。  
 
-``` 
+```
 #import "UIImage+Shadow.h"
 #import "UIImage+BaseFilter.h"
 @implementation UIImage (Shadow)
@@ -248,10 +248,10 @@ Shadow类别定义了一个`imageWithDropShadow`方法，向图像的内部引�
     return imageOut;
 }
 @end
-``` 
+```
 最后在ViewController中加载图像：  
 
-``` 
+```
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -268,7 +268,7 @@ Shadow类别定义了一个`imageWithDropShadow`方法，向图像的内部引�
     [imageView setImage:finalImage];
 
 }
-``` 
+```
 
 因为类别只能拓展方法，不能在原有类的基础上添加属性，但是我们依然可以通过下面的方式向类中动态添加属性，来弥补类别的不足：  
 
@@ -276,14 +276,14 @@ Shadow类别定义了一个`imageWithDropShadow`方法，向图像的内部引�
 具体代码如下：  
 `UIImage+Title.h`:  
 
-``` 
+```
 @interface UIImage(Title)
 @property(nonatomic, copy) NSString *title;
 @end
-``` 
+```
 `UIImage+Title.m`:  
 
-``` 
+```
 #import "UIImage+Title.h"
 static char titleKey;
 
@@ -298,7 +298,7 @@ static char titleKey;
     objc_setAssociatedObject(self, &titleKey, title, OBJC_ASSOCIATION_COPY);
 }
 @end
-``` 
+```
 可以看到关键是用到了runtime的两个函数：  
 1. `id objc_getAssociatedObject(id object, void *key)`  
 2. `void objc_setAssociatedObject(id object, void *key, id value, objc_AssociationPolicy policy)`  

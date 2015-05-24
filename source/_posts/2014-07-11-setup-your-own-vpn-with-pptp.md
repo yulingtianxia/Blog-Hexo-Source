@@ -20,10 +20,10 @@ PS:这里附上我的优惠链接，你用这个链接注册可以获得10美元
 <script src="https://gist.github.com/yulingtianxia/296b1b3b2edf5d762ae7.js"></script>
 
 在VPS上使用自动脚本只需要下面的操作：
-``` 
+```
 wget -c https://gist.githubusercontent.com/yulingtianxia/296b1b3b2edf5d762ae7/raw/e2ef1b18e85b393d22c82d26d72b20af14567e9c/pptp.sh
 chmod +x pptp.sh
 ./pptp.sh
-``` 
+```
 
 上面的命令先是用ssh的wget命令下载gist上的原始Shell脚本文件到VPS上，速度之快和安全性是ftp上传所不能比拟的。然后赋予pptp.sh可执行权限，最后执行pptp.sh  

@@ -25,7 +25,7 @@ RAC一个重要的优点就是它提供了单独的、统一的方法来处理�
 
 这有一个简单的例子：
 
-``` objc
+```objc
 // When self.username changes, logs the new name to the console.
 //
 // RACObserve(self, username) creates a new RACSignal that sends the current
@@ -246,7 +246,7 @@ PS：关于reduce的block中参数，其实是与combineLatest中数组元素一
 
 RACSubscriber是一个协议，包含了向订阅者发送事件的方法。  
 
-``` 
+```
 [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
              [subscriber sendNext:@(YES)];
              [subscriber sendCompleted];
@@ -260,7 +260,7 @@ PS：除此之外RACSubscriber还有`sendError:`和`didSubscribeWithDisposable:`
 
 你会发现RACSignal (Subscription)类别中所有方法的返回值类型都是RACDisposable，它的`dispose`方法可以让我们手动移除订阅者。举个栗子：
 
-``` 
+```
 RACSignal *backgroundColorSignal =
   [self.searchText.rac_textSignal
     map:^id(NSString *text) {
@@ -276,7 +276,7 @@ RACDisposable *subscription =
  
 // at some point in the future ...
 [subscription dispose];
-``` 
+```
 
 当管道（好吧比较短）的订阅者全部被移除后，管道中的代码不会执行，包括三种事件参数block中的代码和诸如`doNext:`等副作用的block。可以简单理解为，当管道中的Signal没人订阅，它的事件就不会发出了。  
 
@@ -297,7 +297,7 @@ RACDisposable *subscription =
 
 于是上一节的代码可以改成下面这样：  
 
-``` 
+```
 @weakify(self)
 [[self.searchText.rac_textSignal
   map:^id(NSString *text) {
@@ -308,7 +308,7 @@ RACDisposable *subscription =
     @strongify(self)
     self.searchText.backgroundColor = color;
   }];
-``` 
+```
 
  
 

@@ -18,7 +18,7 @@ tags:
 ##SKScene
 虽然是`SKNode`的子类的子类，但是因为所有`SKNode`都需要在场景上构建布局，所以比较重要，其原点在左下角，y轴向上，x轴向右；正是因为UIView的原点在左上角，y轴向下，x轴向右，所以在`SKScene`中判别手势坐标的时候需要将y轴反向：  
 
-``` objc
+```objc
 - (void)handlePanFrom:(UIPanGestureRecognizer *)recognizer {
 	if (recognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint touchLocation = [recognizer locationInView:recognizer.view];
@@ -48,7 +48,7 @@ tags:
         }
     }
 }
-``` 
+```
 
 在第一个判断分支中，因为用了`convertPointFromView`方法，已经将`CGPoint`从`UIView`坐标系转为`SKScene`坐标系，所以不用反转，其余两个分支中的代码均需要反转y轴。  
 
@@ -61,7 +61,7 @@ SKNode的原点在正中央，也就是(0.5,0.5)
 
 如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：  
 
-``` 
+```
 #import "NodeButton.h"
 
 @implementation NodeButton
@@ -77,7 +77,7 @@ SKNode的原点在正中央，也就是(0.5,0.5)
     return self;
 }
 @end
-``` 
+```
 
 ##SKEmitterNode  
 粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心  
@@ -96,7 +96,7 @@ label比较特殊，可能是因为需要现实文字的关系吧，其坐标原
 ##SKShapeNode  
 这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么`SKShapeNode`的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好  
 
-``` 
+```
 @implementation ShapeButton
 -(id)init{
     if (self = [super initWithName:@"SKShapeNode"]) {
@@ -108,7 +108,7 @@ label比较特殊，可能是因为需要现实文字的关系吧，其坐标原
     return self;
 }
 @end
-``` 
+```
 
 下图是我故意画了个正方形使其居中：    
 

@@ -38,14 +38,14 @@ Xcode6为我们提供的工具：
 
 在MyScene.m文件中使用下面的模板来加载MyScene.sks中设计好的场景结构，然后你就可以接着写游戏的逻辑了：  
 
-``` js
+```js
 let path = NSBundle.mainBundle().pathForResource(file, ofType: "sks")       
 var sceneData = NSData.dataWithContentsOfFile(path, options: .DataReadingMappedIfSafe, error: nil)
 var archiver = NSKeyedUnarchiver(forReadingWithData: sceneData)
 archiver.setClass(self.classForKeyedUnarchiver(), forClassName: "SKScene")
 let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScene
 archiver.finishDecoding()
-``` 
+```
 
 ##游戏构造最佳范例
 
@@ -58,10 +58,10 @@ archiver.finishDecoding()
 5. 完成游戏：将美工给你的素材替代以前的纯色，增加关卡和效果（Shader，滤镜等），迭代测试。
 
 PS：两种搜索节点元素的方法：
-``` 
+```
 – childNodeWithName:
 – enumerateChildNodesWithName:usingBlock:
-``` 
+```
 > 关于搜索文本的语法补充：  
 > 通过name查找：  
 
@@ -90,12 +90,12 @@ PS：两种搜索节点元素的方法：
 
 `SKView`上的HUD flags：  
 
-``` 
+```
 showsFPS
 showsDrawCount
 showsNodeCount
 showsQuadCount
-``` 
+```
 
 profile：检测硬件使用情况。
 ###Actions and constraints
@@ -146,10 +146,10 @@ Shader是一个不错的选择，它不需要离屏渲染，想用就用，节�
 
 我们还可以从`SKNode`中获取纹理（这不费吹灰之力），还可以对纹理进行滤镜加工：   
 
-``` 
+```
 SKTexture *texture = [myView textureFromNode:node size:size];
 SKTexture *texture = [myTexture textureByApplyingCIFiler:filer];
-``` 
+```
 
 ###Lighting
 

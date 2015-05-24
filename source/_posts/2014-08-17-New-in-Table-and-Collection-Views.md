@@ -14,16 +14,16 @@ tags:
 
 ##背景
 
-iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用`UIFont`的`preferredFontForTextStyle:`类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式：  
+iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用`UIFont`的`preferredFontForTextStyle:`类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式:
 
-``` js
+```
 UIFontTextStyleHeadline
 UIFontTextStyleBody
 UIFontTextStyleSubheadline
 UIFontTextStyleFootnote
 UIFontTextStyleCaption1
 UIFontTextStyleCaption2
-``` 
+```
 
 iOS会根据样式的用途来合理调整字体。  
 
@@ -49,13 +49,14 @@ iOS会根据样式的用途来合理调整字体。
 
 前两种策略都是我们所熟悉的，后面将介绍第三种策略。`UITableViewCell`和`UICollectionViewCell`都支持self-sizing  
 
-在iOS7中，`UITableViewDelegate`新增了三个方法来满足用户设定Cell、Header和Footer预计高度的方法：  
+在iOS7中，`UITableViewDelegate`新增了三个方法来满足用户设定Cell、Header和Footer预计高度的方法:
 
-``` 
+```
 - tableView:estimatedHeightForRowAtIndexPath:
 - tableView:estimatedHeightForHeaderInSection:
 - tableView:estimatedHeightForFooterInSection:
-``` 
+```
+
 当然对应这三个方法`UITableView`也`estimatedRowHeight`、` estimatedSectionHeaderHeight`和`estimatedSectionFooterHeight`三个属性，局限性在于只能统一定义所有行和节的高度。    
 
 以Cell为例，iOS会根据给出的预计高度来创建一个Cell，但等到真正要显示它的时候，iOS8会在self-sizing计算得出新的Size并调整table的`contentSize`后，将Cell绘制显示出来。关键在于如何得出Cell新的Size，iOS提供了两种方法：  
@@ -67,7 +68,7 @@ iOS会根据样式的用途来合理调整字体。
 	
 下面我给出了一个用Swift语言写的Demo-[HardChoice](http://hardchoice.yulingtianxia.com)，使用自动布局来调整`UITableViewCell`的高度。我通过实现一个`UITableViewCell`的子类`DynamicCell`来实现自动布局，你可以再GitHub上下载[源码](https://github.com/yulingtianxia/HardChoice)：  
 
-``` 
+```
 import UIKit
 
 class DynamicCell: UITableViewCell {
@@ -105,15 +106,15 @@ class DynamicCell: UITableViewCell {
     }
     
 }
-``` 
+```
 
 上面的代码需要注意的是，Objective-C中的类在Swift中都可以被当做`AnyObject`，这在类型兼容问题上很管用。  
 
 别忘了在相应的UITableViewController中的viewDidLoad方法中加上：  
 
-``` 
+```
 self.tableView.estimatedRowHeight = 44
-``` 
+```
 
 自适应效果如下：  
 
@@ -151,7 +152,7 @@ PS：`preferredLayoutAttributesFittingAttributes:`方法默认调整Size属性�
 
 在iOS6时代，有的人会“聪明地”这样做：  
 
-``` 
+```
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
 {
     CGRect oldBounds = self.collectionView.bounds;
@@ -160,7 +161,7 @@ PS：`preferredLayoutAttributesFittingAttributes:`方法默认调整Size属性�
     }
         return NO;
 }
-``` 
+```
 
 而iOS7新加入的`UICollectionViewLayoutInvalidationContext`类声明了在布局失效时布局的哪些部分需要被更新。当数据源变更时，`invalidateEverything`和`invalidateDataSourceCounts`这两个只读Bool属性标记了`UICollectionView`数据源“全部过期失效”和“Section和Item数量失效”，`UICollectionView`会将它们自动设定并提供给你。  
 
@@ -174,19 +175,19 @@ PS：`preferredLayoutAttributesFittingAttributes:`方法默认调整Size属性�
 
 iOS8中`UICollectionViewLayoutInvalidationContext`新加入了三个方法使得我们可以更加细致精密地使某一行某一节Item（Cell）、Supplementary View或Decoration View失效：
 
-``` 
+```
 invalidateItemsAtIndexPaths:
 invalidateSupplementaryElementsOfKind:atIndexPaths:
 invalidateDecorationElementsOfKind:atIndexPaths:
-``` 
+```
 
 对应着添加了三个只读数组属性来标记上面那三种组件：  
 
-``` 
+```
 invalidatedItemIndexPaths
 invalidatedSupplementaryIndexPaths
 invalidatedDecorationIndexPaths
-``` 
+```
 
 iOS自带的照片应用会将每一节照片的信息（时间、地点）停留显示在最顶部，实现这种将Header粘在顶端的功能其实就是将那个Index的Supplementary View失效，就这么简单。    
 
@@ -197,7 +198,7 @@ iOS自带的照片应用会将每一节照片的信息（时间、地点）停�
 ```
 shouldInvalidateLayoutForPreferredLayoutAttributes:withOriginalAttributes:
 invalidationContextForPreferredLayoutAttributes:withOriginalAttributes:
-``` 
+```
 
 当一个self-sizing Cell发生属性发生变化时，第一个方法会被调用，它询问是否应该更新布局（即原布局失效），默认为NO；而第二个方法更细化的指明了哪些属性应该更新，需要调用父类的方法获得一个InvalidationContext对象，然后对其做一些你想要的修改，最后返回。
 

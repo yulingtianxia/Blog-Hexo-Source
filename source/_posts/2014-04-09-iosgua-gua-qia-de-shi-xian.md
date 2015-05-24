@@ -23,7 +23,7 @@ tags:
 ![QQ20140409-1@2x](http://yulingtianxia.qiniudn.com/140353390318.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 然后在ViewController.m中重写viewDidLoad  
 
-``` objc
+```objc
 @synthesize FengjieMask;//是的，它是个ImageMaskView类的对象，名字很古怪吧
 - (void)viewDidLoad
 {
@@ -33,16 +33,17 @@ tags:
     [FengjieMask beginInteraction];//初始化方法
     FengjieMask.imageMaskFilledDelegate = self;//将代理设置为当前的VC
 }
-``` 
+```
 
 这里需要特别说明的是，`radius`是刮刮卡刮奖的时候画笔的半径，`imageMaskFilledDelegate`是一个代理，协议类型为`ImageMaskFilledDelegate`，只声明了一个方法`- (void) imageMaskView:(ImageMaskView *)maskView clearPercentDidChanged:(float)clearPercent`，这个方法在刮刮卡被刮下的面积变化时被调用，下面让我们的VC实现这个协议，并实现这个方法  
 先在VC头文件增加`<ImageMaskFilledDelegate>`  
-``` 
+```
 @interface YXYViewController : UIViewController<ImageMaskFilledDelegate>
-``` 
+```
 然后实现协议方法   
-``` 
- #pragma mark ImageMaskFilledDelegate
+
+```
+#pragma mark ImageMaskFilledDelegate
 - (void) imageMaskView:(ImageMaskView *)maskView clearPercentDidChanged:(float)clearPercent{
     if (clearPercent > 50) {
         [UIView animateWithDuration:2
@@ -55,8 +56,8 @@ tags:
                          }];
     }
 }
+```
 
-```   
 上面的代码先是做了个判断，当被涂刮的面积超过50%的时候，产生一个时长2秒的动画，让ImageMaskView渐渐变透明，传入的animations参数是个block块  
 好的，现在可以运行啦，我的demo效果如下  
 ![QQ20140409-4@2x](http://yulingtianxia.qiniudn.com/140353391637.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  

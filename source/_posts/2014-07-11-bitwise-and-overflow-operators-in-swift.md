@@ -12,14 +12,14 @@ tags:
 ##基本位运算符
 `~`,`&`,`|`,`^`分别为取反，与，或，异或运算：
 
-``` 
+```
 let firstBit: UInt8 = 0b10000000
 let lastBit: UInt8  = 0b00000001
 let invertedBits = ~lastBit  // 等于 0b11111110
 let noneBit = firstBit & lastBit  // 等于 0b00000000
 let twoSideBits = firstBit | lastBit //等于 0b10000001
 let middleSixBits = firstBit ^ lastBit //等于 0b10000001
-``` 
+```
 左移运算符`<<`和右移运算符`>>`分别扮演着乘2和除2的角色，对于`UInt`来讲很简单，只需要填充0就行：  
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/bitshiftUnsigned_2x.png)  
@@ -54,34 +54,34 @@ Swift中如果计算结果超出了它的类型能承载的范围，那么就会
 
 ###值的上溢出
 
-``` 
+```
 var willOverflow = UInt8.max
 // willOverflow 等于UInt8的最大整数 255
 willOverflow = willOverflow &+ 1
 // 此时 willOverflow 等于 0
-``` 
+```
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowAddition_2x.png)  
 
 ###值的下溢出
 
-``` 
+```
 var willUnderflow = UInt8.min
 // willUnderflow 等于UInt8的最小值0
 willUnderflow = willUnderflow &- 1
 // 此时 willUnderflow 等于 255
-``` 
+```
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowUnsignedSubtraction_2x.png)  
 
 有符整型也有类似的下溢出
 
-``` 
+```
 var signedUnderflow = Int8.min
 // signedUnderflow 等于最小的有符整数 -128
 signedUnderflow = signedUnderflow &- 1
 // 此时 signedUnderflow 等于 127
-``` 
+```
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowSignedSubtraction_2x.png)  
 
@@ -89,8 +89,8 @@ signedUnderflow = signedUnderflow &- 1
 
 一个数除以0，或者对0求余数，就会产生一个错误；使用它们对应的可溢出的版本的运算符`&/`和`&%`进行除0操作时就会得到0值。
 
-``` 
+```
 let x = 1
 let y = x &/ 0
 // y 等于 0
-``` 
+```

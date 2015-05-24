@@ -28,14 +28,14 @@ tags:
 
 （下面的只是伪代码，不是OC也不是Swift语法，只是为了更简洁的标记方法名，后面类似情形都会标记为“伪代码”）  
 
-``` 
+```
 + shaderWithFileNamed:
 + shaderWithSource:uniforms:
 + shaderWithSource:
 + shader
 - initWithSource:uniforms:
 - initWithSource:
-``` 
+```
 
 这些方法很相似，都是传入`source`或`source`与`uniforms`来创建shader。官方建议我们用`fsh`文件作为`source`而不是字符串代码；并且避免更改`source`或添加删除`uniforms`（修改`uniforms`是可以的），因为这样会导致后台花时间重新编译shader；尽量在加载时初始化shader。这些注意事项都可以总结为尽量使用内建的`uniforms`和共享shader对象。
 
@@ -72,9 +72,9 @@ SpriteKit能够根据给出的纹理图片，用一系列算法分析原贴图�
 
 毕竟众口难调，所以SpriteKit让你也可以在生成法线贴图的时候给出平滑度(smoothness)和对比度(contrast)来调节你想要的效果：（伪代码）  
 
-``` 
+```
 - textureByGeneratingNormalMapWithSmoothness:contrast:
-``` 
+```
 
 PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，贴在低端模型的法线贴图通道上，使之拥有法线贴图的渲染效果。可以大大降低渲染时需要的面数和计算内容，从而达到优化动画渲染和游戏渲染的效果。
 
@@ -94,9 +94,9 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 毕竟众口难调，所以SpriteKit给出了一个可以自由调节alpha阈值的物理体生成方法，所有alpha值大于`alphaThreshold`的像素点都将被认为是不透明的，并纳入物理体范围内：（伪代码）  
 
-``` 
+```
 + bodyWithTexture:alphaThreshold:size:
-``` 
+```
 
 因为SpriteKit是逐个像素计算才得出精确的物理体轮廓，所以我们应该尽量给出合适大小的图片，不要将分辨率过高的图片用在很小的`SKSpriteNode`上。  
 
@@ -112,18 +112,18 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 - 位置约束：  
 
-``` 
+```
 //约束节点的X坐标范围
 + positionX:
 //约束节点的Y坐标范围
 + positionY:
 //约束节点的X和Y坐标范围
 + positionX:Y:
-``` 
+```
 
 - 方向约束：  
 
-``` 
+```
 //约束节点基于另一个SKNode旋转
 + orientToNode:offset:
 //约束节点基于一个固定点旋转
@@ -132,18 +132,18 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 + orientToPoint:inNode:offset:
 //约束节点的方向范围
 + zRotation:
-``` 
+```
 
 - 距离约束：  
 
-``` 
+```
 //约束节点与另一节点保持一定距离
 + distance:toNode:
 //约束节点与一个固定点保持一定距离
 + distance:toPoint:
 //约束节点与另一个SKNode坐标系中的一个固定点保持一定距离
 + distance:toPoint:inNode:
-``` 
+```
 
 向`SKNode`添加约束很简单，只需要将一个`SKConstrains`数组赋值给`SKNode.constraints`属性即可。约束执行的顺序取决于它们在数组中的顺序。  
 
@@ -155,20 +155,20 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 机器人手臂转动约束是靠`SKReachConstraints`类来定义的，它只有一个初始化方法：（伪代码）  
 
-``` 
+```
 - initWithLowerAngleLimit:upperAngleLimit:
-``` 
+```
 
 这个方法给`lowerAngleLimit`和`upperAngleLimit`属性赋值，约束了reach事件使其发生旋转角度的下限和上限。  
 
 当一个`SKReachConstraints`创建好后，将其赋值给`SKNode`的`reachConstraints`属性，然后用`SKPhysicsJoint`将这些`SKNode`连接起来。使用`SKAction`的一套工厂方法创建来让连接体reach到活动目标或固定点的动作：（伪代码）    
 
-``` 
+```
 + reachTo:rootNode:duration:
 + reachTo:rootNode:velocity:
 + reachToNode:rootNode:duration:
 + reachToNode:rootNode:velocity:
-``` 
+```
 
 让机器人的手部节点运行创建好的`SKAction`对象即可达到最初描述的动画效果。如果机器人的手触碰不到指定的位置或节点（gif中就是这样），`SKAction`会执行动画让其尽可能接近目的地。
 

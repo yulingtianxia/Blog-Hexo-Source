@@ -28,46 +28,46 @@ convenience init(title title: String?,
 
 举个栗子：
 
-``` js
+```js
 let title = "Enter Choices of the Trouble"
 let message = detailItem?.content
 let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-``` 
+```
 `title`和`message`自然不用说了吧，需要注意的是`preferredStyle`一旦设定好以后就不能改了哦，因为它就是区分`UIAlertController`到底是对应着`UIActionSheet`还是`UIAlertView`，一共就这两种Style：  
-``` 
+```
 enum UIAlertControllerStyle : Int {
     case ActionSheet
     case Alert
 }
-``` 
+```
 ##添加动作
 以前的做法是给个按钮标题数组然后在实现协议的代理方法中判断下按钮序列，然后对应给出不同的处理流程。分散的逻辑和代码无疑增加了开发者的工作量，还要求对应的类实现代理协议，真是out了。  
 
 这里介绍一个新的类：UIAlertAction，`UIAlertController`弱化了以前添加Button的概念，而是添加UIAlertAction。其实说白了就是将按钮和处理方法捏到一起成为一个“动作”：  
 
-``` 
+```
 convenience init(title title: String,
            style style: UIAlertActionStyle,
          handler handler: ((UIAlertAction!) -> Void)!)
-``` 
+```
 `title`就是按钮的文本内容；`style`是按钮的风格，一共有三种风格：Default，Cancel和Destructive，其中Destructive会使按钮文字变成红色；`handler`是处理按钮按下后的一个block，这段代码块与添加的按钮紧密结合成“动作”，最后通过`addAction:`方法将UIAlertAction添加到`UIAlertController`中：  
 
-``` 
+```
 let cancelbtn = "Cancel"
 let cancelAction = UIAlertAction(title: cancelbtn, style: .Cancel) { (action) -> Void in
 //add some code...            
 }
 alert.addAction(cancelAction)
-``` 
+```
 ##添加文本框
 这也是最令博主激动的地方，最然不能自定义Alert中的内容，但起码添加UITextField不受限制了。添加文本框的方法实在是简洁：  
 
-``` 
+```
 func addTextFieldWithConfigurationHandler(_ configurationHandler: ((UITextField!) -> Void)!)
-``` 
+```
 一个block就解决了！你只需要在block中配置下文本框的字体、键盘、代理等即可，举个栗子：  
 
-``` 
+```
 alert.addTextFieldWithConfigurationHandler { (choiceNameTF) -> Void in
 	  choiceNameTF.borderStyle = .None
 	  choiceNameTF.placeholder = "An answer of your trouble"

@@ -73,7 +73,7 @@ tags:
 
 在使用Xcode6 Beta2生成`NSManagedObject`子类的时候，生成的代码依然是Objective-C的代码（即使我的工程是用Swift语言建立的），这就涉及到在Swift工程中调用Objective-C类的问题。苹果给我们提供了一个比较简单的解决方案。在你向工程中加入OC文件时，Xcode会自动弹出消息问你是否需要生成一个桥接头文件（“工程名-Bridging-Header.h”），然后我们在这个头文件中加入想要在Swift中调用的OC类的头文件：  
 
-``` objc
+```objc
 //
 //  Use this file to import your target's public headers that you would like to expose to Swift.
 //
@@ -81,7 +81,7 @@ tags:
 #import "Question.h"
 #import "Choice.h"
 #import "CustomIOS7AlertView.h"
-``` 
+```
 
 `Question`和`Choice`这两个类是用之前数据模型中同名实例创建的`NSManagedObject`子类，`CustomIOS7AlertView`类是本项目用到的一个自定义AlertView（iOS7之后苹果不再允许自定义`UIAlertView`了）  
 
@@ -95,7 +95,7 @@ tags:
 
 在`MasterViewController.swift`文件中，Xcode生成了两个`NSFetchedResultsController`属性：一个只读计算属性`fetchedResultsController`和一个可选存储属性`_fetchedResultsController`，通过两者搭配来实现setter，这里不再多说，将计算属性`fetchedResultsController`的定义替换如下：  
 
-``` js
+```swift
 
 	var fetchedResultsController: NSFetchedResultsController {
         if _fetchedResultsController != nil {
@@ -132,7 +132,7 @@ tags:
         
         return _fetchedResultsController!
     }
-``` 
+```
 
 `NSFetchRequest`对象描述了从数据持久层获取数据的标准，也就是相当于SQL中的from和where等条件语句，它是初始化`NSFetchedResultsController`的必要参数之一，因为它规定了从`NSManagedObjectContext`实例中获取什么样的数据。  
 
@@ -148,16 +148,16 @@ tags:
 
 当执行`performFetch(error: NSErrorPointer) -> Bool`方法成功后，你可以通过`NSFetchedResultsController`的`fetchedObjects`属性来获取数据结果，如果为`UITableView`提供数据，可以用`objectAtIndexPath(indexPath: NSIndexPath!) -> AnyObject!`方法来更加便捷的将数据与`NSIndexPath`对接上。在我们的例子中，会把数据结果转化为`NSManagedObject`的子类`Question`或`Choice`类：  
 
-``` 
+```
 	func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
         let object = self.fetchedResultsController.objectAtIndexPath(indexPath) as Question
         cell.textLabel.text = object.content
     }
-``` 
+```
 
 下面修改`insertNewObject`方法来添加新的`Question`：  
 
-``` 
+```
 	var addAV = CustomIOS7AlertView()
 	func insertNewObject(sender: AnyObject) {
         let textField = UITextField(frame:CGRectMake(0,0,290,50))
@@ -173,11 +173,11 @@ tags:
         addAV.show()
         
     }
-``` 
+```
 
 有了添加`Question`功能，当然还会有修改功能：  
 
-``` 
+```
 	var modifyAV = CustomIOS7AlertView()
 	func modifyObject(indexPath:NSIndexPath){
         let question = self.fetchedResultsController.objectAtIndexPath(indexPath) as Question
@@ -194,11 +194,11 @@ tags:
         (modifyAV.containerView as UITextField).text = question.content
         modifyAV.show()
     }
-``` 
+```
 
 `CustomIOS7AlertView`是一个第三方的开源AlertView，它允许我们自定义AlertView的内容，并提供了`CustomIOS7AlertViewDelegate`协议来用于按钮点击的回调，我们将这两个`CustomIOS7AlertView`实例的`delegate`属性都设置为`self`，然后在`MasterViewController`中的实现协议中唯一的方法`customIOS7dialogButtonTouchUpInside(alertView:AnyObject!, clickedButtonAtIndex buttonIndex:Int)`：  
 
-``` 
+```
 	func customIOS7dialogButtonTouchUpInside(alertView:AnyObject!, clickedButtonAtIndex buttonIndex:Int){
         switch buttonIndex{
             case 0:
@@ -229,7 +229,7 @@ tags:
             alertView.close()
         }
     }
-``` 
+```
 
 当用户点击`alertView`的OK按钮时，判断`alertView`对象是`addAV`还是`modifyAV`，然后对应通过不同途径（新插入到`ManagedObjectContext`还是从`ManagedObjectContext`中取出）产生`Question`实例`newManagedObject`，最后的结果会保存回`ManagedObjectContext`中，最后关闭`alertView`。  
 
@@ -241,23 +241,23 @@ tags:
 
 上图的中的蓝色圆圈是`AccessoryButton`，需要在IB中设置`TableViewCell`的`Identifier`为`QuestionCell`，`Accessory`为`Detail Disclosure`，这样我们就能在`UITableViewDelegate`的`tableView(tableView: UITableView!, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath!)`方法中响应`AccessoryButton`了：  
 
-``` 
+```
 	override func tableView(tableView: UITableView!, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath!){
         selectedIndexPath = indexPath
         modifyObject(indexPath)
         
     }
-``` 
+```
 
 导航栏右侧的添加`Question`按钮已经通过下面的代码配置了响应函数：  
 
-``` 
+```
 let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "insertNewObject:")
 self.navigationItem.rightBarButtonItem = addButton
-``` 
+```
 在`UITableViewDelegate`中删除`Question`的代码如下：  
 
-``` 
+```
 	override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             let context = self.fetchedResultsController.managedObjectContext
@@ -272,20 +272,20 @@ self.navigationItem.rightBarButtonItem = addButton
             }
         }
     }
-``` 
+```
 
 这里多说一嘴，如果你想打印出错误信息的话，不要直接反注释那行`println`代码，还需要在`error`后加上感叹号，因为`error`是可选类型，需要强制解析：  
 
-``` 
+```
 println("Unresolved error \(error!), \(error!.userInfo)")
-``` 
+```
 
 
 ##UITextField键盘响应
 
 在将`UITextField`实例赋值给`CustomIOS7AlertView`的`containerView`属性前需要先让其获取当前焦点，并将`UITextField`的`delegate`属性设为`self`：  
 
-``` 
+```
 	var addAV = CustomIOS7AlertView()
 	func insertNewObject(sender: AnyObject) {
         let textField = UITextField(frame:CGRectMake(0,0,290,50))
@@ -301,11 +301,11 @@ println("Unresolved error \(error!), \(error!.userInfo)")
         addAV.show()
         
     }
-``` 
+```
 
 然后让`MasterViewController`遵循`UITextFieldDelegate`协议，并实现下面两个协议中的方法：  
 
-``` 
+```
 	func textFieldDidBeginEditing(textField: UITextField!){
         let animationDuration:NSTimeInterval  = 1
         var frame = self.view.frame;
@@ -330,7 +330,7 @@ println("Unresolved error \(error!), \(error!.userInfo)")
         textField.resignFirstResponder();
         return true
     }
-``` 
+```
 
 这里我将键盘高度硬编码为116，当`UITextField`开始编辑时获取焦点键盘弹出，背景上移；当其结束编辑时键盘消失，背景移回原位。  
 
@@ -340,7 +340,7 @@ println("Unresolved error \(error!), \(error!.userInfo)")
 
 `DetailViewController`的内容跟`MasterViewController`内容很像，最大的区别在于多了一个从`Choice`数据中随机抽选的一个方法。因为是通过摇一摇的方式来触发随机算法，所以我们重载`motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!)`方法来响应手机摇动： 
 
-``` 
+```
 override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {
         if motion == .MotionShake{
             
@@ -379,7 +379,7 @@ override func motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!) {
             
         }
     }
-``` 
+```
 
 前面提到过`NSFetchedResultsController`对象在执行`performFetch(error: NSErrorPointer) -> Bool`方法后会将获取的数据存在`fetchedObjects`数组中，上面这段代码首先获取该问题对应的选项数量，并通过加权运算得到总的权重，然后通过随机数算法生成一个幸运数字，最后计算幸运数字落在哪个选项上。  
 

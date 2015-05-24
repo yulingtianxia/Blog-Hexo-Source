@@ -13,7 +13,7 @@ tags:
 - 在iTunes Connect创建App ID，在Xcode中找到项目的Capabilities标签并开启iCloud选项。这会为你创建一个默认的iCloud容器，名字格式为“com.XXX.yourAppID”  
 - 添加`NSPersistentStore`时向`options`参数传入一个持久存储的名称，自己起一个就行，示例代码如下:  
 
-``` objc
+```objc
 NSDictionary *storeOptions =
     @{NSPersistentStoreUbiquitousContentNameKey: @"MyAppCloudStore"};
 NSPersistentStore *store = [coordinator addPersistentStoreWithType:NSSQLiteStoreType
@@ -24,7 +24,7 @@ NSPersistentStore *store = [coordinator addPersistentStoreWithType:NSSQLiteStore
 ```
 -  对`NSPersistentStoreCoordinatorStoresWillChangeNotification`,`NSPersistentStoreCoordinatorStoresDidChangeNotification`和`NSPersistentStoreDidImportUbiquitousContentChangesNotification`这三个通知进行注册以便接收通知后对数据进行处理。最好用`NSNotificationCenter`的`addObserverForName:object:queue:usingBlock:`方法来使逻辑更加明确，代码更紧凑。
 最后贴上Swift实现`persistentStoreCoordinator`的代码：
-``` swift
+```swift
 var persistentStoreCoordinator: NSPersistentStoreCoordinator! {
    if _persistentStoreCoordinator == nil {
        let storeURL = self.applicationDocumentsDirectory.URLByAppendingPathComponent("HardChoice.sqlite")
@@ -69,7 +69,7 @@ var persistentStoreCoordinator: NSPersistentStoreCoordinator! {
    return _persistentStoreCoordinator!
 }
 var _persistentStoreCoordinator: NSPersistentStoreCoordinator? = nil
-```  
+```
 
 当然你也可以用`lazy`关键字同样来实现`persistentStoreCoordinator`属性的惰性加载。  
 
@@ -88,7 +88,7 @@ var _persistentStoreCoordinator: NSPersistentStoreCoordinator? = nil
 PS：CloudKit是苹果最新推出的基于iCloud的一个云端数据存储服务,提供了低成本的云存储并能作为一个后端服务通过用户们的iCloud账号分享其应用数据。 
 
 接下来是时候检查我们是否成功添加了iCloud容器，可以在`applicationDidFinishLaunchingWithOptions`方法中尝试获取容器的URL来判断：  
-``` swift
+```swift
 let containerURL = NSFileManager.defaultManager().URLForUbiquityContainerIdentifier("iCloud.com.yulingtianxia.HardChoice")
 if containerURL != nil {
   println("success:\(containerURL)")
@@ -96,7 +96,7 @@ if containerURL != nil {
 else{
   println("URL=nil")
 }
-```    
+```
 如果之前没有在Capabilities标签的iCloud中勾选“iCloud Documents”，“URLForUbiquityContainerIdentifier”方法会始终返回`nil`。来看看苹果开发者论坛上关于这个话题的[讨论](https://devforums.apple.com/message/1006124#1006124)吧  
 
 PS：官方文档不建议在主线程使用`URLForUbiquityContainerIdentifier`方法，因为它可能需要较长时间来返回URL而阻塞主线程。这里只是为了测试使用。  
@@ -107,7 +107,7 @@ PS：官方文档不建议在主线程使用`URLForUbiquityContainerIdentifier`�
 
 ![](http://yulingtianxia.qiniudn.com/QQ20150210-4@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-“iCloud Usage”告诉我状态不可用，然而右下角的日志中Using local storage已经从1变成了0，也就是证明了我的APP([HardChoice](hardchoice.yulingtianxia.com))已经从CoreData使用本地持久仓库转移到了使用“iCloud-enabled”持久仓库。“Transfer Activity”中柱状图更是显示从iCloud下载了数据。而这其实应该是Xcode6的一个bug，有人已经在[苹果开发者论坛](https://devforums.apple.com/message/1026708#1026708)讨论了。  
+“iCloud Usage”告诉我状态不可用，然而右下角的日志中Using local storage已经从1变成了0，也就是证明了我的APP([HardChoice](http://hardchoice.yulingtianxia.com))已经从CoreData使用本地持久仓库转移到了使用“iCloud-enabled”持久仓库。“Transfer Activity”中柱状图更是显示从iCloud下载了数据。而这其实应该是Xcode6的一个bug，有人已经在[苹果开发者论坛](https://devforums.apple.com/message/1026708#1026708)讨论了。  
 
 根据我的测试，只勾选“Key-value storage”或者在模拟器上调试时，“iCloud Usage”都不会出现。而即使“iCloud Usage”出现了，状态也始终是Disabled，“Transfer Activity”也不是很灵敏。唯独只能相信CoreData的log了。  
 
@@ -123,7 +123,7 @@ PS：官方文档不建议在主线程使用`URLForUbiquityContainerIdentifier`�
 
 最后，确保网络通常。我在中软实训一个月时，网络奇差，或是屏蔽了iCloud，一直没能调试成功。  
 
-贴一张[HardChoice](hardchoice.yulingtianxia.com)同步成功的测试图，因为我是用Swift写的这个Demo，所以喜欢用Swift的可以直接把我的那部分源码粘过去用：  
+贴一张[HardChoice](http://hardchoice.yulingtianxia.com)同步成功的测试图，因为我是用Swift写的这个Demo，所以喜欢用Swift的可以直接把我的那部分源码粘过去用：  
 
 ![](http://yulingtianxia.qiniudn.com/52D3D9B3C9688FB91EDAEB5F88BF102C.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 

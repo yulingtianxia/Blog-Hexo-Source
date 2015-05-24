@@ -18,7 +18,7 @@ Objective-C中的ARC被Swift很好的继承下来了，本文参考自Swift文�
 
 但是如果两个类的实例之间互相引用，这样就产生了强引用循环。下面展示了一个不经意产生强引用循环的例子。例子定义了两个类：`Person`和`Apartment`，用来建模公寓和它其中的居民:  
 
-``` js
+```js
 class Person {
     let name: String
     init(name: String) { self.name = name }
@@ -32,21 +32,21 @@ class Apartment {
     var tenant: Person?
     deinit { println("Apartment #\(number) is being deinitialized") }
 }
-``` 
+```
 
 接下来的代码片段定义了两个可选类型的变量`john`和`number73`,并分别被设定为下面的`Apartment`和`Person`的实例。这两个变量都被初始化为`nil`，并为可选的（让它们可选是为了以后能销毁，为了演示程序）：  
 
-``` 
+```
 var john: Person?
 var number73: Apartment?
-``` 
+```
 
 现在你可以创建特定的`Person`和`Apartment`实例并将类实例赋值给`john`和`number73`变量：  
 
-``` 
+```
 john = Person(name: "John Appleseed")
 number73 = Apartment(number: 73)
-``` 
+```
 
 在`john`和`number73`互相引用之前，它们的强引用关系是这样的：  
 
@@ -54,20 +54,20 @@ number73 = Apartment(number: 73)
 
 现在你能够将这两个实例关联在一起，这样人就能有公寓住了，而公寓也有了房客。注意感叹号是用来强制解析可选变量`john`和`number73`中的实例：  
 
-``` 
+```
 john!.apartment = number73
 number73!.tenant = john
-``` 
+```
 在将两个实例联系在一起之后，强引用的关系变成了这样：  
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle02_2x.png)  
 
 这样即使让`john`和`number73`断开它们持有的强引用，内存中的那两个`Person`和`Apartment`实例并不会销毁，因为它们互相引用，引用计数都为1：  
 
-``` 
+```
 john = nil
 number73 = nil
-``` 
+```
 当你把这两个变量设为`nil`时，没有任何一个析构函数被调用。强引用循环阻止了`Person`和`Apartment`类实例的销毁，并在你的应用程序中造成了内存泄漏。  
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle03_2x.png)  
@@ -78,7 +78,7 @@ number73 = nil
 
 下面的例子跟上面`Person`和`Apartment`的例子一致，但是有一个重要的区别。这一次，`Apartment`的`tenant`属性被声明为弱引用：  
 
-``` 
+```
 class Person {
     let name: String
     init(name: String) { self.name = name }
@@ -91,10 +91,10 @@ class Apartment {
     weak var tenant: Person?
     deinit { println("Apartment #\(number) is being deinitialized") }
 }
-``` 
+```
 然后跟之前一样，建立两个变量（`john`和`number73`）之间的强引用，并关联两个实例：  
 
-``` 
+```
 var john: Person?
 var number73: Apartment?
 
@@ -103,7 +103,7 @@ number73 = Apartment(number: 73)
 
 john!.apartment = number73
 number73!.tenant = john
-``` 
+```
 现在的引用关系如下：  
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference01_2x.png)  
@@ -123,7 +123,7 @@ number73!.tenant = john
 
 下面的例子定义了两个类，`Customer`和`CreditCard`，模拟了银行客户和客户的信用卡。一个客户可能有或者没有信用卡，但是一张信用卡总是关联着一个客户。所以`Customer`类的`card`属性可以为`nil`，但是`CreditCard`类的`customer`属性不能为`nil`，所以创建CreditCard实例的时候必须给`customer`属性赋值避免其为`nil`。将`customer`属性定义为无主引用，用以避免循环强引用：  
 
-``` 
+```
 class Customer {
     let name: String
     var card: CreditCard?
@@ -144,7 +144,7 @@ class CreditCard {
 var john: Customer?
 john = Customer(name: "John Appleseed")
 john!.card = CreditCard(number: 1234_5678_9012_3456, customer: john!)
-``` 
+```
 关联两个实例后，引用关系如下：  
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/unownedReference01_2x.png)
@@ -157,7 +157,7 @@ john!.card = CreditCard(number: 1234_5678_9012_3456, customer: john!)
 ###无主引用以及隐式解析可选属性
 下面的例子定义了两个类，`Country`和`City`，每个类将另外一个类的实例保存为属性。在这个模型中，每个国家必须有首都，而每一个城市必须属于一个国家。为了实现这种关系，`Country`类拥有一个`capitalCity`属性，而`City`类有一个`country`属性：  
 
-``` 
+```
 class Country {
     let name: String
     let capitalCity: City!
@@ -174,16 +174,16 @@ class City {
         self.country = country
     }
 }
-``` 
+```
 在这种场景中，两个属性都必须有值，并且初始化完成后不能为`nil`。在这种场景中，需要一个类使用无主属性，而另外一个类使用隐式解析可选属性。
 
 隐式解析可选(`Implicitly Unwrapped Optionals`)被用于类的初始化方法中，避免循环引用，因为编译器会将其认为默认`nil`，不需赋值就可以完成类的初始化，在例子中一旦`name`属性被赋值后(但`capitalCity`还没被赋值时)`Country`类就已经初始化并且自身（`self`）可以被引用；这样就能实现一行代码建立`Country`和`City`实例而不造成强引用循环。  
 
-``` 
+```
 var country = Country(name: "Canada", capitalName: "Ottawa")
 println("\(country.name)'s capital city is called \(country.capitalCity.name)")
 // prints "Canada's capital city is called Ottawa"
-``` 
+```
 使用隐式解析可选值的意义在于满足了两个类构造函数的需求。`capitalCity`属性在初始化完成后，能像非可选值一样使用和存取同时还避免了循环强引用。
 
 ###总结
@@ -203,7 +203,7 @@ Swift 有如下要求：只要在闭包内使用self的成员，就要用self.so
 
 下面的例子为你展示了当一个闭包引用了self后是如何产生一个循环强引用的。例子中定义了一个叫HTMLElement的类，用一种简单的模型表示 HTML 中的一个单独的元素：  
 
-``` 
+```
 class HTMLElement {
 
     let name: String
@@ -227,7 +227,7 @@ class HTMLElement {
     }
 
 }
-``` 
+```
 
 `HTMLElement`定义了一个`lazy`属性`asHTML`。这个属性引用了一个闭包，将`name`和`text`组合成 HTML 字符串片段。该属性是`() -> String`类型，或者可以理解为“一个没有参数，返回`String`的函数”。因为该闭包无参数并可推断出返回值类型，所以采取了简写，省略了关键字`in`和闭包的参数和返回值类型声明。  
 
@@ -235,11 +235,11 @@ class HTMLElement {
 
 下面的代码展示了如何用HTMLElement类创建实例并打印消息  
 
-``` 
+```
 var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
 println(paragraph!.asHTML())
 // prints"hello, world"
-``` 
+```
 
 不幸的是，上面写的HTMLElement类产生了类实例和asHTML默认值的闭包之间的循环强引用。循环强引用如下图所示：  
 
@@ -251,20 +251,20 @@ Swift 提供了一种优雅的方法来解决这个问题，称之为闭包捕�
 ###定义捕获列表
 捕获列表放置在闭包参数列表和返回类型之前，列表中每项都是由`weak`或`unowned`关键字和实例的引用（如self或someInstance）成对组成。每项都通过逗号分开写在方括号中。  
 
-``` 
+```
 lazy var someClosure: (Int, String) -> String = {
     [unowned self] (index: Int, stringToProcess: String) -> String in
     // closure body goes here
 }
-``` 
+```
 如果闭包没有指定参数列表或者返回类型，则可以通过上下文推断，那么可以捕获列表放在闭包开始的地方，跟着是关键字`in`：  
 
-``` 
+```
 lazy var someClosure: () -> String = {
     [unowned self] in
     // closure body goes here
 }
-``` 
+```
 ###捕获列表中的弱引用和无主引用
 当捕获引用有时可能会是`nil`时，将闭包内的捕获定义为弱引用。  
 当闭包和捕获的实例总是互相引用时并且总是同时销毁时，将闭包内的捕获定义为无主引用。  
@@ -272,7 +272,7 @@ lazy var someClosure: () -> String = {
 
 前面的`HTMLElement`例子中，无主引用是正确的解决循环强引用的方法。这样编写`HTMLElement`类来避免循环强引用：  
 
-``` 
+```
 class HTMLElement {
 
     let name: String
@@ -297,7 +297,7 @@ class HTMLElement {
     }
 
 }
-``` 
+```
 
 上面的例子只是多了一个捕获列表并增加关键字`in`，使用捕获列表后引用关系如下图所示：  
 
@@ -305,8 +305,8 @@ class HTMLElement {
 
 这一次，闭包以无主引用的形式捕获`self`，并不会持有`HTMLElement`实例的强引用。如果将`paragraph`赋值为`nil`，`HTMLElement`实例将会被销毁，并能看到它的析构函数打印出的消息。  
 
-``` 
+```
 paragraph = nil
 // prints "p is being deinitialized"
-``` 
+```
 

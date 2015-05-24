@@ -12,7 +12,7 @@ tags:
 <!-- more-->
 出处：https://github.com/github/gitignore/blob/master/Objective-C.gitignore
 
-``` 
+```
 # Xcode
 #
 build/
@@ -39,6 +39,6 @@ DerivedData
 # http://guides.cocoapods.org/using/using-cocoapods.html#should-i-ignore-the-pods-directory-in-source-control
 #
 # Pods/
-``` 
+```
 
 还有需要记住一点的是，使用IB进行界面设计，无论是xib文件还是storyboard，同一时间只能右一个人更改一个Window或VC，虽然XCode5之后xib和storyboard可读性大大增强，但是仍不像Android开发界面的xml格式那么普及，还是小心谨慎为好

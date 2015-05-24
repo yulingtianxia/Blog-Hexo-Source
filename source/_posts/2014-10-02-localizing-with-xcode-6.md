@@ -22,28 +22,28 @@ iOS和OSX支持40种语言的本地化，Xcode无疑为这一过程提供了强�
 
 我们来使用`NSLocalizedString`来让用户界面的文字国际化，不过这些文字不是在IB上输入的，而是在代码中产生并赋值的：  
 
-``` js
+```swift
 func NSLocalizedString(key: String, tableName: String? = default, bundle: NSBundle = default, value: String = default, #comment: String) -> String
-``` 
+```
 上面这个Swift语言声明的函数可以直接返回一个经过本地化处理过的字符串，这就使得你在代码中给一些控件文本赋值时更有“国际化视野”：  
-``` 
+```
 self.text = NSLocalizedString("SHARE", comment: "share score")
-``` 
+```
 因为不用的语言会有不同的专业名词，所以最后的comment参数很重要，它可以暗示翻译人员这段文字要表达的含义。而第一个参数key的内容为基础语种的内容，将它作为“键”来映射其他语言对应翻译后的“值”。如果我们需要在字符串中插入其他内容，这时需要改进下：  
 
-``` 
+```
 let text = String.localizedStringWithFormat(NSLocalizedString("I got %d points in Spiral. Come on with me! https://itunes.apple.com/us/app/square-spiral/id920811081", comment: "share content"), Data.score)
-``` 
+```
 `localizedStringWithFormat:`方法保证了插入字符串中的内容也被转化成本地格式，比如时间格式、数字的格式等。而此时在Swift字符串中插入其他数据就不能使用`\()`了，只能用百分号占位的形式。  
 
 对应的在Localizable.strings中可以这样写：  
 
-``` 
+```
 /*share score*/
 "SHARE"="分享战绩";
 /*share content*/
 "I got %d points in Spiral. Come on with me! https://itunes.apple.com/us/app/square-spiral/id920811081"="我在Spiral游戏中得了%1$d分，快来超越我吧！https://itunes.apple.com/cn/app/square-spiral/id920811081";
-``` 
+```
 
 这样就将英文与中文键值对应起来了，注意那个“1$”表示是在键内容（即英文原文）中第一个插入的数据，因为不用语言表达同一个意思时，插入字符串中的数据顺序可能会有变化，这个"数字+$"的标记记录了它们原本的顺序。  
 ###NSFormatter
@@ -98,7 +98,7 @@ PS：XLIFF是由软件开发商、本地化服务提供商、本地化工具提�
 ```
 xcodebuide -exportLocalizations -project <project> -localizationPath <path>
 xcodebuide -importLocalizations -project <project> -localizationPath <path>
-``` 
+```
 
 ##迭代开发--更新你的APP
 

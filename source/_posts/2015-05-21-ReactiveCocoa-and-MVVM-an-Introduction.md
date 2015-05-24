@@ -6,12 +6,12 @@ tags:
 
 ---
 
-翻译自[ReactiveCocoa and MVVM,  an Introduction](http://www.sprynthesis.com/2014/12/06/reactivecocoa-mvvm-introduction). 文中引用的 Gist 可能无法显示. 为了和谐社会, 请[科学上网](http://tizipro.com/?r=ee0508bc191f5651)😂   
+翻译自[ReactiveCocoa and MVVM,  an Introduction](http://www.sprynthesis.com/2014/12/06/reactivecocoa-mvvm-introduction). ~~文中引用的 Gist 可能无法显示. 为了和谐社会, 请[科学上网](http://tizipro.com/?r=ee0508bc191f5651)😂~~   
 
 <!--more-->
 
 ## MVC
-任何一个正经开发过一阵子软件的人都熟悉**MVC**. 它意思是**Model View Controller**, 是一个在复杂应用设计中组织代码的公认模式. 它也被证实在 iOS 开发中有着第二种含义:  **Massive View Controller(重量级视图控制器)**. 它让许多程序员绞尽脑汁如何去使代码被解耦和组织地让人满意. 总的来说, iOS 开发者已经得出结论: 他们需要[给 view controller 瘦身](http://www.objc.io/issue-1/), 并进一步分离事物;但该怎么做呢?  
+任何一个正经开发过一阵子软件的人都熟悉**MVC**. 它意思是**Model View Controller**, 是一个在复杂应用设计中组织代码的公认模式. 它也被证实在 iOS 开发中有着第二种含义:  **Massive View Controller(重量级视图控制器)**. 它让许多程序员绞尽脑汁如何去使代码被解耦和组织地让人满意. 总的来说, iOS 开发者已经得出结论: 他们需要[给视图控制器瘦身](http://www.objc.io/issue-1/), 并进一步分离事物;但该怎么做呢?  
 
 ## MVVM
 于是**MVVM**流行起来, 它代表**Model View View-Model**, 它在这帮助我们创建更易处理, 更佳设计的代码.   
@@ -45,7 +45,7 @@ tags:
 ![](http://www.sprynthesis.com/assets/images/MCVMVMV.svg)  
 
 - 我试图遵循区块尺寸(非常)大致对应它们负责的工作量. 
-- [注意到试图控制器有多大?](http://i0.kym-cdn.com/photos/images/newsfeed/000/228/269/demotivational-posters-theres-your-problem.jpg)
+- [注意到视图控制器有多大?](http://i0.kym-cdn.com/photos/images/newsfeed/000/228/269/demotivational-posters-theres-your-problem.jpg)
 - 你可以看到我们巨大的视图控制器和 view-model 之间有大块工作上的重合. 
 - 你也可以看看视图控制器在 MVVM 中的足迹有多大一部分是跟视图重合的. 
 
@@ -83,7 +83,21 @@ view-model 会在视图控制器上以一个属性的方式存在. 视图控制�
 ### View-Model 实例
 我们的 view-model 头文件应该长这样:   
 
-<script src="https://gist.github.com/sprynmr/433c36a0796f17ec1946.js"></script>
+```objc
+//MYTwitterLookupViewModel.h
+@interface MYTwitterLookupViewModel: NSObject
+ 
+@property (nonatomic, assign, readonly, getter=isUsernameValid) BOOL usernameValid;
+@property (nonatomic, strong, readonly) NSString *userFullName;
+@property (nonatomic, strong, readonly) UIImage *userAvatarImage;
+@property (nonatomic, strong, readonly) NSArray *tweets;
+@property (nonatomic, assign, readonly) BOOL allTweetsLoaded;
+ 
+@property (nonatomic, strong, readwrite) NSString *username;
+ 
+- (void) getTweetsForCurrentUsername;
+- (void) loadMoreTweets;
+```
 
 相当直截了当的填充. 注意到这些**壮丽的 `readonly` 属性**了么?这个 view-model 暴漏了视图控制器所必需的最小量信息, 视图控制器实际上并不在乎 view-model 是如何获得这些信息的. 现在我们两者都不在乎. 仅仅假定你习惯于标准的网络服务请求, 校验, 数据操作和存储.   
 
@@ -129,7 +143,14 @@ view-model 会在视图控制器上以一个属性的方式存在. 视图控制�
 
 在我们的例子中,  `tweets` 数组将会被下面这样的子 view-model 充满: 
 
-<script src="https://gist.github.com/sprynmr/adfd5eb3775a225a2011.js"></script>
+```
+//MyTweetCellViewModel.h
+@interface MYTweetCellViewModel: NSObject
+ 
+@property (nonatomic, strong, readonly) NSString *tweetAuthorFullName;
+@property (nonatomic, strong, readonly) UIImage *tweetAuthorAvatarImage;
+@property (nonatomic, strong, readonly) NSString *tweetContent;
+```
 
 你可能认为这也太像普通"推特"里的数据-模型对象了吧. 为啥要干将其转化成 view-model 的工作?即使类似,  view-model 让我们限制信息只暴露给我们需要的地方, 提供额外数据转换的属性, 或为特定的视图计算数据. (此外, 当可以不暴露可变数据-模型对象时也是极好的, 因为我们希望 view-model 自己承担起更新它们的任务, 而不是靠视图或视图控制器. )  
 
@@ -145,13 +166,23 @@ view-model 会在视图控制器上以一个属性的方式存在. 视图控制�
 
 加入我们想要在用户轻拍应用顶部的头像时添加一个资料视图控制器. 我们可以为一级 view-model 添加类似如下方法:   
 
-``` objc
+```objc
 - (MYTwitterUserProfileViewModel *) viewModelForCurrentUser;
 ```
 
 然后在我们的一级视图控制器中这么用它:   
 
-<script src="https://gist.github.com/sprynmr/194ab0c97500592c3954.js"></script>
+```
+//MYMainViewController.m 
+- (IBAction) didTapPrimaryUserAvatar
+{
+    MYTwitterUserProfileViewModel *userProfileViewModel = [self.viewModel viewModelForCurrentUser];
+    
+    MYTwitterUserProfileViewController *profileViewController = 
+        [[MYTwitterUserProfileViewController alloc] initWithViewModel: userProfileViewModel];
+    [self.navigationController pushViewController: profileViewController animated:YES];
+}
+```
 
 在这个例子中我将会展现当前用户的资料视图控制器, 但是我的资料视图控制器需要一个 view-model. 我这的主视图控制器不知道(也不该知道)用于创建关联相关用户 view-model 的全部必要数据, 所以它请求它自己的 view-model 来干这种创建新 view-model 的苦差事.   
 
@@ -203,7 +234,21 @@ cell. viewModel = self. viewModel. tweets[indexPath. row];
 
 有时我们可以在钩子程序调用前传入 view-model,  比如 `init` 和 `viewDidLoad`,  我们可以从view-model 的属性初始化所有 UI 元素的状态.   
 
-<script src="https://gist.github.com/sprynmr/cead1f81935f18b2acb5.js"></script>
+```
+//dontDoThis1.m 
+- (id) initWithViewModel:(MYTwitterLookupViewModel *) viewModel {
+    self = [super init];
+    if (!self) return nil;
+    _viewModel = viewModel;
+    return self;
+}
+- (void) viewDidLoad {
+    [super viewDidLoad];
+    _goButton.enabled = viewModel.isUsernameValid;
+    _goButton.alpha = viewModel.isUsernameValid ? 1 : 0.5;
+    // etc
+}
+```
 
 好棒!我们已经配置好了初始值. 当 view-model 上的数据改变时怎么办? 当"go" 按钮在什么时候可用了怎么办?当用户标签和头像在什么时候从网络上下载并填充了怎么办?  
 
@@ -211,7 +256,16 @@ cell. viewModel = self. viewModel. tweets[indexPath. row];
 
 我们的视图控制器会感知一些变化的发生. 我们可以使用从 `UITextfield` 得来的委托方法在每当有字符变化时通过检查 view-model 来更新按钮的状态.   
 
-<script src="https://gist.github.com/sprynmr/8a019580d7a3fc829746.js"></script>
+```
+//dontDoThisEither.m
+- (void)textFieldDidChange:(UITextField *)sender {
+    // update the view-model
+    self.viewModel.username = sender.text;
+    // check if things are now valid
+    self.goButton.enabled = self.viewModel.isUsernameValid;
+    self.goButton.alpha = self.viewModel.isUsernameValid ? 1.0 : 0.5;
+}
+```
 
 这种方法解决的场景是在只有再文本框发生变化时才会影响 view-model 中的 `isUsernameValid` 值. 假使还有其他变量/动作改变 `isUsernameValid` 的状态将会怎么样?对于 view-model 中的网络调用会怎么样?或许我们该为 view-model 上的方法加一个完成后回调处理, 这样我们此时就可以更新 UI 的一切东西了?使用珍贵而笨重的 KVO 方法怎么样?
 
@@ -235,9 +289,9 @@ ReactiveCocoa(RAC) 是来拯救我们的, 并恰好返回给我们一点理智. 
 
 ### RACSignal
 
-`RACSignal` (信号)就 RAC 来说是构造单元. 它代表我们最终将要收到的信息. 当你能将未来某时刻收到的消息具体表示出来时, **你可以开始预先(陈述性)运用逻辑并构建你的信息流, **而不是必须等到事件发生(紧迫的).   
+`RACSignal` (信号)就 RAC 来说是构造单元. 它代表我们最终将要收到的信息. 当你能将未来某时刻收到的消息具体表示出来时, **你可以开始预先(陈述性)运用逻辑并构建你的信息流,**而不是必须等到事件发生(紧迫的).   
 
-**信号会为了控制通过应用的信息流而获得所有这些异步方法(委托, 回调 block,  通知,  KVO, target/action 事件观察, 等)并将它们统一到一个接口下. **这只是直观理解. 不仅是这些, 因为信息会流过你的应用, 它还提供给你轻松转换/分解/合并/过滤信息的能力.   
+**信号会为了控制通过应用的信息流而获得所有这些异步方法(委托, 回调 block,  通知,  KVO, target/action 事件观察, 等)并将它们统一到一个接口下.**这只是直观理解. 不仅是这些, 因为信息会流过你的应用, 它还提供给你轻松转换/分解/合并/过滤信息的能力.   
 
 ![](http://www.sprynthesis.com/assets/images/replace-async-tools.svg)  
 
@@ -257,7 +311,17 @@ ReactiveCocoa(RAC) 是来拯救我们的, 并恰好返回给我们一点理智. 
 
 信号是一些等待某事发生的异步代码, 然后把结果值发送给它们的订阅者. 你可以用 `RACSignal` 的类方法 `createSignal: ` 手动创建信号:   
 
-<script src="https://gist.github.com/sprynmr/fedd52e32a6ead20369c.js"></script>
+```
+//networkSignal.m
+RACSignal *networkSignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+        NetworkOperation *operation = [NetworkOperation getJSONOperationForURL:@"http://someurl"];
+        [operation setCompletionBlockWithSuccess:^(NetworkOperation *theOperation, id *result) {
+            [subscriber sendNext:result];
+            [subscriber sendCompleted];
+        } failure:^(NetworkOperation *theOperation, NSError *error) {
+            [subscriber sendError:error];
+        }];
+```
 
 我在这用一个具有成功和失败 block (伪造)的网络操作创建了一个信号. (如果我想让信号在被订阅时才让网络请求发生, 还可以用 `RACSignal` 的类方法 `defer`. )我在成功的 block 里使用提供的 `subscriber` 对象调用 `sendNext: ` 和 `sendCompleted: ` 方法, 或在失败的 block 中调用 `sendError: `. 现在我可以订阅这个信号并将在响应返回时接收到 json 值或是 error.   
 
@@ -273,7 +337,27 @@ RACSignal *usernameValidSignal = RACObserve(self. viewModel,  usernameIsValid);
 
 这仅是提供用于创建信号的一个工具. 这里有几个立即可用的方式, 来从内置控制流机制中拉取信号:   
 
-<script src="https://gist.github.com/sprynmr/94472f0285139056da26.js"></script>
+```
+//signals.m
+RACSignal *controlUpdate = [myButton rac_signalForControlEvents:UIControlEventTouchUpInside];
+    // signals for UIControl events send the control event value (UITextField, UIButton, UISlider, etc)
+    // subscribeNext:^(UIButton *button) { NSLog(@"%@", button); // UIButton instance }
+ 
+RACSignal *textChange = [myTextField rac_textSignal];
+    // some special methods are provided for commonly needed control event values off certain controls
+    // subscribeNext:^(UITextField *textfield) { NSLog(@"%@", textfield.text); // "Hello!" }
+ 
+RACSignal *alertButtonClicked = [myAlertView rac_buttonClickedSignal];
+    // signals for some delegate methods send the delegate params as the value
+    // e.g. UIAlertView, UIActionSheet, UIImagePickerControl, etc
+    // (limited to methods that return void)
+    // subscribeNext:^(NSNumber *buttonIndex) { NSLog(@"%@", buttonIndex); // "1" }
+ 
+RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)];
+    // signals for arbitrary selectors that return void, send the method params as the value
+    // works for built in or your own methods
+    // subscribeNext:^(NSNumber *animated) { NSLog(@"viewDidAppear %@", animated); // "viewDidAppear 1" }
+```
 
 记住你也能轻松创建自己的信号, 包括[替代那些没有内建支持的其他委托](http://spin.atomicobject.com/2014/02/03/objective-c-delegate-pattern/). 我们现在能够从所有这些不连贯的异步/控制流工具中拉取出信号并将他们合并, 试想想这该多酷!这些会成为我们之前看到的陈述性图表中的节点. 真是兴奋. 
 
@@ -312,7 +396,18 @@ RACSignal *usernameValidSignal = RACObserve(self. viewModel,  usernameIsValid);
 
 现在我们进入 RAC 为我们提供的用于转换数值流的方法. 我们将会利用 `RACSignal` 的实例方法 `map`. 
 
-<script src="https://gist.github.com/sprynmr/a731e8026c2143eaf2e3.js"></script>
+```
+//transformingStreams.m
+- (void) viewDidLoad {
+    //...
+    RACSignal *usernameIsValidSignal = RACObserve(self.viewModel, isUsernameValid);
+    RAC(self.goButton, enabled) = usernameIsValidSignal;
+    RAC(self.goButton, alpha) = [usernameIsValidSignal
+        map:^id(NSNumber *usernameIsValid) {
+            return usernameIsValid.boolValue ? @1.0 : @0.5;
+        }];
+}
+```
 
 这样现在我们将 view-model 上的 `isUsernameValid` 发生的变化直接绑定到 `goButton` 的 `enabled` 属性上. 酷吧?对 `alpha` 的绑定更酷, 因为我们正在使用 `map` 方法将值转换成与 `alpha` 属性相关的值. (注意在这里我们返回的是一个 `NSNumber` 对象而不是原始float值. 这基本上是唯一的污点: 你需要负责为 RAC 将原始值转化为对象, 因为它不能帮你导出来.   
 

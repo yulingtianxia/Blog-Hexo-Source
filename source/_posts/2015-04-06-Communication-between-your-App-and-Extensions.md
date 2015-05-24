@@ -102,7 +102,7 @@ Swift中不用像OC那样使用`__bridge`和类型转换、内存管理交接，
 
 ```
 func CFNotificationCenterAddObserver(center: CFNotificationCenter!, observer: UnsafePointer<Void>, callBack: CFNotificationCallback, name: CFString!, object: UnsafePointer<Void>, suspensionBehavior: CFNotificationSuspensionBehavior)
-``` 
+```
 
 除了类型为`CFNotificationCallback`的参数，其余的都好说：  
 

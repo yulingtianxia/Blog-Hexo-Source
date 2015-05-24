@@ -26,7 +26,7 @@ tags:
 
 可以在任意你需要的时候获取联通图信息：  
 
-``` objc
+```objc
 
 NSMutableArray *nodes = [NSMutableArray array];
 [thisAtom.scene enumerateChildNodesWithName:AtomName usingBlock:^(SKNode *node, BOOL *stop) {
@@ -36,13 +36,13 @@ Graph *graph = [[Graph alloc] initWithNodes:nodes];
 for (int i=0; i<[graph.sets count]; i++) {
     NSLog(@"%@",graph.sets[i]);
 }
-```         
+```       
 
 完整代码在[这里](https://github.com/yulingtianxia/MyFirstGame.git)的`ColorAtom`工程  
 在向`SKSpriteNode.userdata`写键值对的时候，发现写进去后再读取依然是nil，这是因为`userdata`属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认`userdata`是`nil`，所以需要初始化下：  
 
 ```
 ((SKSpriteNode *)nodes[i]).userData = [NSMutableDictionary dictionary];
-``` 
+```
 感谢StackOverFlow网友的回答：http://stackoverflow.com/questions/19073199/sprite-kit-ios7-sknode-userdata-property-not-storing-values
 

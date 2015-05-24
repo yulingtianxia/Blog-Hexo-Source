@@ -71,7 +71,7 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
 
 先看看AppDelegate.h  
 
-``` objc
+```objc
 #import <UIKit/UIKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -86,7 +86,7 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
 - (NSURL *)applicationDocumentsDirectory;
 
 @end
-``` 
+```
 嗯，比平时的程序多出了三个属性嘛，而且后两个属性之前还提到过，这“三剑客“是Core Data中非常重要的三个类：  
 
 - Managed Object Model（管理数据模型）: 你可以将这个东西看作是数据库的轮廓，或者结构。这里包含了各个实体的定义信息，一般来说，你会使用我们刚刚看过的视觉编辑器来操作这个物体，添加属性，建立属性之间的关系等等，当然你也可以使用代码。
@@ -98,7 +98,7 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
 下面该看看AppDelegate.m，了解下“三剑客”实例化的过程： 
 首先是程序加载完毕的代理方法： 
 
-``` 
+```
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
@@ -107,10 +107,10 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
     controller.managedObjectContext = self.managedObjectContext;
     return YES;
 }
-``` 
+```
 我们暂且只看`controller.managedObjectContext = self.managedObjectContext;`这句，调用`managedObjectContext`的getter方法并赋给程序启动后出现的`MasterViewController`，那么我们就看一下`managedObjectContext`的getter方法：  
 
-``` 
+```
 // Returns the managed object context for the application.
 // If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
 - (NSManagedObjectContext *)managedObjectContext
@@ -126,12 +126,12 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
     }
     return _managedObjectContext;
 }
-``` 
+```
 
 嗯，英文注释不错，第一次调用的时候会实例化一个`NSManagedObjectContext`对象，并使用`persistentStoreCoordinator`方法返回的`NSPersistentStoreCoordinator`对象配置上下文，最后返回新实例化的`NSManagedObjectContext`对象。  
 顺藤摸瓜，我们再看看`persistentStoreCoordinator`的getter：  
 
-``` 
+```
 // Returns the persistent store coordinator for the application.
 // If the coordinator doesn't already exist, it is created and the application's store added to it.
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
@@ -174,21 +174,21 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
     
     return _persistentStoreCoordinator;
 }
-``` 
+```
 为了访问documents目录中的SQLite存储文件MyCDDemo.sqlite，还定义了一个`applicationDocumentsDirectory`方法，它的作用是获取程序documents的路径，代码如下：  
 
-``` 
+```
 // Returns the URL to the application's Documents directory.
 - (NSURL *)applicationDocumentsDirectory
 {
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
-``` 
+```
 MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生成的还有MyCDDemo.momd文件，后面会提到。
 `NSPersistentStoreCoordinator`初始化时需要传入`managedObjectModel`。`NSPersistentStoreCoordinator`对象在添加持久存储的时候不仅需要传入存储类型，还有配置，存储文件URL，选项以及错误类型。我们使用sqlite作为存储类型，配置为nil，还记得之前叫做default的配置么？这里我们只有一个持久存储，所以配置一项不需要。如果添加存储的时候出现错误，就会进入if判断，具体处理错误的细节可以看看模版生成的注释。  
 既然`NSPersistentStoreCoordinator`又用到了`managedObjectModel`，我们再看看`managedObjectModel`方法吧：  
 
-``` 
+```
 // Returns the managed object model for the application.
 // If the model doesn't already exist, it is created from the application's model.
 - (NSManagedObjectModel *)managedObjectModel
@@ -200,12 +200,12 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
-``` 
+```
 依然是跟之前一样的代码风格，这次`NSManagedObjectModel`类在初始化的时候用到了MyCDDemo.momd文件，前面提到过，当你编译项目时，MyCDDemo.xcdatamodeld数据模型将被编译成MyCDDemo.momd资源，并且保存到app的Bundle目录。  
 
 最后，在程序退出时，会调用代理`applicationWillTerminate:`  
 
-``` 
+```
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
@@ -214,7 +214,7 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 ```
 它调用了`saveContext`方法：  
 
-``` 
+```
 - (void)saveContext
 {
     NSError *error = nil;
@@ -228,7 +228,7 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
         } 
     }
 }
-``` 
+```
 `managedObjectContext`对象中的数据无论怎么修改，都是发生在内存中的，需要调用`save`方法来保存到存储文件当中。  
 
 按理说接下来应该看看`MasterViewController中`被传入的`managedObjectContext`对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：  
@@ -251,7 +251,7 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 既然数据库中的数据最终显示在了`UITableView`上，我们撇开`MasterViewController`中其他的方法，直奔`UITableViewDataSource`协议中已经实现的那几个方法：  
 
-``` 
+```
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return [[self.fetchedResultsController sections] count];
@@ -297,20 +297,20 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
     // The table view should not be re-orderable.
     return NO;
 }
-``` 
+```
 
 如果你对`UITableView`的使用很有经验，一眼就可看出数据是由`fetchedResultsController`对象提供的。即使在`tableView: cellForRowAtIndexPath:`方法中没出现`fetchedResultsController`，但是在其调用的`configureCell: atIndexPath:`方法中依然用到了`fetchedResultsController`：  
 
-``` 
+```
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
 }
-``` 
+```
 嗯看来NSManagedObject对象全都由这个fetchedResultsController提供咯，下面揭开它神秘的面纱：  
 
-``` 
+```
 - (NSFetchedResultsController *)fetchedResultsController
 {
     if (_fetchedResultsController != nil) {
@@ -347,12 +347,12 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
     
     return _fetchedResultsController;
 }
-``` 
+```
 
 嗯，之前提到过，Core Data在iOS平台使用了`NSFetchedResultsController`对象来简化对提取结果和表格视图的处理。`NSFetchedResultsController`对象被惰性创建并只在表格视图数据源方法有需要时才提取数据。你会看到在`NSFetchRequest`对象的配置中，使用了Event实体，并提供了一个`NSSortDescriptor`对象以让提取结果按timeStamp进行排序。最后通过`NSFetchRequest`对象和`managedObjectContext`（在AppDelegate中传入的`NSManagedObjectContext`实例）作为参数传入`NSFetchedResultsController`的初始化方法。（`sectionNameKeyPath`参数传入nil时表示只有一个section，你会发现`NSFetchedResultsController`从数据库获取的结果跟`UITableView`需要的数据格式相同，都通过`NSIndexPath`地址来获取一条数据的内容）  
 `NSFetchedResultsController`也有它的代理，将`MasterViewController`设置为其代理，这样在fetched results 发生变化时，`MasterViewController`中实现的`NSFetchedResultsControllerDelegate`方法会被调用：  
 
-``` 
+```
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];
@@ -412,7 +412,7 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
     [self.tableView reloadData];
 }
 
-``` 
+```
 
 相对于之前`UITableViewDataSource`协议方法对`NSFetchedResultsController`对象中数据的修改（通过`NSManagedObject`对象做载体），`NSFetchedResultsControllerDelegate`协议方法会在察觉到数据修改后被调用，用于产生tableview操作数据后对应的动画效果。  
 

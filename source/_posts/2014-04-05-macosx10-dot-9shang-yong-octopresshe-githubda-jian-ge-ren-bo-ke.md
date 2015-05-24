@@ -106,12 +106,12 @@ Blog的美化工作
 3. 在你的 `octopress/_config.yml` 文件中的`default_asides`项中加入第二步添加的路径：`custom/asides/category_cloud.html`  
 4. 拷贝[tagcloud.swf](https://github.com/yulingtianxia/yulingtianxia.github.io/blob/source/source/javascripts/tagcloud.swf)到`source/javascripts/`文件夹  
 如果想修改标签云的颜色可以在`category_cloud.rb`文件中改变：  
-``` 
+```
 		@opts['bgcolor'] = '#3D4349'
       @opts['tcolor1'] = '#8B85C3'
       @opts['tcolor2'] = '#C03999'
       @opts['hicolor'] = '#ffffff'
-``` 
+```
 `tcolor1`为文章数量比较多的分类颜色  
 `tcolor2`为普通分类颜色  
 `hicolor`为鼠标高亮颜色  

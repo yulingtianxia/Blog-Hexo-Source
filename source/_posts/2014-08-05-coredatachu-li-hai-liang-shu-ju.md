@@ -44,7 +44,7 @@ Asynchronous Fetching的加入依然是为了解决CoreData读取海量数据所
 
 举个栗子：  
 
-``` 
+```
 let request = NSFetchRequest(entityName: "MyEntity")
         let async = NSAsynchronousFetchRequest(fetchRequest: request){
             (id result) in
@@ -52,13 +52,13 @@ let request = NSFetchRequest(entityName: "MyEntity")
                 //TODO..
             }
         }
-``` 
+```
 
 Swift代码很简洁，并用了尾随闭包语法，看不懂的朋友也不用着急，知道`NSAsynchronousFetchRequest`大概的用法就行。  
 
 之前提到过`NSAsynchronousFetchRequest`能在抓取数据的过程中跟踪进度，于是乎`NSProgress`登场了！一行代码顶十句话：  
 
-``` 
+```
 let request = NSFetchRequest(entityName: "MyEntity")
 var asyncResult:NSPersistentStoreResult!
 let async = NSAsynchronousFetchRequest(fetchRequest: request){
@@ -75,10 +75,10 @@ managedObjectContext?.performBlock{
             asyncResult = self.managedObjectContext?.executeRequest(async, error: error)
         }
 progress.resignCurrent()
-``` 
+```
 而取消获取数据只需要取消`NSProgress`就可以了！取消行为会沿着数的根节点蔓延到叶子。
 
-``` 
+```
 progress.cancel()
-``` 
+```
 可以在`cancellationHandler`属性设置取消后执行的block，这里不再多说。

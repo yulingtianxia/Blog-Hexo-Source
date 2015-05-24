@@ -25,7 +25,7 @@ GitHub很贴心的给出了整改意见啊，也就是第一个URL：https://git
 我在terminal中运行了dig命令：  
 `dig yulingtianxia.github.io +nostats +nocomments +nocmd`  
 结果如下：  
-``` 
+```
 ; <<>> DiG 9.8.3-P1 <<>> yulingtianxia.github.io +nostats +nocomments +nocmd
 ;; global options: +cmd
 ;yulingtianxia.github.io.	IN	A
@@ -39,5 +39,5 @@ ns1.p04.dynect.net.	21893	IN	A	208.78.70.4
 ns2.p04.dynect.net.	20599	IN	A	204.13.250.4
 ns3.p04.dynect.net.	21929	IN	A	208.78.71.4
 ns4.p04.dynect.net.	26356	IN	A	204.13.251.4
-``` 
+```
 于是我在我的域名管理后台将我的一级域名`yulingtianxia.com`指向`103.245.222.133`，问题解决。

@@ -26,10 +26,10 @@ tags:
 ##自定义NSManagedObject
 在上一篇教程中我们每条数据都是通过`NSManagedObject`对象装载，通过KVC方式使用`valueForKey：`方法访问对象属性，但是使用KVC要比使用访问器效率低一点。 只在必要时使用KVC，比如你需要动态选择key或keyPath。  
 
-``` objc
+```objc
 [newEmployee setValue:@”Stig” forKey:firstName];
 [aDepartment setValue:@1000 forKeyPath:manager.salary];
-``` 
+```
 
 下面我们将自定义`NSManagedObject`类，通过对它的继承拓展，使得我们有自己的Event类，并通过访问器方法代替KVC方式来访问对象的属性。  
 按CMD+N或者在可视化建模工具下选择菜单中Editor->Create NSManagedObject Subclass：  
@@ -52,7 +52,7 @@ tags:
 
 在MasterViewController.m文件中加入`#import "Event.h"`，然后将`insertNewObject:`方法替换如下  
 
-``` 
+```
 - (void)insertNewObject:(id)sender
 {
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -72,11 +72,11 @@ tags:
         abort();
     }
 }
-``` 
+```
 嗯，英文注释还告诉我们通常你应该用访问器方法呢，还说但是现在在这用KVC就避免了向模板添加自定义类的需求，真逗啊  
 依此类推，更改`prepareForSegue: sender:`方法：    
 
-``` 
+```
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
@@ -85,23 +85,23 @@ tags:
         [[segue destinationViewController] setDetailItem:object];
     }
 }
-``` 
+```
 
 还有`configureCell: atIndexPath:`方法：  
 
-``` 
+```
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     Event *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
 //    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
     cell.textLabel.text = [object.timeStamp description];
 }
-``` 
+```
 相应地我们也可以针对`DetailViewController`进行改造：  
 
 DetailViewController.h:  
 
-``` 
+```
 #import <UIKit/UIKit.h>
 @class Event;
 @interface DetailViewController : UIViewController
@@ -110,11 +110,11 @@ DetailViewController.h:
 
 @property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 @end
-``` 
+```
 
 DetailViewController.m:  
 
-``` 
+```
 #import "DetailViewController.h"
 #import "Event.h"
 @interface DetailViewController ()
@@ -159,7 +159,7 @@ DetailViewController.m:
 }
 
 @end
-``` 
+```
 这部分比较简单，就不详细解释了，运行程序，跟以前一样（不截图了）  
 
 如果想复用`MasterViewController`里面那些代码，需要做些大改动，具体可以参看[更轻量的 View Controllers](http://objccn.io/issue-1-1/)这篇文章  
@@ -249,7 +249,7 @@ DetailViewController.m:
 
 因为创建顺序的问题，当Student创建的时候还不知道有`Teacher`类，于是其生成的一些方法将Teacher默认为`NSManagedObject`类：  
 
-``` 
+```
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
@@ -268,11 +268,11 @@ DetailViewController.m:
 - (void)removeTeachers:(NSSet *)values;
 
 @end
-``` 
+```
 
 而Teacher类创建的时候已经有了`Student`类，就不会出现上面的问题：  
 
-``` 
+```
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
@@ -292,12 +292,12 @@ DetailViewController.m:
 - (void)removeStudents:(NSSet *)values;
 
 @end
-``` 
+```
 
 虽然`Teacher`类认识`Student`类，因为它已经创建了，但是此时Persion类还没有创建，于是此时`Student`类和`Teacher`类继承的依然是`NSManagedObject`，这不是我们想要的结果。  
 解决方法是重新生成下这三个Entity对应的`NSManagedObject`子类，并覆盖原有的文件：  
 
-``` 
+```
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Person.h"
@@ -318,7 +318,7 @@ DetailViewController.m:
 - (void)removeTeachers:(NSSet *)values;
 
 @end
-``` 
+```
 
 你会发现多了一个`CoreDataGeneratedAccessors`类别，这个类别中的方法是Core Data框架根据你在数据模式编辑器中设置的实体关系自动生成的，你不需要实现它们，Core Data会在运行时实现这些方法  
 如果你偏要想看看其实现机理，在右下方的代码片段库中选择“Core Data To-Many Relationship Accessors”并拖拽到代码中  
@@ -327,7 +327,7 @@ DetailViewController.m:
 
 生成的代码如下：  
 
-``` 
+```
 - (void)add<#CapitalizedRelationshipName#>Object:(<#relationship destination class#> *)value
 {    
     NSSet *changedObjects = [NSSet setWithObject:value];
@@ -357,13 +357,13 @@ DetailViewController.m:
     [[self primitiveValueForKey:@"<#relationshipName#>"] minusSet:value];
     [self didChangeValueForKey:@"<#relationshipName#>" withSetMutation:NSKeyValueMinusSetMutation usingObjects:value];
 }
-``` 
+```
 
 我们需要将<#Capitalized relationship name#>, <#Relationship destination class#> 和 <#Relationship name#>替换为我们定义的连接名，对照下前面`CoreDataGeneratedAccessors`类别中的方法名，你就会明白了  
 
 同样以前标记为`@dynamic`的属性，其实现原理如下：  
 
-``` 
+```
 - (<#propertyObjectType#> *)<#propertyName#>
 {
     [self willAccessValueForKey:@"<#propertyName#>"];
@@ -378,7 +378,7 @@ DetailViewController.m:
     [self setPrimitiveValue:value forKey:@"<#propertyName#>"];
     [self didChangeValueForKey:@"<#propertyName#>"];
 }
-``` 
+```
 现在，我们并不需要知道他们的实现方法是如何被动态生成的，估计是用到了block或者delegate。  
 
 ##探究Core Data在SQLite中的实现  
@@ -387,7 +387,7 @@ DetailViewController.m:
 
 为了简单测试，我直接在MasterViewController.m文件中的`insertNewObject:`方法中加入测试代码（其实关于测试应该利用好Xcode自带的单元测试工具[XCTest](http://yulingtianxia.com/blog/2014/04/28/iosdan-yuan-ce-shi-%5Bnil%5Dxctest/)，我这里为了方便操作，用了以前添加数据的`insertNewObject:`方法，关于工程初始代码的讲解，请看我之前的一篇[教程](http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/)）  
 
-``` 
+```
 - (void)insertNewObject:(id)sender
 {
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
@@ -421,7 +421,7 @@ DetailViewController.m:
     
     
 }
-```   
+```
 
 我们建立了一名叫LiLei的一年级男生和一名叫MissGao的教英语的女教师，并将LiLei同学添加到高老师的学生名单中。  
 

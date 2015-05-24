@@ -26,7 +26,7 @@ tags:
 
 ##引言
 曾经觉得Objc特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把`[receiver message]`当成简单的方法调用，而无视了**“发送消息”**这句话的深刻含义。其实`[receiver message]`会被编译器转化为：  
-``` objc
+```objc
 objc_msgSend(receiver, selector)
 ```
 如果消息含有参数，则为：  
@@ -68,7 +68,7 @@ Runtime 系统是一个由一系列函数和数据结构组成，具有公共接
 ##Runtime术语
 
 还记得引言中的`objc_msgSend:`方法吧，它的真身是这样的：  
-``` objc
+```objc
 id objc_msgSend ( id self, SEL op, ... );
 ```
 下面将会逐渐展开介绍一些术语，其实它们都对应着数据结构。  
@@ -165,7 +165,7 @@ struct objc_method_list {
 `Method`是一种代表类中的某个方法的类型。  
 ```
 typedef struct objc_method *Method;
-``` 
+```
 而`objc_method`在上面的方法列表中提到过，它存储了方法名，方法类型和方法实现：  
 ```
 struct objc_method {

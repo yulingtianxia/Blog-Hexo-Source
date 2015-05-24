@@ -31,7 +31,7 @@ tags:
 
 SpriteKit是苹果iOS7新推出的2D游戏引擎，这里不再过多介绍。我们新建工程的时候选取iOS中的Game，然后选择SpriteKit作为游戏引擎，语言选择Swift，Xcode6会为我们自动创建一个游戏场景`GameScene`，它包含`GameScene.swift`和`GameScene.sks`两个文件，`sks`文件可以让我们可视化拖拽游戏控件到场景上，然后再代码中加载`sks`文件来完成场景的初始化：  
 
-``` js
+```js
 
 extension SKNode {
     class func unarchiveFromFile(file : NSString) -> SKNode? {
@@ -47,13 +47,13 @@ extension SKNode {
         return scene
     }
 }
-``` 
+```
 
 但我比较喜欢纯写代码的方式来搭接面，因为`sks`文件作为游戏场景布局还不成熟，它是iOS8新加入的功能，以前在iOS7的时候`sks`文件只是作为粒子系统的可视化编辑文件。  
 
 所以我们修改`GameViewController.swift`文件的`viewDidLoad()`函数，像以前那样直接用代码加载游戏场景：  
 
-``` 
+```
 override func viewDidLoad() {
         super.viewDidLoad()
         // Configure the view.
@@ -66,7 +66,7 @@ override func viewDidLoad() {
         skView.presentScene(scene)
         
     }
-``` 
+```
 
 `GameScene`虽然是Xcode自动生成的，但是只是个空架子，我们需要把它生成的没用的代码删掉，比如初始化函数里内容为“HelloWorld”的`SKLabelNode`，还有`touchesBegan(touches: NSSet, withEvent event: UIEvent)`方法中绘制飞船的代码。把这些删光后，我们还需要有图片素材来绘制这四类精灵节点：`Player`（五角星），`Killer`（红色旋风），`Score`（绿色旋风）和`Shield`（紫色三角）。我是用Sketch来绘制这些矢量图形的，文件名为`spiral.sketch`，随同工程文件一同放到GitHub上了。当然你不需要手动导出图片到工程，直接下载工程文件就好了：  
 
@@ -80,7 +80,7 @@ override func viewDidLoad() {
 
 `SKNode`有一个子类`SKShapeNode`，专门用于绘制线条的，我们新建一个`Map`类，继承`SKShapeNode`。下面我们需要生成一个`CGPath`来赋值给`Map`的`path`属性： 
 
-``` 
+```
 import UIKit
 import SpriteKit
 class Map: SKShapeNode {
@@ -114,7 +114,7 @@ class Map: SKShapeNode {
         CGPathGetCurrentPoint(path)
     }
 }
-``` 
+```
 
 算法很简单，就是顺时针计算点坐标然后画线，这里把每一步的坐标都存入了`points`数组里，是为了以后计算其他数据时方便。因为这部分算法不难而且不是我们的重点，这里不过多介绍了。  
 
@@ -122,7 +122,7 @@ class Map: SKShapeNode {
 
 因为四种精灵都是沿着`Map`类的路径来顺时针运动，它们的动画绘制是相似的，所以我建立了一个`Shape`类作为基类来绘制动画，它继承于`SKSpriteKit`类，并拥有半径（`radius`）、移动速度（`moveSpeed`）和线段计数（`lineNum`）这三个属性。其中`lineNum`是用于标记精灵在螺旋线第几条线段上的，这样比较方便计算动画的参数。  
 
-``` 
+```
 class Shape: SKSpriteNode {
     let radius:CGFloat = 10
     var moveSpeed:CGFloat = 50
@@ -139,23 +139,23 @@ class Shape: SKSpriteNode {
         
     }
 }
-``` 
+```
 
 构造函数中设定了`Shape`类的一些物理参数，比如物理体的形状大小，碰撞检测掩码等。这里设定`usesPreciseCollisionDetection`为`true`是为了增加碰撞检测的精度，常用于体积小速度快的物体。`collisionBitMask`属性标记了需要模拟物理碰撞的类别，`contactTestBitMask`属性标记了需要检测到碰撞的类别。这里说的“类别”指的是物体的类别：  
 
-``` 
+```
 let playerCategory:UInt32      =  0x1 << 0;
 let killerCategory:UInt32      =  0x1 << 1;
 let scoreCategory:UInt32       =  0x1 << 2;
 let shieldCategory:UInt32      =  0x1 << 3;
-``` 
+```
 这种用位运算来判断和存储物体类别的方式很常用，上面这段代码写在了`NodeCategories.swift`文件中。  
 
 为了描述`Shape`的速度随着游戏等级上升而增加，这里速度的计算公式含有`Data.speedScale`作为参数，关于`Data`“类”在后面会讲到。  
 
 为了让精灵动起来，需要知道动画的移动目的地是什么。虽然`SKAction`有`followPath(path: CGPath?, speed: CGFloat)`方法，但是在这里并不实用，因为`Player`会经常改变路线，所以我写了一个`runInMap(map:Map)`方法让精灵每次只移动到路径上的下一个节点（之前`Map`类存储的`points`属性用到了吧！嘿嘿）  
 
-``` 
+```
 func runInMap(map:Map){
         let distance = calDistanceInMap(map)
         let duration = distance/moveSpeed
@@ -183,13 +183,13 @@ func runInMap(map:Map){
             }
             })
     }
-``` 
+```
 
 上面的代码先是调用`calDistanceInMap(map:Map)->CGFloat`方法计算精灵距离下一个节点的距离（也就是需要移动的距离），然后计算精灵需要旋转动画时间和移动动画时间，最后将两个动画作为一个`group`来运行，在动画运行结束后判断精灵是否运行到了最后一个节点，也就是螺旋线的终点：如果到终点了则移除精灵，否则开始递归调用方法，来开始下一段动画（奔向下一个节点）。  
 
 计算距离的`calDistanceInMap(map:Map)->CGFloat`方法代码如下：  
 
-``` 
+```
 func calDistanceInMap(map:Map)->CGFloat{
         if self.lineNum==map.points.count {
             return 0
@@ -207,11 +207,11 @@ func calDistanceInMap(map:Map)->CGFloat{
             return 0
         }
     }
-``` 
+```
 
 到此为止`Shape`类完成了，`Killer`、`Score`和`Shield`类比较简单，继承`Shape`类并设置自身纹理和类别即可：  
 
-``` 
+```
 class Killer: Shape {
     convenience init() {
         self.init(name:"Killer",imageName:"killer")
@@ -230,11 +230,11 @@ class Shield: Shape {
         self.physicsBody.categoryBitMask = shieldCategory
     }
 }
-``` 
+```
 
 而`Player`因为有护盾状态并可以在螺旋线上跳跃到内层，所以稍微复杂些：  
 
-``` 
+```
 class Player: Shape {
     var jump = false
     var shield:Bool = false {
@@ -264,7 +264,7 @@ class Player: Shape {
         self.runInMap(map)
     }
 }
-``` 
+```
 
 `Player`类的初始位置是螺旋线第四个节点，而且移动速度要略快于其他三种精灵，所以在这里设置为70（`Shape`默认速度50）。`jump`和`shield`是用来标记`Player`当前状态的属性，其中`shield`属性还定义了属性监察器，这是Swift中存储属性具有的响应机制，类似于`KVO`。在`shield`状态改变时也同时改变`Player`的纹理。**需要注意的是构造器中对属性的改变并不会调用属性检查器，在`willSet`和`didSet`中改变自身属性也不会调用属性检查器，因为那样会造成死循环。**  
 
@@ -276,7 +276,7 @@ class Player: Shape {
 
 因为SpriteKit中物理碰撞检测到的都是`SKPhysicsBody`，所以我们的被访问者需要包含一个`SKPhysicsBody`对象：  
 
-``` 
+```
 class VisitablePhysicsBody{
     let body:SKPhysicsBody
     init(body:SKPhysicsBody){
@@ -286,11 +286,11 @@ class VisitablePhysicsBody{
         visitor.visitBody(body)
     }
 }
-``` 
+```
 
 `acceptVisitor`方法传入的是一个`ContactVisitor`类，它是访问者的基类（也相当于接口），访问者的`visitBody(body:SKPhysicsBody)`方法会根据传入的`body`实例来推断出被访问者的真实类别，然后调用对应的方法来处理碰撞：  
 
-``` 
+```
 func visitBody(body:SKPhysicsBody){
         //第二次dispatch，通过构造方法名来执行对应方法
         // 生成方法名，比如"visitPlayer"
@@ -303,13 +303,13 @@ func visitBody(body:SKPhysicsBody){
         }
         
     }
-``` 
+```
 
 Swift废弃了`performSelector`方法，所以这里耍了个小聪明来将消息传给具体的访问者。有关Swift中替代`performSelector`的方案，参见[这里](http://www.cnblogs.com/yangzhou1030/p/3830592.html)  
 
 下面让`GameScene`实现`SKPhysicsContactDelegate`协议：  
 
-``` 
+```
 func didBeginContact(contact:SKPhysicsContact){
         //A->B
         let visitorA = ContactVisitor.contactVisitorWithBody(contact.bodyA, forContact: contact)
@@ -320,10 +320,10 @@ func didBeginContact(contact:SKPhysicsContact){
         let visitableBodyA = VisitablePhysicsBody(body: contact.bodyA)
         visitableBodyA.acceptVisitor(visitorB)
     }
-``` 
+```
 跟Objective-C中实现访问者模式类似，也是通过`ContactVisitor`类的工厂方法返回一个对应的子类实例来作为访问者，然后实例化一个被访问者，被访问者接受访问者的访问。A访问B和B访问A在大多数场合是相同的，但是你不知道谁是A谁是B，所以需要两种情况都调用。下面是`ContactVisitor`类的工厂方法和构造器：  
 
-``` 
+```
 class ContactVisitor:NSObject{
     let body:SKPhysicsBody!
     let contact:SKPhysicsContact!
@@ -351,13 +351,13 @@ class ContactVisitor:NSObject{
         
     }
 }
-``` 
+```
 
 PS：上面的代码省略了已经提到过的`visitBody(body:SKPhysicsBody)`方法
 
 因为这个游戏逻辑比较简单，所有碰撞后的逻辑都写到了`PlayerContactVisitor`类里：  
 
-``` 
+```
 func visitKiller(body:SKPhysicsBody){
         let thisNode = self.body.node as Player
         let otherNode = body.node
@@ -385,7 +385,7 @@ func visitKiller(body:SKPhysicsBody){
         Data.score++
         //        println(thisNode.name+"->"+otherNode.name)
     }
-``` 
+```
 
 上面的方法都是“visit+类名”格式的，处理的是`Player`碰撞到其他三种精灵的逻辑。而其他三种精灵之间的碰撞不需要处理，所以`KillerContactVisitor`、`ScoreContactVisitor`和`ShieldContactVisitor`这三个`ContactVisitor`的子类很空旷，这里不再赘述。  
 
@@ -395,18 +395,18 @@ func visitKiller(body:SKPhysicsBody){
 
 这部分很简单，主要是将`Data`结构体中存储的分数和等级等数据通过`SKLabelNode`显示在界面上，只不过我封装了一个`Display`类来将所有的`SKLabelNode`统一管理，并让其实现我定义的`DisplayData`协议来让`Data`中的数据变化驱动界面更新：  
 
-``` 
+```
 protocol DisplayData{
     func updateData()
     func levelUp()
     func gameOver()
     func restart()
 }
-``` 
+```
 
 下面是Data结构体代码，大量使用了存储属性的监察器来响应数据变化：  
 
-``` 
+```
 struct Data{
     static var display:DisplayData?
     static var updateScore:Int = 5
@@ -469,7 +469,7 @@ struct Data{
         Data.speedScale = 0
     }
 }
-``` 
+```
 
 这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历`GameScene`子节点的时候，一般会用到`enumerateChildNodesWithName(name: String?, usingBlock: ((SKNode!, UnsafePointer<ObjCBool>) -> Void)?)`方法，但是这个方法在Xcode6Beta3更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。  
 
@@ -479,13 +479,13 @@ struct Data{
 
 在本工程中只有`ShareButton`和`ReplayButton`两个按钮，Swift版本的代码很简洁，而我通过`Social.Framework`中的`UIActivityViewController`来分享得分，这部分代码写在了`ShareButton.swift`中：  
 
-``` 
+```
 let scene = self.scene as GameScene
         let image = scene.imageFromNode(scene)
         let text = "我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！"
         let activityItems = [image,text]
         let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         (scene.view.nextResponder() as UIViewController).presentViewController(activityController, animated: true, completion: nil)
-``` 
+```
 
 
