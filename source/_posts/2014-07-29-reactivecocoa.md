@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ReactiveCocoa"
+title: "ReactiveCocoa学习笔记"
 date: 2014-07-29 14:15:57 +0800
 comments: true
 tags: 
