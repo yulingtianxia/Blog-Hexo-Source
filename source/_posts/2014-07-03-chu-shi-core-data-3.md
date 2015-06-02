@@ -29,14 +29,14 @@ tags:
 如果你不懂Swift也没关系，只要了解OC和Core Data，总是能看懂的  
 
 在写代码前先了解下我们要做什么：  
-![](http://yulingtianxia.qiniudn.com/140435701469.png)
-![](http://yulingtianxia.qiniudn.com/1404357012.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140435701469.png)
+![](http://7ni3rk.com1.z0.glb.clouddn.com/1404357012.png)  
 
 先在第一个页面添加问题（吃啥？），然后点击问题进入到第二个添加选项（鸭子，蛋，猪）的页面。每个选项左边是选项名，右边是该选项的权值。摇动手机就能随机从所有选项中选出答案（就像第二张图那样）。  
 ##建立数据模型
 还是像以前那样新建一个Master-Detail Application，勾选Use Core Data选项，语言选择Swift，然后Xcode会自动生成一个具有`UITableView`的Demo，这些内容之前说过。下面我们需要打开xcdatamodeld文件来建立我们的数据模型：  
 
-![](http://yulingtianxia.qiniudn.com/140436356516.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140436356516.png)  
 
 `Question`这个实体只具有一个属性，那就是问题内容`content`，类型为`String`；`Choice`实体有一个类型为`String`的`name`属性和一个类型为`Integer32`的`weight`属性，分别代表问题选项的名字和权重。  
 
@@ -44,13 +44,13 @@ tags:
 
 假设每个问题都对应多个选项，也可以没有选项：  
 
-![](http://yulingtianxia.qiniudn.com/14043675716.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/14043675716.png)  
 
 `Optional`被打钩是因为问题可以没有任何选项，在Tpye那里我们选择`To Many`  
 
 相反，每个选项一定会对应一个问题，并且是唯一的问题：  
 
-![](http://yulingtianxia.qiniudn.com/140436793089.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140436793089.png)  
 
 `Optional`那里不打钩是为了避免关系的目标为空，在`Tpye`那里我们选择了`To One`
 
@@ -237,7 +237,7 @@ tags:
 
 修改`Question`的过程其实就是先通过`objectAtIndexPath(indexPath: NSIndexPath!) -> AnyObject!`方法取出数据请求结果当中的某一项并转换成`Question`对象，对其进行修改后再保存。在界面中通过点击cell右侧带有字母i的蓝色圆圈来修改`Question`内容：  
 
-![](http://yulingtianxia.qiniudn.com/140438530596.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140438530596.png)  
 
 上图的中的蓝色圆圈是`AccessoryButton`，需要在IB中设置`TableViewCell`的`Identifier`为`QuestionCell`，`Accessory`为`Detail Disclosure`，这样我们就能在`UITableViewDelegate`的`tableView(tableView: UITableView!, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath!)`方法中响应`AccessoryButton`了：  
 

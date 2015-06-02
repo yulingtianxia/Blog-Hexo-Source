@@ -27,11 +27,11 @@ iOS 3.0和Mac OS X10.5都支持Core Data，但iOS上不支持XML文件存储。C
 ##新建一个Core Data工程
 在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。  
 
-![](http://yulingtianxia.qiniudn.com/14035339677.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/14035339677.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 一定要勾选Core Data选项，项目名称就叫MyCDDemo吧，嘿嘿  
 
-![](http://yulingtianxia.qiniudn.com/140353396978.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353396978.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 项目建立后会发现Frameworks中已经有了`CoreData.framework`一项，并且还多了一个MyCDDemo.xcdatamodeld文件，该文件定义了数据模型结构，你可以使用XCode内置的可视化建模工具进行构建。点开它你会发现左侧有三项：Entities，Fetch Request、Configurations。  
 
@@ -39,11 +39,11 @@ iOS 3.0和Mac OS X10.5都支持Core Data，但iOS上不支持XML文件存储。C
 
 在系统的学习Core Data前，可以简单的将Entity理解为数据库中的一张表，在代码中一个`NSEntityDescription`类的对象就代表了一个Entity。Entity也像类一样可以继承，如果你有若干个相似的实体，就可以抽离出它们的共有特性作为一个“父实体”，就省去了在多个实体中都指定相同的属性。甚至可以勾选Abstract Entitiy让其成为抽象实体，就像抽象类一样。  
 
-![](http://yulingtianxia.qiniudn.com/140353414584.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353414584.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 现在已经有了一个现成的实体：Event，也就是在SQLite中有了一张叫做Event的表：  
 
-![](http://yulingtianxia.qiniudn.com/140353397403.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353397403.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 Attributes就相当于一张表的列属性，可以设置其数据类型，默认值，最大最小值等，类似数据库可视化建表。需要注意的是这里的空值是NULL，不等同于OC中的nil，更不等同于0和空字符串@“”。Event实体中已经有了一个叫timeStamp的属性，类型为Date，这是模版自动生成的，暂且别修改它。  
 
@@ -57,7 +57,7 @@ Fetched Property表示了一种弱的、单向的关系。因为Core Data不支�
 
 你可以预定义请求，把它们作为模板存储在被管理对象模型中。预定义的模板在你需要的时候就可以取出使用。通常情况下，我们通过Xcode的data modeling tool工具创建请求模板。模板可以包含变量：  
 
-![](http://yulingtianxia.qiniudn.com/140353412465.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353412465.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 **Configurations**  
 
@@ -233,17 +233,17 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 按理说接下来应该看看`MasterViewController中`被传入的`managedObjectContext`对象是如何使用的，但在这之前，我们先运行下程序，看看这个App有什么功能：  
 
-![](http://yulingtianxia.qiniudn.com/140353397837.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353397837.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 再普通不过的tableview了，点击加号便可添加一条记录，内容为时间戳，回想起之前看的名称为Event的Entity，是不是想起了什么，嘿嘿。再添加了四条记录后，不妨打开sqlite文件查看下，路径为`~/Library/Application Support/iPhone Simulator/[OS version]/Applications/[appGUID]/Documents/`(Xcode 6路径改为`~/Library/Developer/CoreSimulator/Devices/[模拟器UDID]/data/Containers/Data/Application/[appGUID]/Documents/`)，目录内包含了三个文件MyCDDemo.sqlite、MyCDDemo.sqlite-shm、MyCDDemo.sqlite-wal。如上文所述，根据AppDelegate.m文件中的`persistentStoreCoordinator`方法可知，时间戳记录被存储在MyCDDemo.sqlite文件中。我用Navicat Premium将其打开：  
 
-![](http://yulingtianxia.qiniudn.com/14035339876.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/14035339876.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-![](http://yulingtianxia.qiniudn.com/140353398727.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353398727.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 相信你对“三剑客”有了更深的理解，再附上一张图加深下印象：  
 
-![](http://yulingtianxia.qiniudn.com/140353388879.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388879.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 一个`NSManagedObjectModel`对象处在`NSPersistentStoreCoordinator`对象和`NSManagedObjectContext`对象之间。Core Data根据`NSManagedObjectModel`对象确定如何将底层的持久化文件中的数据映射为`NSManagedObject`对象。一个`NSManagedObjectModel`对象用于表示数据的结构。`NSManagedObjectModel`对象也被称为对象图(object graph)。你可以简单的理解为：**在数据库sqlite文件中，一张表中的一条数据（table row）就相当于代码中的一个NSManagedObject对象，他们之间的映射是通过`NSManagedObjectModel`对象完成的**  
 
@@ -418,17 +418,17 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：  
 
-![](http://yulingtianxia.qiniudn.com/140353388301.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388301.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-![](http://yulingtianxia.qiniudn.com/140353389167.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389167.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-![](http://yulingtianxia.qiniudn.com/140353388423.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388423.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-![](http://yulingtianxia.qiniudn.com/140353389646.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389646.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-![](http://yulingtianxia.qiniudn.com/140353389047.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389047.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-![](http://yulingtianxia.qiniudn.com/140353388523.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388523.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 
 最后，找到`insertNewObject`方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：  

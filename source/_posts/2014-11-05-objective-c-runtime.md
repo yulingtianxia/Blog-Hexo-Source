@@ -365,7 +365,7 @@ PS：动态方法解析会在消息转发机制浸入前执行。如果 `respond
 
 ##消息转发
 
-![](http://yulingtianxia.qiniudn.com/QQ20141113-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20141113-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 ###重定向
 在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载`- (id)forwardingTargetForSelector:(SEL)aSelector`方法替换消息的接受者为其他对象：  
@@ -450,15 +450,15 @@ if ( [aWarrior respondsToSelector:@selector(negotiate)] )
 
 在 Runtime 的现行版本中，最大的特点就是健壮的实例变量。当一个类被编译时，实例变量的布局也就形成了，它表明访问类的实例变量的位置。从对象头部开始，实例变量依次根据自己所占空间而产生位移：  
 
-![](http://yulingtianxia.qiniudn.com/nf1.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/nf1.png)  
 
 上图左边是`NSObject`类的实例变量布局，右边是我们写的类的布局，也就是在超类后面加上我们自己类的实例变量，看起来不错。但试想如果哪天苹果更新了`NSObject`类，发布新版本的系统的话，那就悲剧了：  
 
-![](http://yulingtianxia.qiniudn.com/nf2.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/nf2.png)  
 
 我们自定义的类被划了两道线，那是因为那块区域跟超类重叠了。唯有苹果将超类改为以前的布局才能拯救我们，但这样也导致它们不能再拓展它们的框架了，因为成员变量布局被死死地固定了。在脆弱的实例变量(Fragile ivars) 环境下我们需要重新编译继承自 Apple 的类来恢复兼容性。那么在健壮的实例变量下会发生什么呢？  
 
-![](http://yulingtianxia.qiniudn.com/nf3.png)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/nf3.png)  
 
 在健壮的实例变量下编译器生成的实例变量布局跟以前一样，但是当 runtime 系统检测到与超类有部分重叠时它会调整你新添加的实例变量的位移，那样你在子类中新添加的成员就被保护起来了。  
 

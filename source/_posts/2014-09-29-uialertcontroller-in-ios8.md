@@ -83,6 +83,6 @@ alert.addTextFieldWithConfigurationHandler { (choiceNameTF) -> Void in
 
 最后，贴上一张效果图：  
 
-![](http://yulingtianxia.qiniudn.com/IMG_0906.PNG)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/IMG_0906.PNG)  
 
 图片截取自[HardChoice](https://itunes.apple.com/cn/app/hardchoice/id923977271?mt=8)  

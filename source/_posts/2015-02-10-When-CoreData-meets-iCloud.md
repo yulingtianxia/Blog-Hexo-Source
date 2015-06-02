@@ -81,7 +81,7 @@ var _persistentStoreCoordinator: NSPersistentStoreCoordinator? = nil
 
 然后是Xcode6中开启Capabilities标签的iCloud选项卡后，如下的场景简直是卧槽：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20150210-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)   
+![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150210-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)   
 
 该怎么选怎么选啊？！我只能说按照上图这么选就对了。顺便说一下iCloud默认容器名称格式已经变成了“iCloud.com.yourname.yourAppID”，其实这也不太准确，官方称作“iCloud.$(CFBundleIdentifier)”,后面的美元号所指的变量就是General中Identity一栏的“Bundle Identifier”值。此外“Key-value storage”和“CloudKit”选项选不选都可以，但“iCloud Documents”一定要勾选，否则是无法同步CoreData数据的。  
 
@@ -105,7 +105,7 @@ PS：官方文档不建议在主线程使用`URLForUbiquityContainerIdentifier`�
 
 当我兴致冲冲的打开Xcode中的debug navigator，点击左边的iCloud查看状态时，被眼前的一切惊呆了：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20150210-4@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150210-4@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 “iCloud Usage”告诉我状态不可用，然而右下角的日志中Using local storage已经从1变成了0，也就是证明了我的APP([HardChoice](http://hardchoice.yulingtianxia.com))已经从CoreData使用本地持久仓库转移到了使用“iCloud-enabled”持久仓库。“Transfer Activity”中柱状图更是显示从iCloud下载了数据。而这其实应该是Xcode6的一个bug，有人已经在[苹果开发者论坛](https://devforums.apple.com/message/1026708#1026708)讨论了。  
 
@@ -113,11 +113,11 @@ PS：官方文档不建议在主线程使用`URLForUbiquityContainerIdentifier`�
 
 但我们可以查看“My Mac”的“iCloud Usage”而不是iPhone的“iCloud Usage”：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20150210-6@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150210-6@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 在“Documents”一栏中可以看出我在两个设备间同步了数据，“mobile”后面跟着的是我的设备编号。展开数据可以看到更详细的同步记录：  
 
-![](http://yulingtianxia.qiniudn.com/QQ20150210-5@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150210-5@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 虽然通过“My Mac”可以看到iCloud与CoreData的数据同步记录，但是在Xcode6.1.1中“Documents”的显示不是很正常，在最新的Xcode6.2beta版中虽然修复了“Documents”的显示问题，但“iCloud Usage”的种种bug依然存在。  
 
@@ -125,7 +125,7 @@ PS：官方文档不建议在主线程使用`URLForUbiquityContainerIdentifier`�
 
 贴一张[HardChoice](http://hardchoice.yulingtianxia.com)同步成功的测试图，因为我是用Swift写的这个Demo，所以喜欢用Swift的可以直接把我的那部分源码粘过去用：  
 
-![](http://yulingtianxia.qiniudn.com/52D3D9B3C9688FB91EDAEB5F88BF102C.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/52D3D9B3C9688FB91EDAEB5F88BF102C.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
 
 参考：  

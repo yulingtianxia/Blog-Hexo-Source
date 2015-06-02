@@ -16,10 +16,10 @@ date: 2015-02-07 19:19:08
 	- [HardChoice](http://hardchoice.yulingtianxia.com)  
 	
 - 在手机上查看我的博客：
-	- [Android](http://yulingtianxia.qiniudn.com/blog_android.apk)  
-	![](http://yulingtianxia.qiniudn.com/qrcode-android.png)  
-	- [iOS(需越狱)](http://yulingtianxia.qiniudn.com/玉令天下的Blog_0.3_iosbrk.ipa)  
-	![](http://yulingtianxia.qiniudn.com/qrcode-ios.png)
+	- [Android](http://7ni3rk.com1.z0.glb.clouddn.com/blog_android.apk)  
+	![](http://7ni3rk.com1.z0.glb.clouddn.com/qrcode-android.png)  
+	- [iOS(需越狱)](http://7ni3rk.com1.z0.glb.clouddn.com/玉令天下的Blog_0.3_iosbrk.ipa)  
+	![](http://7ni3rk.com1.z0.glb.clouddn.com/qrcode-ios.png)
 
 ###Donate to me
 ####用我的链接注册以下应用，你和我都能得到一些优惠  
@@ -31,7 +31,7 @@ date: 2015-02-07 19:19:08
 - [DigitalOcean(获得$10)](https://www.digitalocean.com/?refcode=2c163841a4f4)
 
 ####或者更直接些，捐助我一杯咖啡
-![向我付款](http://yulingtianxia.qiniudn.com/zhifubao.png)  
+![向我付款](http://7ni3rk.com1.z0.glb.clouddn.com/zhifubao.png)  
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ad -->
