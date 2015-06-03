@@ -20,13 +20,110 @@ tags:
 
 `NSPersistentStoreResult`是一个新加入的类，它也是一个基类，而且是抽象类，这个类作为`executeRequest:error:`返回内容的父类，相当于一个接口，它目前有两个子类：`NSPersistentStoreAsynchronousResult`和`NSBatchUpdateResult`。  
 
-你大概猜到了，`NSBatchUpdateResult`对应着前面的`NSBatchUpdateRequest`，下面说说`NSBatchUpdateRequest`。它有点像`NSFetchRequest`：它允许你指定一个想要更新数据的实体；也可以指定一个`affectedStores`，它存储了一个接受更新请求的`NSPersistentStore`数组。（其实它是`NSPersistentStoreRequest`的属性）；它也有一个谓词属性来做更新的条件，它跟`NSFetchRequest`中的谓词一样强大和灵活，类似于SQL的where语句；它允许你指定想要更新的字段，通过`propertiesToUpdate`属性来描述字段更新，它是一个字段，key为`NSPropertyDescription`或属性名字符串，value为`NSExpression`或常量。  
+你大概猜到了，`NSBatchUpdateResult`对应着前面的`NSBatchUpdateRequest`.下面举个栗子:  
 
-接着谈谈`NSBatchUpdateResult`，它有一个`result`属性和`resultType`属性，`result`中的内容跟`resultType`有关，可能是成功或者失败，有可能是每行被更新的ID，也可能是被更新的行数。  
+```
+func resetWeight(sender: AnyObject) {
+        // Create Entity Description
+        let batchUpdateRequest = NSBatchUpdateRequest(entityName: "Choice")
+        
+        // Configure Batch Update Request
+        batchUpdateRequest.resultType = NSBatchUpdateRequestResultType.UpdatedObjectIDsResultType
+        batchUpdateRequest.propertiesToUpdate = ["weight":1]
+//        batchUpdateRequest.affectedStores = []
+//        batchUpdateRequest.predicate = ...
+        
+        // Execute Batch Request
+        var batchUpdateRequestError:NSError? = nil
+        var batchUpdateResult = managedObjectContext?.executeRequest(batchUpdateRequest, error: &batchUpdateRequestError) as! NSBatchUpdateResult
+        if batchUpdateRequestError != nil {
+            println("Unable to execute batch update request.")
+            println("\(batchUpdateRequestError)\(batchUpdateRequestError?.localizedDescription)")
+        }
+        else {
+            // Extract Object IDs
+            let objectIDs = batchUpdateResult.result as! [NSManagedObjectID]
+            
+            for objectID in objectIDs {
+                // Turn Managed Objects into Faults
+                if var managedObject = managedObjectContext?.objectWithID(objectID) {
+                    managedObjectContext?.performBlock({ () -> Void in
+                        managedObjectContext?.refreshObject(managedObject, mergeChanges: false)
+                    })
+                }
+            }
+            // Perform Fetch
+            var fetchError: NSError? = nil
+            if !fetchedResultsController.performFetch(&fetchError) {
+                println("Unable to perform fetch.")
+                println("\(fetchError)\(fetchError?.localizedDescription)")
+            }
+        }
+    }
+```
 
-需要注意的是，由于`NSBatchUpdateRequest`并不会先将数据存入内存，而是直接操作数据库，所以并不会引起NSManagedObjectContext的同步更新，所以你不仅需要获取`NSBatchUpdateResult`然后刷新`NSManagedObjectContext`对应的数据和UI界面，还需要保证更新后的数据满足数据库模型上的`validation`，因为`NSManagedObjectContext`没有感知Batch Updates，一些数据验证工作就落在了程序员的身上（你需要写一段代码验证更新后的数据是合法的，用户可不希望在跑步APP上看到自己今天跑步里程是个负数）。一旦有非法数据录入数据库，下次加载并修改`NSManagedObject`的时候就会导致数据验证失败。除了上面提到的这些，还要注意Batch Updates对数据库的操作是乐观锁，也就是假定很少会发生同时存取同一块数据的情况，所以你需要制定一个合理的"merge"策略来应付因同时更新数据产生的冲突。  
+这段代码来自[HardChoice](http://hardchoice.yulingtianxia.com)的DetailViewController.swift文件,用于批量重置权重.  
 
-Batch Updates的优势在于其效率，在处理上万条数据的时候，它执行的时间跟SQL语句执行时间相当。  
+先来说说`NSBatchUpdateRequest`。它有点像`NSFetchRequest`：它允许你指定一个想要更新数据的实体；也可以指定一个`affectedStores`，它存储了一个接受更新请求的`NSPersistentStore`数组。（其实它是`NSPersistentStoreRequest`的属性）；它也有一个谓词属性`predicate`来做更新的条件，它跟`NSFetchRequest`中的谓词一样强大和灵活，类似于SQL的where语句；你需要指定想要更新的字段，通过`propertiesToUpdate`属性来描述字段更新，它是一个字段，key为`NSPropertyDescription`或属性名字符串，value为`NSExpression`或常量。在这里我选择的 Model 是`Choice`,它包含一个字符串类型的`name`字段和整型的`weight`字段.我想要将所有的`weight`字段都改为1;`resultType`属性是类型为`NSBatchUpdateRequestResultType`的枚举变量,默认为`StatusOnlyResultType`(什么都不返回),我在这里选择`UpdatedObjectIDsResultType`(返回被更新数据的 ID),当然你也可以选择`UpdatedObjectsCountResultType`来让结果返回更新记录的行数:
+ 
+ ```
+ // Create Entity Description
+let batchUpdateRequest = NSBatchUpdateRequest(entityName: "Choice")
+   
+// Configure Batch Update Request
+batchUpdateRequest.resultType = NSBatchUpdateRequestResultType.UpdatedObjectIDsResultType
+batchUpdateRequest.propertiesToUpdate = ["weight":1]
+//        batchUpdateRequest.affectedStores = []
+//        batchUpdateRequest.predicate = ...
+```
+
+然后用之前提过苹果新加的新方法`executeRequest:error:`来执行 request 并获取 result:
+
+```
+// Execute Batch Request
+var batchUpdateRequestError:NSError? = nil
+var batchUpdateResult = managedObjectContext?.executeRequest(batchUpdateRequest, error: &batchUpdateRequestError) as! NSBatchUpdateResult
+```
+
+接着谈谈`NSBatchUpdateResult`，它有一个`result`属性和`resultType`属性，`result`中的内容类型`resultType`跟我们之前在`NSBatchUpdateRequest`设置过的`resultType`属性是对应的,可能是成功或者失败，有可能是每行被更新的ID，也可能是被更新的行数。  
+
+需要注意的是，由于`NSBatchUpdateRequest`并不会先将数据存入内存，而是直接操作数据库，所以并不会引起`NSManagedObjectContext`的同步更新，所以你不仅需要获取`NSBatchUpdateResult`然后刷新`NSManagedObjectContext`对应的数据和UI界面，还需要保证更新后的数据满足数据库模型上的`validation`，因为`NSManagedObjectContext`没有感知Batch Updates，一些数据验证工作就落在了程序员的身上（你需要写一段代码验证更新后的数据是合法的，用户可不希望在跑步APP上看到自己今天跑步里程是个负数）。一旦有非法数据录入数据库，下次加载并修改`NSManagedObject`的时候就会导致数据验证失败。除了上面提到的这些，还要注意Batch Updates对数据库的操作是乐观锁，也就是假定很少会发生同时存取同一块数据的情况，所以你需要制定一个合理的"merge"策略来应付因同时更新数据产生的冲突:
+
+```
+// Extract Object IDs
+let objectIDs = batchUpdateResult.result as! [NSManagedObjectID]
+
+for objectID in objectIDs {
+ // Turn Managed Objects into Faults
+ if var managedObject = managedObjectContext?.objectWithID(objectID) {
+     managedObjectContext?.performBlock({ () -> Void in
+         managedObjectContext?.refreshObject(managedObject, mergeChanges: false)
+     })
+ }
+}
+// Perform Fetch
+var fetchError: NSError? = nil
+if !fetchedResultsController.performFetch(&fetchError) {
+ println("Unable to perform fetch.")
+ println("\(fetchError)\(fetchError?.localizedDescription)")
+}
+```  
+
+上面的代码先是从结果中取到了所有被更新数据的 ID, 再根据这些 ID 获取对应的 `NSManagedObject`,并使其过期失效,强制更新数据.这里关键的是下面这句:  
+
+```
+managedObjectContext?.performBlock({ () -> Void in
+    managedObjectContext?.refreshObject(managedObject, mergeChanges: false)
+})
+```
+
+在 Swift 中如果不采用异步执行 block 的策略, UI 就不会更新.但在 Objective-C 上可以不用`performBlock`方法,直接调用`refreshObject: mergeChanges:`方法就行.  
+
+最后看看效果,点击红色的重置权重按钮,所有选项右侧都变成1:  
+
+![重置权重](http://7ni3rk.com1.z0.glb.clouddn.com/IMG_1439.jpg)  
+
+Batch Updates的优势在于其效率，在处理上万条数据的时候，它执行的时间跟SQL语句执行时间相当。毕竟它绕开了`NSManagedObjectContext`直接修改底层数据库,节省内存,但千万别忘了手动更新 UI.  
 
 ##Asynchronous Fetching
 
@@ -46,7 +143,7 @@ Asynchronous Fetching的加入依然是为了解决CoreData读取海量数据所
 
 ```
 let request = NSFetchRequest(entityName: "MyEntity")
-        let async = NSAsynchronousFetchRequest(fetchRequest: request){
+let async = NSAsynchronousFetchRequest(fetchRequest: request){
             (id result) in
             if result.finalResult {
                 //TODO..
