@@ -107,7 +107,7 @@ if !fetchedResultsController.performFetch(&fetchError) {
  println("Unable to perform fetch.")
  println("\(fetchError)\(fetchError?.localizedDescription)")
 }
-```  
+```
 
 上面的代码先是从结果中取到了所有被更新数据的 ID, 再根据这些 ID 获取对应的 `NSManagedObject`,并使其过期失效,强制更新数据.这里关键的是下面这句:  
 

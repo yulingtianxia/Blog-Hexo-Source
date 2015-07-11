@@ -16,7 +16,7 @@ tags:
 ## MVVM
 于是**MVVM**流行起来, 它代表**Model View View-Model**, 它在这帮助我们创建更易处理, 更佳设计的代码.   
 
-在有些情况违背苹果建议的编码方式不是很能讲得通. 我不是说不赞成这样子, 我指的是可能会弊大于利. 比如我不建议你去实现个自己的 view controller 基类并试着自己处理视图生命周期.   
+有时候违背苹果建议的编码方式并不是个好做法. 我不是说不赞成这样子, 我指的是可能会弊大于利. 比如我不建议你去实现个自己的 view controller 基类并试着自己处理视图生命周期.   
 
 带着这种情绪, 我想提个问题: **使用除苹果推荐的 MVC 之外的应用设计模式是愚蠢的么?**  
 
@@ -135,7 +135,7 @@ view-model 会在视图控制器上以一个属性的方式存在. 视图控制�
 
 ## 子 View-Model
 
-我提到过使用 view-model 上的 `tweets` 数组中的对象配置表格视图的 cell. 通常你会期待展现 `tweets` 的是数据-模型对象. 你可能已经对其感到奇怪, 因为我们试图通过 MVVM 模式不暴漏数据-模型对象. (前面提到过的)  
+我提到过使用 view-model 上的 `tweets` 数组中的对象配置表格视图的 cell.通常你会期待展现 `tweets` 的是数据-模型对象. 你可能已经对其感到奇怪, 因为我们试图通过 MVVM 模式不暴漏数据-模型对象. (前面提到过的)  
 
 **view-model 不必在屏幕上显示所有东西. **你可用子 view-model 来代表屏幕上更小, 更潜在被封装的部分. 如果一个视图上的一小块儿(比如表格的 cell)在 app 中可以被重用以及(或)表现多个数据-模型对象, 子 view-model 会格外有利.   
 
@@ -227,9 +227,9 @@ MYTwitterUserProfileViewController *profileViewController =
 
 ```
 MYTwitterUserCell *cell =
-    [self. tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
+    [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
 // grab the cell view-model from the vc view-model and assign it
-cell. viewModel = self. viewModel. tweets[indexPath. row];
+cell.viewModel = self.viewModel. tweets[indexPath. row];
 ```
 
 有时我们可以在钩子程序调用前传入 view-model,  比如 `init` 和 `viewDidLoad`,  我们可以从view-model 的属性初始化所有 UI 元素的状态.   
@@ -330,7 +330,7 @@ RACSignal *networkSignal = [RACSignal createSignal:^RACDisposable *(id<RACSubscr
 一个被提供的机制就是 `RACObserve()` 宏. (如果你不喜欢宏, 你可以简单地看看罩子下面并用稍微多些冗杂的描述. 这也非常好. 在我们得到 [Swift 版本的替代](https://github.com/ReactiveCocoa/ReactiveCocoa/pull/1382)之前, 这也有[在 Swift 中使用 RAC](http://blog.scottlogic.com/2014/07/24/mvvm-reactivecocoa-swift.html) 的解决方案. )这个宏是 RAC 中对 KVO 中那些悲惨的 API 的替代. 你只需要传入对象和你想观察的那个对象某属性的 keypath. 给出这些参数后,  `RACObserve` 会创建一个信号, 一旦它有了订阅者, 它就立刻发送那个属性的当前值, 并在发送那个属性在这之后的任何变化.   
 
 ```
-RACSignal *usernameValidSignal = RACObserve(self. viewModel,  usernameIsValid);
+RACSignal *usernameValidSignal = RACObserve(self.viewModel,  usernameIsValid);
 ```
 
 ![](http://www.sprynthesis.com/assets/images/signal-racobserve.svg)  
@@ -371,10 +371,10 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
 - (void) viewDidLoad {
   // . . . 
   // create and get a reference to the signal
-  RACSignal *usernameValidSignal = RACObserve(self. viewModel,  isUsernameValid);
+  RACSignal *usernameValidSignal = RACObserve(self.viewModel,  isUsernameValid);
   // update the local property when this value changes
   [usernameValidSignal subscribeNext: ^(NSNumber *isValidNumber) {
-          self. usernameIsValid = isValidNumber. boolValue
+          self.usernameIsValid = isValidNumber. boolValue
       }];
 }
 ```
@@ -386,7 +386,7 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
 ```
 - (void) viewDidLoad {
     //. . . 
-    RAC(self,  usernameIsValid) = RACObserve(self. viewModel,  isUsernameValid);
+    RAC(self,  usernameIsValid) = RACObserve(self.viewModel,  isUsernameValid);
 }
 ```
 
@@ -443,34 +443,34 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
 - (void) viewDidLoad {
     [super viewDidLoad];
  
-    RAC(self. viewModel,  username) = [myTextfield rac_textSignal];
+    RAC(self.viewModel,  username) = [myTextfield rac_textSignal];
  
-    RACSignal *usernameIsValidSignal = RACObserve(self. viewModel,  usernameValid);
+    RACSignal *usernameIsValidSignal = RACObserve(self.viewModel,  usernameValid);
  
-    RAC(self. goButton,  alpha) = [usernameIsValidSignal
+    RAC(self.goButton,  alpha) = [usernameIsValidSignal
         map:  ^(NSNumber *valid) {
             return valid. boolValue ? @1 :  @0. 5;
         }];
  
-    RAC(self. goButton,  enabled) = usernameIsValidSignal;
+    RAC(self.goButton,  enabled) = usernameIsValidSignal;
  
-    RAC(self. avatarImageView,  image) = RACObserve(self. viewModel,  userAvatarImage);
+    RAC(self.avatarImageView,  image) = RACObserve(self.viewModel,  userAvatarImage);
     
-    RAC(self. userNameLabel,  text) = RACObserve(self. viewModel,  userFullName);
+    RAC(self.userNameLabel,  text) = RACObserve(self.viewModel,  userFullName);
  
     @weakify(self);
-    [[[RACSignal merge: @[RACObserve(self. viewModel,  tweets), 
-                        RACObserve(self. viewModel,  allTweetsLoaded)]]
+    [[[RACSignal merge: @[RACObserve(self.viewModel,  tweets), 
+                        RACObserve(self.viewModel,  allTweetsLoaded)]]
         bufferWithTime: 0 onScheduler: [RACScheduler mainThreadScheduler]]
         subscribeNext: ^(id value) {
             @strongify(self);
-            [self. tableView reloadData];
+            [self.tableView reloadData];
         }];
     
-    [[self. goButton rac_signalForControlEvents: UIControlEventTouchUpInside]
+    [[self.goButton rac_signalForControlEvents: UIControlEventTouchUpInside]
         subscribeNext:  ^(id value) {
             @strongify(self);
-            [self. viewModel getTweetsForCurrentUsername];
+            [self.viewModel getTweetsForCurrentUsername];
         }];
 }
  
@@ -478,16 +478,16 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
     // if table section is the tweets section
     if (indexPath. section == 0) {
         MYTwitterUserCell *cell =
-        [self. tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
+        [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
         
         // grab the cell view model from the vc view model and assign it
-        cell. viewModel = self. viewModel. tweets[indexPath. row];
+        cell.viewModel = self.viewModel. tweets[indexPath. row];
         return cell;
     } else {
         // else if the section is our loading cell
         MYLoadingCell *cell =
-        [self. tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
-        [self. viewModel loadMoreTweets];
+        [self.tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
+        [self.viewModel loadMoreTweets];
         return cell;
     }
 }
@@ -501,49 +501,49 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
 - (void) awakeFromNib {
     [super awakeFromNib];
     
-    RAC(self. avatarImageView,  image) = RACObserve(self,  viewModel. tweetAuthorAvatarImage);
-    RAC(self. userNameLabel,  text) = RACObserve(self,  viewModel. tweetAuthorFullName);
-    RAC(self. tweetTextLabel,  text) = RACObserve(self,  viewModel. tweetContent);
+    RAC(self.avatarImageView,  image) = RACObserve(self,  viewModel. tweetAuthorAvatarImage);
+    RAC(self.userNameLabel,  text) = RACObserve(self,  viewModel. tweetAuthorFullName);
+    RAC(self.tweetTextLabel,  text) = RACObserve(self,  viewModel. tweetContent);
 }
 ```
 
 让我们过一遍这个例子.   
 
 ```
-RAC(self. viewModel,  username) = [myTextfield rac_textSignal];
+RAC(self.viewModel,  username) = [myTextfield rac_textSignal];
 ```
 
 在这我们用 RAC 库中的方法从 `UITextField` 拉取一个信号. 这行代码将 view-model 上的可读写属性 `username` 绑定到文本框上的用户输入的任何更新.   
 
 ```
-RACSignal *usernameIsValidSignal = RACObserve(self. viewModel,  usernameValid);
+RACSignal *usernameIsValidSignal = RACObserve(self.viewModel,  usernameValid);
 
-RAC(self. goButton,  alpha) = [usernameIsValidSignal
+RAC(self.goButton,  alpha) = [usernameIsValidSignal
     map:  ^(NSNumber *valid) {
         return valid. boolValue ? @1 :  @0. 5;
     }];
 
-RAC(self. goButton,  enabled) = usernameIsValidSignal;
+RAC(self.goButton,  enabled) = usernameIsValidSignal;
 ```
 
 在这我们用 `RACObserve` 方法在 view-model 的 `usernameValid` 属性上创建了一个信号 `usernameIsValidSignal`.  无论何时属性发生变化, 它将会沿着管道发送一个新的 `@YES` 或 `@NO`. 我们拿到那个值并将其绑定到 `goButton` 的两个属性上. 首先我们将 `alpha` 分别对应 YES 或 NO 更新到1或0. 5(记着在这必须返回 `NSNumber`). 然后我们直接将信号绑定到 `enabled` 属性, 因为 YES 和 NO 在这无需转换就能完美地运作.   
 
 ```
-RAC(self. avatarImageView,  image) = RACObserve(self. viewModel,  userAvatarImage);
+RAC(self.avatarImageView,  image) = RACObserve(self.viewModel,  userAvatarImage);
 
-RAC(self. userNameLabel,  text) = RACObserve(self. viewModel,  userFullName);
+RAC(self.userNameLabel,  text) = RACObserve(self.viewModel,  userFullName);
 ```
 
 下面我们为表头的图像视图和用户标签创建绑定, 再次在 view-model 上对应的属性上用 `RACObserve` 宏创建信号.   
 
 ```
 @weakify(self);
-[[[RACSignal merge: @[RACObserve(self. viewModel,  tweets), 
-                     RACObserve(self. viewModel,  allTweetsLoaded)]]
+[[[RACSignal merge: @[RACObserve(self.viewModel,  tweets), 
+                     RACObserve(self.viewModel,  allTweetsLoaded)]]
     bufferWithTime: 0 onScheduler: [RACScheduler mainThreadScheduler]]
     subscribeNext: ^(id value) {
         @strongify(self);
-        [self. tableView reloadData];
+        [self.tableView reloadData];
     }];
 ```
 
@@ -554,10 +554,10 @@ RAC(self. userNameLabel,  text) = RACObserve(self. viewModel,  userFullName);
 *注意我在这用 `@weakify/@strongify` 宏切换 strong 和 weak.  这在创建所有这些 block 时非常重要. 在 RAC 的 block 中使用 `self` 时`self` 将会被捕获为强引用并得到保留环, 除非你尤其意识到要破除保留环*  
 
 ```
-[[self. goButton rac_signalForControlEvents: UIControlEventTouchUpInside]
+[[self.goButton rac_signalForControlEvents: UIControlEventTouchUpInside]
     subscribeNext:  ^(id value) {
         @strongify(self);
-        [self. viewModel getTweetsForCurrentUsername];
+        [self.viewModel getTweetsForCurrentUsername];
     }];
 ```
 
@@ -567,8 +567,8 @@ RAC(self. userNameLabel,  text) = RACObserve(self. viewModel,  userFullName);
 
 ```
 MYLoadingCell *cell =
-    [self. tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
-[self. viewModel loadMoreTweets];
+    [self.tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
+[self.viewModel loadMoreTweets];
 return cell;
 ```
 
@@ -578,9 +578,9 @@ return cell;
 - (void) awakeFromNib {
     [super awakeFromNib];
 
-    RAC(self. avatarImageView,  image) = RACObserve(self,  viewModel. tweetAuthorAvatarImage);
-    RAC(self. userNameLabel,  text) = RACObserve(self,  viewModel. tweetAuthorFullName);
-    RAC(self. tweetTextLabel,  text) = RACObserve(self,  viewModel. tweetContent);
+    RAC(self.avatarImageView,  image) = RACObserve(self,  viewModel. tweetAuthorAvatarImage);
+    RAC(self.userNameLabel,  text) = RACObserve(self,  viewModel. tweetAuthorFullName);
+    RAC(self.tweetTextLabel,  text) = RACObserve(self,  viewModel. tweetContent);
 }
 ```
 

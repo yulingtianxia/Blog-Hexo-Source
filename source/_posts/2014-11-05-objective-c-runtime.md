@@ -378,7 +378,7 @@ PS：动态方法解析会在消息转发机制浸入前执行。如果 `respond
     return [super forwardingTargetForSelector:aSelector];
 }
 ```
-毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，不过千万别返回`self`，因为那样会死循环。  
+毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，~~不过千万别返回`self`，因为那样会死循环。~~ 如果此方法返回nil或self,则会进入消息转发机制(`forwardInvocation:`);否则将向返回的对象重新发送消息。  
 ###转发
 当动态方法解析不作处理返回`NO`时，消息转发机制会被触发。在这时`forwardInvocation:`方法会被执行，我们可以重写这个方法来定义我们的转发逻辑：  
 ```
@@ -573,6 +573,58 @@ Method Swizzling 的确是一个值得深入研究的话题，Method Swizzling �
 - [How do I implement method swizzling?](http://stackoverflow.com/questions/5371601/how-do-i-implement-method-swizzling)
 - [What are the Dangers of Method Swizzling in Objective C?](http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c)
 - [JRSwizzle](https://github.com/rentzsch/jrswizzle)
+
+在用 SpriteKit 写游戏的时候,因为 API 本身有一些缺陷(增删节点时不考虑父节点是否存在啊,很容易崩溃啊有木有!),我在 Swift 上使用 Method Swizzling弥补这个缺陷:  
+
+```
+extension SKNode {
+    
+    class func yxy_swizzleAddChild() {
+        let cls = SKNode.self
+        let originalSelector = Selector("addChild:")
+        let swizzledSelector = Selector("yxy_addChild:")
+        let originalMethod = class_getInstanceMethod(cls, originalSelector)
+        let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
+        method_exchangeImplementations(originalMethod, swizzledMethod)
+    }
+    
+    class func yxy_swizzleRemoveFromParent() {
+        let cls = SKNode.self
+        let originalSelector = Selector("removeFromParent")
+        let swizzledSelector = Selector("yxy_removeFromParent")
+        let originalMethod = class_getInstanceMethod(cls, originalSelector)
+        let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
+        method_exchangeImplementations(originalMethod, swizzledMethod)
+    }
+    
+    func yxy_addChild(node: SKNode) {
+        if node.parent == nil {
+            self.yxy_addChild(node)
+        }
+        else {
+            println("This node has already a parent!\(node.name)")
+        }
+    }
+    
+    func yxy_removeFromParent() {
+        if parent != nil {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.yxy_removeFromParent()
+            })
+        }
+        else {
+            println("This node has no parent!\(name)")
+        }
+    }
+    
+}
+```
+然后其他地方调用那两个类方法:  
+```
+SKNode.yxy_swizzleAddChild()
+SKNode.yxy_swizzleRemoveFromParent()
+```
+因为 Swift 中的 extension 的特殊性,最好在某个类的`load()` 方法中调用上面的两个方法.我是在AppDelegate 中调用的,于是保证了应用启动时能够执行上面两个方法.
 
 ##总结
 我们之所以让自己的类继承`NSObject`不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的`[receiver message]`背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。

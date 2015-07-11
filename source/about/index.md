@@ -29,6 +29,7 @@ date: 2015-02-07 19:19:08
 - [七牛云存储(5G流量)](https://portal.qiniu.com/signup?code=3l9qmmes7kimq)
 - [OneDrive(0.5G容量)](https://onedrive.live.com/?invref=71b98deb9fa7a559&invsrc=90)
 - [DigitalOcean(获得$10)](https://www.digitalocean.com/?refcode=2c163841a4f4)
+- [枫叶主机](https://www.fyzhuji.com/aff.php?aff=1139)
 
 ####或者更直接些，捐助我一杯咖啡
 ![向我付款](http://7ni3rk.com1.z0.glb.clouddn.com/zhifubao.png)  
