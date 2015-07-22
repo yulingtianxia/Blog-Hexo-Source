@@ -496,25 +496,28 @@ enum {
 + (void)load { 
     static dispatch_once_t onceToken; 
     dispatch_once(&onceToken, ^{ 
-        Class class = [self class]; 
- 
-        // When swizzling a class method, use the following: 
-        // Class class = object_getClass((id)self); 
+        Class aClass = [self class]; 
  
         SEL originalSelector = @selector(viewWillAppear:); 
         SEL swizzledSelector = @selector(xxx_viewWillAppear:); 
  
-        Method originalMethod = class_getInstanceMethod(class, originalSelector); 
-        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector); 
+        Method originalMethod = class_getInstanceMethod(aClass, originalSelector); 
+        Method swizzledMethod = class_getInstanceMethod(aClass, swizzledSelector); 
+        
+        // When swizzling a class method, use the following:
+        // Class aClass = object_getClass((id)self);
+        // ...
+        // Method originalMethod = class_getClassMethod(aClass, originalSelector);
+        // Method swizzledMethod = class_getClassMethod(aClass, swizzledSelector);
  
         BOOL didAddMethod = 
-            class_addMethod(class, 
+            class_addMethod(aClass, 
                 originalSelector, 
                 method_getImplementation(swizzledMethod), 
                 method_getTypeEncoding(swizzledMethod)); 
  
         if (didAddMethod) { 
-            class_replaceMethod(class, 
+            class_replaceMethod(aClass, 
                 swizzledSelector, 
                 method_getImplementation(originalMethod), 
                 method_getTypeEncoding(originalMethod)); 
@@ -536,6 +539,18 @@ enum {
 上面的代码通过添加一个`Tracking`类别到`UIViewController`类中，将`UIViewController `类的`viewWillAppear:`方法和`Tracking`类别中`xxx_viewWillAppear:`方法的实现相互调换。Swizzling 应该在`+load`方法中实现，因为`+load`是在一个类最开始加载时调用。`dispatch_once`是GCD中的一个方法，它保证了代码块只执行一次，并让其为一个原子操作，线程安全是很重要的。  
 
 如果类中不存在要替换的方法，那就先用`class_addMethod`和`class_replaceMethod`函数添加和替换两个方法的实现；如果类中已经有了想要替换的方法，那么就调用`method_exchangeImplementations`函数交换了两个方法的 `IMP`，这是苹果提供给我们用于实现 Method Swizzling 的便捷方法。  
+
+可能有人注意到了这行:
+
+```
+// When swizzling a class method, use the following:
+// Class aClass = object_getClass((id)self);
+// ...
+// Method originalMethod = class_getClassMethod(aClass, originalSelector);
+// Method swizzledMethod = class_getClassMethod(aClass, swizzledSelector); 
+```
+`object_getClass((id)self)` 与 `[self class]` 返回的结果类型都是 `Class`,但前者为元类,后者为其本身,因为此时 `self` 为 `Class` 而不是实例.更多讨论可参考[这里](http://stackoverflow.com/questions/15906130/object-getclassobj-and-obj-class-give-different-results).
+
 
 PS:如果类中没有想被替换实现的原方法时，`class_replaceMethod`相当于直接调用`class_addMethod`向类中添加该方法的实现；否则调用`method_setImplementation`方法，`types`参数会被忽略。`method_exchangeImplementations`方法做的事情与如下的原子操作等价：  
 
