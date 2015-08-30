@@ -272,7 +272,7 @@ class Player: Shape {
 
 ##Swift中用访问者模式处理碰撞
 
-访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：[Double Dispatch模式及其在iOS开发中实践](http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/)，里面包含了C++，Java和Obje-C的实现，这次我们用Swift实现访问者模式。  
+访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：[Double Dispatch模式及其在iOS开发中实践](http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/)，里面包含了C++，Java和Objective-C的实现，这次我们用Swift实现访问者模式。  
 
 因为SpriteKit中物理碰撞检测到的都是`SKPhysicsBody`，所以我们的被访问者需要包含一个`SKPhysicsBody`对象：  
 
@@ -481,11 +481,11 @@ struct Data{
 
 ```
 let scene = self.scene as GameScene
-        let image = scene.imageFromNode(scene)
-        let text = "我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！"
-        let activityItems = [image,text]
-        let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        (scene.view.nextResponder() as UIViewController).presentViewController(activityController, animated: true, completion: nil)
+let image = scene.imageFromNode(scene)
+let text = "我在Spiral游戏中得了\(Data.score)分，快来追逐我的步伐吧！"
+let activityItems = [image,text]
+let activityController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+(scene.view.nextResponder() as UIViewController).presentViewController(activityController, animated: true, completion: nil)
 ```
 
 

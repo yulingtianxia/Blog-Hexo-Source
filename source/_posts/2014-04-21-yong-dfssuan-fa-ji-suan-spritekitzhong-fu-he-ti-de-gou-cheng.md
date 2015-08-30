@@ -120,7 +120,7 @@ Graph *graph = [[Graph alloc] initWithNodes:nodes];
 for (int i=0; i<[graph.sets count]; i++) {
     NSLog(@"%@",graph.sets[i]);
 }
-```       
+```
 
 完整代码在[这里](https://github.com/yulingtianxia/MyFirstGame.git)的`ColorAtom`工程  
 在向`SKSpriteNode.userdata`写键值对的时候，发现写进去后再读取依然是nil，这是因为`userdata`属性完全归用户随意使用，苹果甚至在SKSpriteNode初始化的时候干脆默认`userdata`是`nil`，所以需要初始化下：  

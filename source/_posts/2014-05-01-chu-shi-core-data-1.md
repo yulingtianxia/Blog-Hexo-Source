@@ -418,17 +418,17 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 可能你会觉得有些混乱，这里贴上几张图梳理下各个类的关系和结构：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388301.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388301.png?imageView2/2/w/800/q/75)  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389167.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389167.png?imageView2/2/w/800/q/75)  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388423.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388423.png?imageView2/2/w/800/q/75)  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389646.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389646.png?imageView2/2/w/800/q/75)  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389047.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389047.png?imageView2/2/w/800/q/75)  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388523.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388523.jpg?imageView2/2/w/800/q/75)  
 
 
 最后，找到`insertNewObject`方法，当用户尝试加入一个对象到表视图时，该方法将被调用。接着你将看到如下的处理过程：  
