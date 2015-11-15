@@ -1,19 +1,21 @@
 title: 腾讯实习第一个月工作总结
 date: 2015-11-13 23:55:38
 tags:
+- iOS
+
 ---
 
 来腾讯实习正好一个月了，因为项目已经进入了成熟期，接了两个需求，改了二十几个 bug。所以把这期间的一些思考写下来，发了邮件分享给组内同事们。我把一些自己觉得不合适的内容刨除出去，选取邮件的部分内容写在这里：）
 
 <!--more-->
 
-#1. 让 UIAlertController 兼容 iOS7
+#让 UIAlertController 兼容 iOS7
 
 ##问题背景
 
 公司项目中用到了 [`UIAlertController`](http://yulingtianxia.com/blog/2014/09/29/uialertcontroller-in-ios8/) 来实现自定义 actionsheet 文字颜色的需求，而 `UIAlertController` **只能在 iOS8 及更高版本系统使用，在iOS7下会 crash**。老大让我写个组件兼容下 iOS7，于是 `TBAlertController` 诞生了。
 
-下面给出的关于 `TBAlertController` 的代码片段都不是真实源码，只为说明
+下面给出的关于 `TBAlertController` 的代码片段都不是真实源码，只为说明实现的具体思想。
 
 ##分析问题
 
@@ -270,7 +272,7 @@ controller.ownerController = self;
 
 在这里还想说下关于 block 中的 [Weak/Strong Dance](http://ashfurrow.com/blog/weakstrong-dance/) 的问题。我看到项目中好多带有 block 的代码都使用一些宏定义，比如 [@weakify(self): A more elegant solution to weakSelf in Objective-C](http://blog.aceontech.com/post/111694918560/weakifyself-a-more-elegant-solution-to)，而个别 block 其实是不需要使用 weakSelf 的，这些 block 的拥有者并没被 `self` 在其生存周期始终强引用着，所以没必要用 weakSelf。反而在少数极端情况下（例如异步延时执行 block）因为捕获的是 weakSelf，而在 block 执行前 self 已经是 `nil`。此时不要指望 block 中的 strongSelf 会帮到什么忙，因为它力所能及的只是在 block 执行过程中保证对 weakSelf 的强引用。如若 weakSelf 不再指向 `self` 而是 `nil`，block 中的内容肯定不会正常执行（这不代表一定会 crash，向 `nil` 发送消息会执行默认的行为）。
 
-#2. LLDB 调试 UI 的技巧
+#LLDB 调试 UI 的技巧
 
 ##问题背景
 
@@ -301,7 +303,7 @@ e (void)[CATransaction flush]
 
 最直观的还是能可视化地查看视图层级，比如某个视图为何不显示？是因为 hidden 了还是 alpha 问题，或是被其他视图遮挡住了？捕获下视图层级一看便知。但其缺点是捕获速度较慢，视图层级较为复杂时，查找明确类型的视图或者明确内存地址的视图对象较为困难。所以 lldb 调试 UI 还是有一定优势的，尤其是在动画繁多界面变化节奏较快时也会需要用到。我在调试“图片选择器触发摄像头拍照后屏幕变黑无反应”的 bug 时就是靠 `pvc` 和 `pviews` 这两个命令来弄清视图控制器与视图之间复杂的层级。表面上看是图片选择器的原因，因为其他用到摄像头组件的地方并没有这个 bug，其实摄像头组件对外部调用有一些依赖条件，一旦不满足就会产生 bug。最后更改拍照控件的实现，弃用了 `UIWindow` 和一些视图控制器，简化层级，从源头上消除了 bug。
 
-#3.项目实践管理经验
+#项目实践管理经验
 
 在公司项目中我发现了有关项目资源管理的一些问题：
 
@@ -313,7 +315,7 @@ e (void)[CATransaction flush]
 
 我觉得图片最好是放在 xcassets 中，因为好处简直是一大堆。比如对多分辨率多设备的支持，矢量pdf图片的支持，类似安卓“9.png”的图片 slicing 支持，更改图片颜色和 Xcode7 新增的“On Demand Resource”等等。如果图片过多，还可以在 xcassets 中再建立 xcassets 嘛，如果有打包需要可以配合上 Bundle。
 
-图片一旦用 Asset Catalog 管理后，在程序中加载图片只需要用图片名而无需后缀名，更不用关心几倍分辨率，是用2x 还是 3x？Xcode 全都帮我们搞定了！之前碰到过一个 iOS7 上图片被拉伸的 bug，原因就是没有使用 Asset Catalog 管理图片资源，而是直接用文件夹。而在代码中却写了图片文件的全名，带比如 “pic@2x.png”，本来贴心的 Xcode 会为我们在后缀名前自动加上 “@2x” 来寻找图片，于是去查找 “pic@2x@2x.png”，发现并没有这个二倍分辨率图片，Xcode 于是只好继续寻找一倍分辨率的图片，也就是 “pic@2x.png” 被当做了一倍分辨率的图片处理了，所以 `UIImage` 的 `size` 就变大了。
+图片一旦用 Asset Catalog 管理后，在程序中加载图片只需要用图片名而无需后缀名，更不用关心几倍分辨率，是用2x 还是 3x？Xcode 全都帮我们搞定了！之前碰到过一个 iOS7 上图片被拉伸的 bug，原因就是没有使用 Asset Catalog 管理图片资源，而是直接用文件夹。而在代码中却写了图片文件的全名，比如 “pic@2x.png”，本来贴心的 Xcode 会为我们在后缀名前自动加上 “@2x” 来寻找图片，于是去查找 “pic@2x@2x.png”，发现并没有这个二倍分辨率图片，Xcode 于是只好继续寻找一倍分辨率的图片，也就是 “pic@2x.png” 被当做了一倍分辨率的图片处理了，所以 `UIImage` 的 `size` 就变大了。
 
 ##文案管理
 
