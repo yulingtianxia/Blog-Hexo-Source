@@ -57,7 +57,7 @@ iOS会根据样式的用途来合理调整字体。
 - tableView:estimatedHeightForFooterInSection:
 ```
 
-当然对应这三个方法`UITableView`也`estimatedRowHeight`、` estimatedSectionHeaderHeight`和`estimatedSectionFooterHeight`三个属性，局限性在于只能统一定义所有行和节的高度。    
+当然对应这三个方法`UITableView`也有`estimatedRowHeight`、` estimatedSectionHeaderHeight`和`estimatedSectionFooterHeight`三个属性，局限性在于只能统一定义所有行和节的高度。    
 
 以Cell为例，iOS会根据给出的预计高度来创建一个Cell，但等到真正要显示它的时候，iOS8会在self-sizing计算得出新的Size并调整table的`contentSize`后，将Cell绘制显示出来。关键在于如何得出Cell新的Size，iOS提供了两种方法：  
 
