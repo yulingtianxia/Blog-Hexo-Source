@@ -175,7 +175,30 @@ static inline uint32_t ptr_hash(uint32_t key)
 #endif
 ```
 
-再介绍下 `SideTable` 这个类，它用于管理引用计数表和后面将要提到的 `weak` 表，并使用 `spinlock_lock` 自旋锁来防止操作表结构时可能的竞态条件。
+再介绍下 `SideTable` 这个类，它用于管理引用计数表和 `weak` 表，并使用 `spinlock_lock` 自旋锁来防止操作表结构时可能的竞态条件。它用一个 64*128 大小的 `uint8_t` 静态数组作为 buffer 来保存所有的 `SideTable` 实例。并提供三个公有属性：
+```
+spinlock_t slock;//保证原子操作的自选锁
+RefcountMap refcnts;//保存引用计数的散列表
+weak_table_t weak_table;//保存 weak 引用的全局散列表
+```
+
+还提供了一个工厂方法，用于根据对象的地址在 buffer 中寻找对应的 `SideTable` 实例：
+```
+static SideTable *tableForPointer(const void *p) 
+```
+
+`weak` 表的作用是在对象执行 `dealloc` 的时候将所有指向该对象的 `weak` 指针的值设为 `nil`，避免悬空指针。这是 `weak` 表的结构：
+
+```
+struct weak_table_t {
+    weak_entry_t *weak_entries;
+    size_t    num_entries;
+    uintptr_t mask;
+    uintptr_t max_hash_displacement;
+};
+```
+
+苹果使用一个全局的 `weak` 表来保存所有的 `weak` 引用。并将对象作为键，`weak_entry_t` 作为值。`weak_entry_t` 中保存了所有指向该对象的 `weak` 指针。
 
 #获取引用计数
 

@@ -39,7 +39,7 @@ pod setup
 更新完成后，下一步是注册trunk，这一步需要自备梯子，否则就会出现这种[问题](https://github.com/CocoaPods/CocoaPods/issues/2174)
 
 ```
-pod trunk register yulingtianxia@gmail.com 'Yang Xiaoyu' --description='macbook pro' --verbose
+pod trunk register  youremail@gmail.com 'Yang Xiaoyu' --description='macbook pro' --verbose
 ```
 上面的命令是我注册时使用的，你需要把邮箱和名字以及描述替换成你的，加上`--verbose`可以输出详细debug信息，方便出错时查看。  
 
@@ -77,14 +77,14 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '6.0'
   s.requires_arc = true
 
-  s.source_files = 'YXYNumberAnimationLabel/*'
+  s.source_files = 'YXYNumberAnimationLabel/**/*.{h,m}'
   s.frameworks = 'Foundation', 'UIKit'
   #s.private_header_files = 'Classes/ios/private/*.h'
   
   #s.dependency 'FLKAutoLayout', '~> 0.1'
 end
 ```
-**具体配置什么的大家走很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作**  
+**具体配置什么的大家都很熟悉，这里只是讲述使用trunk后需要注意的地方和新的操作**  
 
 在验证和上传你的podspec文件到trunk之前，需要将你的源码push到Github上，tag一个版本号并发布一个release版本，这样podspec文件中的`s.source`的值才能是准确的：  
 
