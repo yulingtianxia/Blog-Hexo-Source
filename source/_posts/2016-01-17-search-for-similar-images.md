@@ -1,4 +1,4 @@
-title: 寻找相似内容的图片
+title: 如何自制一款寻找相似图片的 Mac 工具
 date: 2016-01-17 15:13:18
 tags:
 
@@ -7,9 +7,9 @@ tags:
 
 ---
 
-这周花了一天时间做了个 Mac OS X 上的小工具，用来查找相似内容的图片。起因是公司的 iOS 项目中已有的图片管理混乱，有些图片文件名不规范，还有一些内容重复但文件名不同的图片。现在视觉要给出一些 3x 分辨率的图片，如何与已有的低分辨率图片匹配，这又是个问题。人工一个个去找固然好，但这种技术含量低的体力活很浪费精力和时间。
+这周花了一天半的时间做了个 Mac OS X 上的小工具，用来查找相似内容的图片。起因是公司的 iOS 项目中已有的图片管理混乱，有些图片文件名不规范，还有一些内容重复但文件名不同的图片。现在视觉要给出一些 3x 分辨率的图片，如何与已有的低分辨率图片匹配，这又是个问题。人工一个个去找固然好，但这种技术含量低的体力活很浪费精力和时间。
 
-Github：https://github.com/yulingtianxia/SimilarImageHunter
+Github 地址：https://github.com/yulingtianxia/SimilarImageHunter
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20160117-2.png)
 
@@ -169,6 +169,6 @@ result = similarityOfAspectRatio*weightOfAspectRatio + similarityOfPixelVector*(
 1. `NSOutlineView` 的数据来源：[极简教程](http://stackoverflow.com/questions/6664898/nsoutlineview-example)
 2. [NSTableView only displaying “Table View Cell”](http://stackoverflow.com/questions/7533682/nstableview-only-displaying-table-view-cell)
 
-毛玻璃效果、后台异步任务、Autolayout 之类的常识这些就不细说了。
+毛玻璃效果、后台异步任务、Autolayout 之类的常识这些就不细说了。更多的细节还是看源码吧：[SimilarImageHunter](https://github.com/yulingtianxia/SimilarImageHunter)
 
 我现在看太阳都是绿色的。
