@@ -15,6 +15,8 @@ Github 地址：https://github.com/yulingtianxia/SimilarImageHunter
 
 <!--more-->
 
+最新 Release 下载：https://github.com/yulingtianxia/SimilarImageHunter/releases
+
 我开发的这款工具可以在目标路径中找出与原始路径中图片最为相似的图片。如果目标路径中有多张图片相似度相同且最大，这些图片都会被列出来。树形列表第一列的父节点内容为原始路径中的图片，子节点为目标路径中匹配到的最佳相似内容图片。列表第二列为相似度。双击图片路径即可打开该图片。点击 “HUNT” 按钮开始寻找相似图片，第一次使用时处理图片信息耗时较长，可在中途点击 “CANCEL” 按钮取消当前任务。“CLEAR” 按钮则可清除当前界面信息。
 
 ## 获取图片路径
@@ -169,6 +171,12 @@ result = similarityOfAspectRatio*weightOfAspectRatio + similarityOfPixelVector*(
 1. `NSOutlineView` 的数据来源：[极简教程](http://stackoverflow.com/questions/6664898/nsoutlineview-example)
 2. [NSTableView only displaying “Table View Cell”](http://stackoverflow.com/questions/7533682/nstableview-only-displaying-table-view-cell)
 
+双击文件路径名自动打开图片，使用 `NSWorkspace` 即可。
+
+注意用内存缓存上次计算的指纹向量，这样可以大大减少下次 UI 的更新时间。
+
 毛玻璃效果、后台异步任务、Autolayout 之类的常识这些就不细说了。更多的细节还是看源码吧：[SimilarImageHunter](https://github.com/yulingtianxia/SimilarImageHunter)
+
+至于之后的一键替换文件名等功能，虽然是刚需，但是还需等安全可靠的替换策略制定出之后才可以祭出。
 
 我现在看太阳都是绿色的。

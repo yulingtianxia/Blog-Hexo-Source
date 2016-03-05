@@ -195,6 +195,32 @@ struct objc_ivar {
 }                                                            OBJC2_UNAVAILABLE;
 ```
 
+可以根据实例查找其在类中的名字，也就是“反射”：
+
+```
+-(NSString *)nameWithInstance:(id)instance {
+    unsigned int numIvars = 0;
+    NSString *key=nil;
+    Ivar * ivars = class_copyIvarList([self class], &numIvars);
+    for(int i = 0; i < numIvars; i++) {
+        Ivar thisIvar = ivars[i];
+        const char *type = ivar_getTypeEncoding(thisIvar);
+        NSString *stringType =  [NSString stringWithCString:type encoding:NSUTF8StringEncoding];
+        if (![stringType hasPrefix:@"@"]) {
+            continue;
+        }
+        if ((object_getIvar(self, thisIvar) == instance)) {//此处若 crash 不要慌！
+            key = [NSString stringWithUTF8String:ivar_getName(thisIvar)];
+            break;
+        }
+    }
+    free(ivars);
+    return key;
+}
+```
+
+`class_copyIvarList` 函数获取的不仅有实例变量，还有属性。但会在原本的属性名前加上一个下划线。
+
 ###IMP
 `IMP`在`objc.h`中的定义是：  
 ```
@@ -270,6 +296,7 @@ for (i = 0; i < outCount; i++) {
 }
 ```
 
+对比下 `class_copyIvarList` 函数，使用 `class_copyPropertyList` 函数只能获取类的属性，而不包含成员变量。但此时获取的属性名是不带下划线的。
 
 ##消息
 前面做了这么多铺垫，现在终于说到了消息了。Objc 中发送消息是用中括号（`[]`）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。  
