@@ -390,6 +390,38 @@ void dynamicMethodIMP(id self, SEL _cmd) {
 
 PS：动态方法解析会在消息转发机制浸入前执行。如果 `respondsToSelector:` 或 `instancesRespondToSelector:`方法被执行，动态方法解析器将会被首先给予一个提供该方法选择器对应的`IMP`的机会。如果你想让该方法选择器被传送到转发机制，那么就让`resolveInstanceMethod:`返回`NO`。  
 
+评论区有人问如何用 `resolveClassMethod:` 解析类方法，我将他贴出有问题的代码做了纠正后如下：
+头文件：
+```
+#import <Foundation/Foundation.h>
+
+@interface Student : NSObject
++ (void)learnClass:(NSString *) string;
+@end
+```
+m 文件：
+```
+#import "Student.h"
+#import <objc/runtime.h>
+
+@implementation Student
+
++ (BOOL)resolveClassMethod:(SEL)sel {
+    if (sel == @selector(learnClass:)) {
+        class_addMethod(object_getClass([self class]), sel, class_getMethodImplementation(object_getClass(self), @selector(myClassMethod:)), "v@:");
+        return YES;
+    }
+    return [class_getSuperclass([self class]) resolveClassMethod:sel];
+}
+
++ (void)myClassMethod:(NSString *)string {
+    NSLog(@"myClassMethod = %@", string);
+}
+@end
+```
+
+凡是涉及到类方法时，一定要弄清楚元类、selector、IMP 等概念，这样才能做到举一反三，随机应变。
+
 ##消息转发
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20141113-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
