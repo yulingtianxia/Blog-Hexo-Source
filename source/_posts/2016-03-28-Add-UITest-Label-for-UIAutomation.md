@@ -38,6 +38,8 @@ UIAutomation 是苹果提供的自动化测试框架，但依然需要我们手�
 
 针对自动为类的属性和实例变量加标签，我采用 hook 和递归的方式。hook `UIView` 中的`accessibilityIdentifier` 的原因是此时的视图层级更全，并且是惰性生成标签。其实使用 `accessibilityLabel` 也是可以的，但对 VoiceOver 功能会有影响，毕竟变量名不像视图文字内容那样有实际意义。
 
+PS：这里之所以不 hook `addSubview:` 是因为在添加 subview 时，视图层级树并不完整。虽然调用 `accessibilityIdentifier` 时视图层级也可能不完整（比如在 `addSubview:` 之前调用 `accessibilityIdentifier`），但这样的几率远远小于前者：很多时候是 `[a addSubview:b]`，但此时 `a` 还没有 `superview`，那么如果 hook `addSubview:`方法，就只能保留 `a` 以下的视图层级。这并不是我想看到的。
+
 ```
 @implementation UIView (TBUIAutoTest)
 + (void)load {

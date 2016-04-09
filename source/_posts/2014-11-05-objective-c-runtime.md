@@ -608,7 +608,17 @@ enum {
 // Method originalMethod = class_getClassMethod(aClass, originalSelector);
 // Method swizzledMethod = class_getClassMethod(aClass, swizzledSelector); 
 ```
-`object_getClass((id)self)` 与 `[self class]` 返回的结果类型都是 `Class`,但前者为元类,后者为其本身,因为此时 `self` 为 `Class` 而不是实例.更多讨论可参考[这里](http://stackoverflow.com/questions/15906130/object-getclassobj-and-obj-class-give-different-results).
+`object_getClass((id)self)` 与 `[self class]` 返回的结果类型都是 `Class`,但前者为元类,后者为其本身,因为此时 `self` 为 `Class` 而不是实例.注意 `[NSObject class]` 与 `[object class]` 的区别：
+
+```
++ (Class)class {
+    return self;
+}
+
+- (Class)class {
+    return object_getClass(self);
+}
+```
 
 
 PS:如果类中没有想被替换实现的原方法时，`class_replaceMethod`相当于直接调用`class_addMethod`向类中添加该方法的实现；否则调用`method_setImplementation`方法，`types`参数会被忽略。`method_exchangeImplementations`方法做的事情与如下的原子操作等价：  
