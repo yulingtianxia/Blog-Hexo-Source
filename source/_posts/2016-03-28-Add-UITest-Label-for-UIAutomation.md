@@ -226,6 +226,21 @@ hook 那段代码很简单就不细说了，主要是 `tb_accessibilityIdentifie
 @end
 ```
 
+**2016.04.13 更新**
+在 UIAutomation 生成控件树时，大部分 `UIImageView` 无法通过 hook `accessibilityIdentifier` 来在控件树中获取到自动化测试标签，或者获得的标签不是属性名而是图片资源名。解决方案是 hook accessibilityLabel 方法，并在其中为 `UIImageView` 加自动化测试标签：
+
+```
+- (NSString *)tb_accessibilityLabel
+{
+    if ([self isKindOfClass:[UIImageView class]]) {
+        NSString *name = [self.superview findNameWithInstance:self];
+        self.accessibilityIdentifier = [NSString stringWithFormat:@"(%@)",name];
+        //balabala...
+    }
+    return [self tb_accessibilityLabel];
+}
+```
+
 ## 感受&总结
 
 我是杨(gu)阿莫，今天我给大家要讲的是一个月前测试帅哥要求加自动化测试标签后老大开会讨论方案组内高工一致不赞同手动加并要求自动加并在最后老大钦点这个事情就交给我了的故事。这其中还经历了方案的各种改，五子棋同学的实力参(jiao)谋(ji)，以及拉屎时把本该思考人生的时间花在了改进方案。这个月博客实在不知道该写啥眼看月底了再不更新怕以后再也不想更新了呢所以你会发现这篇文章水水的科科！
