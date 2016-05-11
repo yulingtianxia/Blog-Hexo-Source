@@ -12,7 +12,7 @@ tags:
 
 <!--more-->
 
-#引用计数如何存储
+# 引用计数如何存储
 
 有些对象如果支持使用 TaggedPointer，苹果会直接将其指针值作为引用计数返回；如果当前设备是 64 位环境并且使用 Objective-C 2.0，那么“一些”对象会使用其 `isa` 指针的一部分空间来存储它的引用计数；否则 Runtime 会使用一张散列表来管理引用计数。
 
@@ -200,7 +200,7 @@ struct weak_table_t {
 
 苹果使用一个全局的 `weak` 表来保存所有的 `weak` 引用。并将对象作为键，`weak_entry_t` 作为值。`weak_entry_t` 中保存了所有指向该对象的 `weak` 指针。
 
-#获取引用计数
+# 获取引用计数
 
 在非 ARC 环境可以使用 `retainCount` 方法获取某个对象的引用计数，其会调用 `objc_object` 的 `rootRetainCount()` 方法：
 
@@ -287,7 +287,7 @@ typedef objc::DenseMap<DisguisedPtr<objc_object>,size_t,true> RefcountMap;
 
 当然不能够完全信任这个 `_objc_rootRetainCount(id obj)` 函数，对于已释放的对象以及不正确的对象地址，有时也返回 “1”。它所返回的引用计数只是某个给定时间点上的值，该方法并未考虑到系统稍后会把自动释放吃池清空，因而不会将后续的释放操作从返回值里减去。clang 会尽可能把 `NSString` 实现成单例对象，其引用计数会很大。如果使用了 TaggedPointer，`NSNumber` 的内容**有可能**就不再放到堆中，而是直接写在宽敞的64位栈指针值里。其看上去和真正的 `NSNumber` 对象一样，只是使用 TaggedPointer 优化了下，但其引用计数可能不准确。
 
-#修改引用计数
+# 修改引用计数
 
 ## retain 和 release
 

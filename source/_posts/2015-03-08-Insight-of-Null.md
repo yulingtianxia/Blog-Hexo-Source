@@ -6,7 +6,7 @@ tags:
 斗战胜佛传记。。。  
 
 <!--more-->
-##NULL和nullptr
+## NULL和nullptr
 
 在Clang 6.0 的stddef.h文件中可以找到`NULL`和`nullptr`的声明：
 
@@ -56,9 +56,9 @@ foo(pc);           // 呼叫foo(char *)
 PS：`__MINGW32__`是MinGW编译器的预定义宏。`_MSC_VER`是微软C/C++编译器——cl.exe 编译代码时预定义的一个宏。`_MSC_VER`的值表示cl的版本。需要针对cl特定版本编写代码时，也可以使用该宏进行条件编译。
 
 
-##nil和Nil
+## nil和Nil
 
-###Objective-C
+### Objective-C
 
 `nil`定义为实例对象的空值(a null instance)  
 `Nil`定义为类对象的空值(a null class)  
@@ -104,7 +104,7 @@ PS：`__MINGW32__`是MinGW编译器的预定义宏。`_MSC_VER`是微软C/C++编
 
 PS：其实如果只看Objective-C中的`nil`和`Nil`定义不用这么麻烦的，只需查看Objective-C Runtime Reference中的"Constants->Null Values"即可。  
 
-###Swift
+### Swift
 
 Swift 1.2 目前只有`nil`而没有`Nil`。为了安全性Swift新增了`Optional`类型来作为一个容器。好比一个箱子里面可能装有某种类型的对象，也可能是空的(`nil`)。箱子也可以嵌套，也可以去掉，但这都基于安全的解析、绑定等。Swift 的nil和 Objective-C 中的nil并不一样。在 Objective-C 中，`nil`是一个指向不存在对象的指针。在 Swift 中，`nil`不是指针——它是一个确定的值，用来表示值缺失。任何类型的可选值都可以被设置为`nil`，不只是对象（object）类型。  
 
@@ -112,7 +112,7 @@ PS:有关Swift中的`Optional`类型的更多信息可以参考我的另一篇�
 
 PS：曾几何时，Swift的`nil`还不是字面量，而是`NilType`类型的唯一实例。但这一切都是历史了。  
 
-##NSNull
+## NSNull
 `NSNull`在NSNull.h中的定义：  
 
 ```
@@ -149,6 +149,6 @@ else if (aValue == [NSNull null]) {
 ```
 
 
-##参考
+## 参考
 - [维基百科C++11](http://zh.wikipedia.org/wiki/C%2B%2B11#.E9.80.9A.E7.94.A8.E6.99.BA.E8.83.BD.E6.8C.87.E9.87.9D)
 - [Clang 3.7 documentation](http://clang.llvm.org/docs/LanguageExtensions.html#langext-has-feature-back-compat)

@@ -9,7 +9,7 @@ tags:
 ---
 位运算符（Bitwise Operators），在各种语言中都存在，虽然用的有些少，但是在诸如类别判断，类型检测等方案中经常用位运算来实现。很多枚举类型的成员都是将`0x1`左移位来赋值，而不是从0递增，这其中就蕴含着位运算。而数值运算中的溢出也是一个不常遇到但又值得注意的地方，虽然很少有人用`Int8`来存储大数，但了解下Swift处理溢出的这一特性也是很有用的。   
 <!--more-->
-##基本位运算符
+## 基本位运算符
 `~`,`&`,`|`,`^`分别为取反，与，或，异或运算：
 
 ```
@@ -41,7 +41,7 @@ let middleSixBits = firstBit ^ lastBit //等于 0b10000001
 
 这就确保了在右移的过程中，有符整型的符号不会发生变化。这称为算术移位。  
 
-##溢出运算符
+## 溢出运算符
 
 Swift中如果计算结果超出了它的类型能承载的范围，那么就会发生溢出错误，除非你已经使用溢出运算符来进行操作：  
 
@@ -52,7 +52,7 @@ Swift中如果计算结果超出了它的类型能承载的范围，那么就会
 - 溢出求余 `&%`  
 
 
-###值的上溢出
+### 值的上溢出
 
 ```
 var willOverflow = UInt8.max
@@ -63,7 +63,7 @@ willOverflow = willOverflow &+ 1
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowAddition_2x.png)  
 
-###值的下溢出
+### 值的下溢出
 
 ```
 var willUnderflow = UInt8.min
@@ -85,7 +85,7 @@ signedUnderflow = signedUnderflow &- 1
 
 ![](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/overflowSignedSubtraction_2x.png)  
 
-###除零溢出
+### 除零溢出
 
 一个数除以0，或者对0求余数，就会产生一个错误；使用它们对应的可溢出的版本的运算符`&/`和`&%`进行除0操作时就会得到0值。
 

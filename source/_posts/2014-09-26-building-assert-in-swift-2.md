@@ -12,7 +12,7 @@ tags:
 <!--more-->
 `__FILE__` 和 `__LINE__`这两个神奇的宏定义是C语言中偶尔有用的特性。他们被构建在预处理程序中，并在C语言语法分析程序运行前被展开。尽管Swift没有预处理程序，它却提供了名称相似的类似功能，但隐藏着极其不同的实现方式。  
 
-##内建标识符
+## 内建标识符
 就像在[the Swift programming guide](https://developer.apple.com/library/ios/documentation/swift/conceptual/swift_programming_language/LexicalStructure.html)中描述的那样，Swift有很多内建标识符，包括`__FILE__`, `__LINE__`, `__COLUMN__`, 和 `__FUNCTION__`。这些表达式可以在任何地方使用，并被语法分析器在源码对应的当前位置展开成字符串或整数字面量。这对手动日志非常管用，比如在退出前打印出当前位置。  
 
 然而这并不能帮助我们探索实现`assert()`。如果我们这样实现断言(assert)：  
@@ -29,7 +29,7 @@ func assert(predicate : @autoclosure () -> Bool) {
 ```
 上面的代码将会输出实现`assert()`方法所在文件的文件/行数(file/line)位置，而不是调用者的位置信息。这并不管用。  
 
-##获取调用者位置
+## 获取调用者位置
 Swift从D语言借鉴了一个非常聪明的特性：当标识符在默认参数列表中被赋值时，它们会在调用者的位置被展开。为了实现这个行为，`assert()`被如下这样定义：  
 
 ```

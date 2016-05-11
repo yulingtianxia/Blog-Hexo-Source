@@ -9,9 +9,9 @@ tags:
 ---
 可选类型（`Optionals`）在Swift中用于处理值可能缺失的情况，也就是说可能存在没有值的情况。C 和 Objective-C 中并没有可选类型这个概念。但在Objective-C中，一个方法的返回值可以是一个对象或`nil`值（`nil`表示缺少一个合法对象），而对象只是针对类而言，结构体、基本C类型和枚举并不适用`nil`来表示值的缺失，对于这些类型，Objective-C 方法一般会返回一个特殊值（比如`NSNotFound`）来暗示值缺失。这种表示“值缺失”方法不统一的局面使得调用方法的程序员蛋疼了-需要针对不同情况进行处理-但随着可选类型的诞生，这种情形在Swift中得到解决，`Optionals`可以表示任意类型值的缺失。(2014-8-8更新至beta5语法)    
 <!--more-->
-##可选类型（Optionals）
+## 可选类型（Optionals）
 
-###理论
+### 理论
 
 **Xcode6beta5发布后，`Optional`的定义有了修改：**  
 
@@ -40,7 +40,7 @@ Swift 的`nil`和 Objective-C 中的`nil`并不一样。在 Objective-C 中，`n
 
 **可选类型默认值为`nil`**  
 
-###if条件判断和强制解析
+### if条件判断和强制解析
 
 在Swift中，有时候需要把内容为数字的字符串转化成数字：  
 
@@ -63,7 +63,7 @@ if convertedNumber != nil {
 
 PS：beta5中去掉了`LogicValue`协议，并用`hasValue`替代它来存储是否有值。也就是`Optional`不会隐式转换成`Bool`，在条件判断语句中需要用`==`或`!=`来判断是否为空。苹果取消了`Optional`的隐式`Bool`值是为了防止混淆。（新手可以无视这段话，我在讲述Swift的变更史，哈哈）
 
-###可选绑定
+### 可选绑定
 
 除了用if语句判断和强制解析来获取可选类型中的值，还可以用**可选绑定**的方式来来判断可选类型是否包含值：  
 
@@ -140,11 +140,11 @@ println("\(country.name)'s capital city is called \(country.capitalCity.name)")
 
 因为编译器会将其认为默认`nil`，不需赋值就可以完成类的初始化，在例子中`capitalCity`还没被赋值时`Country`类就已经初始化并可以被引用；这样就能实现一行代码建立`Country`和`City`实例而不造成强引用循环。有关ARC的更多知识可以看看这篇[文章](http://yulingtianxia.com/blog/2014/06/17/swiftzhong-de-arc/)  
 
-###Nil Coalescing Operator
+### Nil Coalescing Operator
 
 `??`是beta5新加入的一个二元运算符，`a ?? b`相当于`a != nil ? a! : b`的简写。也就是如果`a`是有值就返回`a`的值，否则返回`b`的值。  
 
-##可选链（Optional Chaining）
+## 可选链（Optional Chaining）
 可选链（Optional Chaining）是一种可以请求和调用属性、方法及下标的过程，它的可选性体现于请求或调用的目标当前可能为空（`nil`）。如果可选的目标有值，那么调用就会成功；相反，如果选择的目标为空（`nil`），则这种调用将返回空（`nil`）。多次请求或调用可以被链接在一起形成一个链，如果任何一个节点为空（`nil`）将导致整个链失效。  
 
 可能官方的定义不接地气，先来个例子做铺垫：  

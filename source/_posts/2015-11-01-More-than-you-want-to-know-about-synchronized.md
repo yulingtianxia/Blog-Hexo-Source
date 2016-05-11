@@ -17,7 +17,7 @@ tags:
 
 如果你之前没用过 `@synchronized`，接下来有个使用它的例子。这篇文章实质上是谈谈有关我对 `@synchronized` 实现原理的一个简短研究。
 
-##用到 @synchronized 的例子
+## 用到 @synchronized 的例子
 
 假设我们正在用 Objective-C 实现一个线程安全的队列，我们一开始可能会这么干：
 
@@ -87,7 +87,7 @@ tags:
 
 你可以给任何 Objective-C 对象上加个 `@synchronized`。那么我们也可以在上面的例子中用 `@synchronized(_elements)` 来替代 `@synchronized(self)`，效果是相同的。
 
-##回到研究上来
+## 回到研究上来
 
 我对 `@synchronized` 的实现十分好奇并搜了一些它的细节。我[找到了](http://stackoverflow.com/questions/1215330/how-does-synchronized-lock-unlock-in-objective-c)[一些](http://stackoverflow.com/questions/1215765/changing-the-locking-object-insde-synchronized-section)[答案](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Multithreading/ThreadSafety/ThreadSafety.html#//apple_ref/doc/uid/10000057i-CH8-SW3)，但这些解释都没有达到我想要的深度。锁是如何与你传入 `@synchronized` 的对象关联上的？`@synchronized`会保持（retain，增加引用计数）被锁住的对象么？假如你传入 `@synchronized` 的对象在 `@synchronized` 的 block 里面被释放或者被赋值为 `nil` 将会怎么样？这些全都是我想回答的问题。而我这次的收获，会要你好看😏。
 

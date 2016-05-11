@@ -12,11 +12,11 @@ tags:
 
 因为在腾讯大部分资源都在 TFS（Tencent File System）上，所以我针对 TFS 格式的链接做了些特殊处理。因为 TFS 本质是基于 Windows 上的分布式文件存储系统，从 Mac 上访问其共享的文件需要将 URL 处理成 SMB （服务信息块）协议，然后才能打开。因为是针对 TFS 而做了特殊逻辑处理，我将其命名为 [TFSHelper](https://github.com/yulingtianxia/TFSHelper)。可以在 https://github.com/yulingtianxia/TFSHelper/releases 下载 TFSHelper 最新的 Release 版本。
 
-#实现原理
+# 实现原理
 
 我的思路是先将剪贴板中的 URL 处理后再写入剪贴板，然后用 AppleScript 模拟键盘事件，利用快捷键将剪贴板内容粘贴到 Finder 的连接服务器地址栏，然后模拟按下回车，实现自动连接。其实理论上也可以使用 AppleScript 直接通过 URL 连接到服务器，但是一直都出现 error，只好用这个歪招曲线救国。缓存常用链接使用 LRU 策略，登录时启动其实玩的依旧是套路，这个后面再讲。
 
-##替换剪贴板内容
+## 替换剪贴板内容
 
 如果剪贴板中的文字内容含有符合 TFS 规则的 URL，那就将其提取并使用 `convert:` 函数将其处理成 SMB 协议格式；如果已经含有 SMB 协议的 URL，那就提取出来：
 
@@ -45,7 +45,7 @@ func writePasteboard(location: String) {
 }
 ```
 
-##模拟键盘事件
+## 模拟键盘事件
 
 用 Cocoa 执行脚本最常用的方法就是通过 `NSTask` 类，屡试不爽：
 
@@ -191,13 +191,13 @@ class CacheGenerator<T:Hashable> : GeneratorType {
 
 由此看出 Swift 的蛋疼之处，还是逃不了 Cocoa 的黑历史，自带的库支持不到位啊！
 
-##登陆时启动
+## 登陆时启动
 
 Mac 开发开机启动有好几种方式，可以参考[Mac OSX的开机启动配置](http://www.tanhao.me/talk/1287.html/)
 
 不过对于 Swift 开发 Mac App，我更推荐[这篇文章](https://theswiftdev.com/2015/09/17/first-os-x-tutorial-how-to-launch-an-os-x-app-at-login/)，其策略是将 App 添加为启动项。原理是通过 `SMLoginItemSetEnabled` 方法在主应用的 `Contents/Library/LoginItems` 文件夹建立一个后台辅助应用来启动主应用，如果主应用已启动后就会终止后台应用。
 
-##UI
+## UI
 
 为了让这个 App 皮实耐操，我决定还是不画主页面，让其附着在菜单栏吧：
 
@@ -211,7 +211,7 @@ Mac 开发开机启动有好几种方式，可以参考[Mac OSX的开机启动�
 
 “常用链接”里面的“清空列表”按钮在没有链接缓存的时候需要设为不可用。
 
-##自动 VS 手动
+## 自动 VS 手动
 
 在设计产品时曾经纠结是应该自动打开链接还是让用户每次手动打开。每种选择都有自己的理由，但如果用户仅是想复制某个 TFS 链接发给别人，自动打开链接体验会很糟糕；如果每次都需要手动点击“打开链接”按钮，又极为不便。为了折衷，便提供了个开关。
 
@@ -247,7 +247,7 @@ func handlePasteboard() {
 
 手动打开链接更简单了，直接调用 `handlePasteboard` 即可。
 
-##总结
+## 总结
 
 诸如 UI 上一些细节实现就不叙述了，比如在显示常用链接时我只显示了路径的最后一段文字，方便查看，否则链接过长影像体验。因为我是为 TFS 格式量身定制的，所以你也可以通过修改我源码中的匹配规则来为你自己所用。Github 链接：https://github.com/yulingtianxia/TFSHelper
 

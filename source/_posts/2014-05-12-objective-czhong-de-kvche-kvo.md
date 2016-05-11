@@ -13,7 +13,7 @@ tags:
 
 <!--more-->
 
-##KVC
+## KVC
 
 键/值编码中的基本调用包括`-valueForKey:`和`-setValue:forKey:`。以字符串的形式向对象发送消息，这个字符串是我们关注的属性的关键。  
 `valueForKey:`首先查找以键`-key`或`-isKey	`命名的getter方法。如果不存在getter方法（假如我们没有通过`@synthesize`提供存取方法），它将在对象内部查找名为`_key`或`key`的实例变量。  
@@ -57,7 +57,7 @@ http://objccn.io/issue-7-3/
 
 
 
-##KVO
+## KVO
 
 KVO是Cocoa提供的一种称为键－值观察的机制，对象可以通过它得到其他对象特性属性的变更通知。这种机制在MVC模式的场景中很重要，因为它让视图对象可以经由控制器层观察模型对象的变更。  
 这一机制基于`NSKeyValueObserving`非正式协议，Cocoa通过这个协议为所有遵守协议的对象提供了一种自动化的属性观察能力。要实现自动观察，参与KVO的对象需要符合KVC的要求和存取方法，也可以手动实现观察者通知，也可以两者都保留。  
@@ -82,9 +82,9 @@ KVO是Cocoa框架使用**观察者模式**的一种途径。
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389524.jpg)  
 
-###Registering for Key-Value Observing
+### Registering for Key-Value Observing
 
-####注册成为观察者
+#### 注册成为观察者
 你可以通过发送`addObserver:forKeyPath:options:context:`消息来注册观察者  
 
 ```objc
@@ -116,7 +116,7 @@ id newValue = change[NSKeyValueChangeNewKey];
 
 `context`是一个指针，当`observeValueForKeyPath:ofObject:change:context:`方法执行时`context`会提供给观察者。`context`可以是C指针或者一个对象引用，既可以当作一个唯一的标识来分辨被观察的变更，也可以向观察者提供数据。  
 
-####接收变更通知
+#### 接收变更通知
 
 当被观察的属性变更时，观察者会接到`observeValueForKeyPath:ofObject:change:context:`消息，所有的观察者都必须实现这个方法。  
 观察者会被提供触发通知的对象和`keyPath`，一个包含变更详细信息的字典，还有一个注册观察者时提供的`context`指针。  
@@ -183,7 +183,7 @@ if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {
 ```
   
 
-####移除观察者  
+#### 移除观察者  
 你可以通过发送`removeObserver:forKeyPath:`消息来移除观察者，你需要指明观察对象和路径。  
 
 ```
@@ -194,12 +194,12 @@ if ([change[NSKeyValueChangeNotificationIsPriorKey] boolValue]) {
 上面的代码将`openingBalance`属性的观察者`inspector`移除，移除后观察者再也不会收到`observeValueForKeyPath:ofObject:change:context:`消息。  
 在移除观察者之前，如果`context`是一个对象的引用，那么必须保持对它的强引用直到观察者被移除。  
 
-###KVO Compliance（KVO兼容）
+### KVO Compliance（KVO兼容）
 
 有两种方法可以保证变更通知被发出。自动发送通知是`NSObject`提供的，并且一个类中的所有属性都默认支持，只要是符合KVO的。一般情况你使用自动变更通知，你不需要写任何代码。  
 人工变更通知需要些额外的代码，但也对通知发送提供了额外的控制。你可以通过重写子类` automaticallyNotifiesObserversForKey:`方法的方式控制子类一些属性的自动通知。  
 
-####Automatic Change Notification（自动通知）
+#### Automatic Change Notification（自动通知）
 
 下面代码中的方法都能导致KVO变更消息发出  
 
@@ -219,7 +219,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 [transactions addObject:newTransaction];
 ```
 
-####Manual Change Notification（手动通知）
+#### Manual Change Notification（手动通知）
 
 下面的代码为`openingBalance`属性开启了人工通知，并让父类决定其他属性的通知方式。  
 
@@ -284,11 +284,11 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 }
 ```
 
-###Registering Dependent Keys（注册依赖键）
+### Registering Dependent Keys（注册依赖键）
 
 有一些属性的值取决于一个或者多个其他对象的属性值，一旦某个被依赖的属性值变了，依赖它的属性的变化也需要被通知。  
 
-####To-one Relationships
+#### To-one Relationships
 
 要自动触发 to-one关系，有两种方法：重写`keyPathsForValuesAffectingValueForKey:`方法或者定义名称为`keyPathsForValuesAffecting<Key>`的方法。  
 
@@ -329,7 +329,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 
 注意：你不能在`keyPathsForValuesAffectingValueForKey:`方法中设立to-many关系的依赖，相反，你必须观察在to-many集合中的每一个对象中相关的属性并通过亲自更新他们的依赖来回应变更。下一节将会讲述对付此情形的策略。  
 
-####To-many Relationships
+#### To-many Relationships
 
 `keyPathsForValuesAffectingValueForKey:`方法不支持包含to-many关系的`keypath`。比如，假如你有一个`Department`类，它有一个针对`Employee`类的to-many关系（雇员），`Employee`类有`salary`属性。你希望`Department`类有一个`totalSalary`属性来计算所有员工的薪水，也就是在这个关系中`Department`的`totalSalary`依赖于所有`Employee`的`salary`属性。你不能通过实现`keyPathsForValuesAffectingTotalSalary`方法并返回`employees.salary`。  
 
@@ -369,7 +369,7 @@ NSMutableArray *transactions = [account mutableArrayValueForKey:@"transactions"]
 
 其实这也是Objective-C中利用Cocoa实现观察者模式的另一种途径：`NSNotificationCenter`  
 
-###调试KVO  
+### 调试KVO  
 
 你可以在 lldb 里查看一个被观察对象的所有观察信息。  
 

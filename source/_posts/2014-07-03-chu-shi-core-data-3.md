@@ -33,7 +33,7 @@ tags:
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/1404357012.png)  
 
 先在第一个页面添加问题（吃啥？），然后点击问题进入到第二个添加选项（鸭子，蛋，猪）的页面。每个选项左边是选项名，右边是该选项的权值。摇动手机就能随机从所有选项中选出答案（就像第二张图那样）。  
-##建立数据模型
+## 建立数据模型
 还是像以前那样新建一个Master-Detail Application，勾选Use Core Data选项，语言选择Swift，然后Xcode会自动生成一个具有`UITableView`的Demo，这些内容之前说过。下面我们需要打开xcdatamodeld文件来建立我们的数据模型：  
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/140436356516.png)  
@@ -69,7 +69,7 @@ tags:
 
 如果你对建立数据模型的过程生疏，建议回到[初识Core Data(2)](http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2/)中复习下“使用数据模型设计器”一节  
 
-##Swift与Objective-C桥接
+## Swift与Objective-C桥接
 
 在使用Xcode6 Beta2生成`NSManagedObject`子类的时候，生成的代码依然是Objective-C的代码（即使我的工程是用Swift语言建立的），这就涉及到在Swift工程中调用Objective-C类的问题。苹果给我们提供了一个比较简单的解决方案。在你向工程中加入OC文件时，Xcode会自动弹出消息问你是否需要生成一个桥接头文件（“工程名-Bridging-Header.h”），然后我们在这个头文件中加入想要在Swift中调用的OC类的头文件：  
 
@@ -89,7 +89,7 @@ tags:
 
 有关Swift和OC在同一项目中混合使用的方法详见[这里](https://github.com/CocoaChina-editors/Welcome-to-Swift/blob/master/Using%20Swift%20with%20Cocoa%20and%20Objective-C/03Mix%20and%20Match/Swift%20and%20Objective-C%20in%20the%20Same%20Project.md)  
 
-##NSFetchedResultsController
+## NSFetchedResultsController
 
 在[初识Core Data(1)](http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/)中我们提到过`NSFetchedResultsController`的作用，简单地说，`NSFetchedResultsController`的作用就是有效率的管理从CoreData获取请求的数据结果，并将结果提供给`UITableView`作为数据源。  
 
@@ -281,7 +281,7 @@ println("Unresolved error \(error!), \(error!.userInfo)")
 ```
 
 
-##UITextField键盘响应
+## UITextField键盘响应
 
 在将`UITextField`实例赋值给`CustomIOS7AlertView`的`containerView`属性前需要先让其获取当前焦点，并将`UITextField`的`delegate`属性设为`self`：  
 
@@ -336,7 +336,7 @@ println("Unresolved error \(error!), \(error!.userInfo)")
 
 在Xcode6 beta2中的模拟器不是很好使，经常不能弹出键盘，这里给出的代码有很多疏漏，只提供个参考，主要是处理`UITextField`代理的思想  
 
-##随机选择算法
+## 随机选择算法
 
 `DetailViewController`的内容跟`MasterViewController`内容很像，最大的区别在于多了一个从`Choice`数据中随机抽选的一个方法。因为是通过摇一摇的方式来触发随机算法，所以我们重载`motionBegan(motion: UIEventSubtype, withEvent event: UIEvent!)`方法来响应手机摇动： 
 

@@ -12,7 +12,7 @@ tags:
 
 <!--more-->
 
-##背景
+## 背景
 
 iOS越来越人性化了，用户可以在设置-通用-辅助功能中动态调整字体大小了。你会发现所有iOS自带的APP的字体大小都变了，可惜我们开发的第三方APP依然是以前的字体。在iOS7之后我们可以用`UIFont`的`preferredFontForTextStyle:`类方法来指定一个样式，并让字体大小符合用户设定的字体大小。目前可供选择的有六种样式:
 
@@ -37,9 +37,9 @@ iOS会根据样式的用途来合理调整字体。
 
 总之，还会有其他动态因素导致我们需要修改布局。  
 
-##解决方案
+## 解决方案
 
-###UITableView
+### UITableView
 
 有三种策略可以调节Cell（或者是Header和Footer）的高度：  
 
@@ -120,7 +120,7 @@ self.tableView.estimatedRowHeight = 44
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/140833033058.gif)  
 
-###UICollectionView
+### UICollectionView
 
 `UITableView` 和 `UICollectionView` 都是 data-source 和 delegate 驱动的。`UICollectionView`在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 `UICollectionViewLayout` 抽象基类。iOS6 中以 `UICollectionViewFlowLayout` 类的形式提出了一个具体的布局实现。在`UICollectionViewFlowLayout`中，self-sizing同样适用：  
 
@@ -146,7 +146,7 @@ PS：`preferredLayoutAttributesFittingAttributes:`方法默认调整Size属性�
 
 其次。。。没有其次，在`UICollectionView`中实现self-sizing，只需给`estimatedItemSize`属性赋值（不能是`CGSizeZero`），一行代码足矣。  
 
-###InvalidationContext
+### InvalidationContext
 
 假如设备屏幕旋转，或者需要展示一些其妙的效果（比如CoverFlow），我们需要将当前的布局失效，并重新计算布局。当然每次计算都有一定的开销，所以我们应该谨慎的仅在我们需要的时候调用`invalidateLayout`方法来让布局失效。  
 

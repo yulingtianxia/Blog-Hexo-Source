@@ -12,7 +12,7 @@ tags:
 
 <!--more-->
 
-##App Groups & Framework
+## App Groups & Framework
 
 这两样兵器大家都很熟悉。想要共享数据就需要开启App Groups，给group起一个风骚的名字，这样无论是`NSUserDefaults`还是`NSFileManager`都能通过App Groups共享持久层数据了。Core Data也需要`NSFileManager`提供存储的URL支持，而存取Core Data中的数据需要大量的模板代码，在持久层文件共享之后，代码也应该做到共享，所以将能够重用的代码打包成Framework就显得尤为重要。(除非是为了做毕设凑代码量)  
 
@@ -51,19 +51,19 @@ lazy var applicationDocumentsDirectory: NSURL = {
 
 于是我们也可以在App Extensions中import进来DataKit，进行地存取Core Data中的数据啦。而且用的是同一段代码，同一块数据。简直是同一个世界，同一个梦想啊。  
 
-##Container app 与 Extension的通信  
+## Container app 与 Extension的通信  
 
 要知道之前做的共享数据只能是主动获取数据，并不能在数据变化时实时获取通知。如果用户在iPhone上更改了数据，我们需要在Watch上实时更改界面上数据的显示。这点`NSNotificationCenter`是做不到的，因为它只在App内部工作而不会在两个App之间发通知。同样KVO也无能为力，自己手写委托什么的更是别想了(因为我试过了)。直到我在[这篇文章](https://medium.com/@saberjack/ios-sending-notifications-between-your-apps-3fe7422d6a41)找到了救世主，问题迎刃而解：  
 
-###CFNotificationCenterGetDarwinNotifyCenter
+### CFNotificationCenterGetDarwinNotifyCenter
 
 这是CoreFoundation库中一个系统级的通知中心，苹果的系统自己也在用它，看清了"Darwin"了没有？哈哈！看了下`CFNotificationCenter`相关的API，跟`NSNotificationCenter`有点像。需要用到Toll-Bridge的知识与CoreFoundation相关的类进行桥接，这虽不常用但也不难。还需要注意下个别参数的使用。  
 
-###MMWormhole
+### MMWormhole
 
 更有趣的是几乎同时我也发现了[MMWormhole](https://github.com/mutualmobile/MMWormhole)这个开源库，它专门用于在Container app 与 Extension间传递消息。我读了下它的代码，虽然只有一个类，但是依然学到了很多。虽然在我的[HardChoice](https://github.com/yulingtianxia/HardChoice)上完全可以只用`CFNotificationCenter`进行通知就可以了，完全不需要使用MMWormhole来持久化数据和传递数据。但我觉得以后还可能会用到MMWormhole，于是我用Swift1.2重新写了一个[Wormhole.swift](https://github.com/yulingtianxia/HardChoice/blob/master/HardChoice/DataKit/Wormhole.swift)，放在了DataKit里。  
 
-###Swift与CoreFoundation
+### Swift与CoreFoundation
 
 原来OC写的两百多行的MMWormhole被我用150行“清新优雅”的Swift代码取代。之所以打上引号是因为Swift与CoreFoundation之间的桥接有些不愉快。因为CoreFoundation中都是C的API，C中的指针和类型转换很出格，有安全隐患。Swift是一门安全的语言，但为了调用由历史原因造成的不安全的C的API，Swift中引入了很多类型来映射C中的类型，参考[Interacting with C APIs](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/InteractingWithCAPIs.html#//apple_ref/doc/uid/TP40014216-CH8-XID_11)  
 
@@ -96,7 +96,7 @@ Swift中不用像OC那样使用`__bridge`和类型转换、内存管理交接，
 2. CoreFoundation库中后缀为"Ref"的类在Swift中已经去掉后缀。  
 3. Swift中函数指针被表示为`CFunctionPointer<Type>`，Type就是函数的类型，但还不允许你将Swift写的函数或闭包转化成`CFunctionPointer`，也就是干脆没提供建立`CFunctionPointer`实例的方法，只能通过外部引入C的函数。这就涉及到了Swift与OC混编，请戳[Swift and Objective-C in the Same Project](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_77)  
 
-###在Framework中混编OC
+### 在Framework中混编OC
 
 我之所以需要做这种破坏工程纯洁性的事儿，是因为要用到下面这个方法来对通知进行观察：  
 
@@ -149,7 +149,7 @@ CFNotificationCenterAddObserver(center, unsafeAddressOf(self), helpMethod.callba
 
 至此，我们可以在`HelpMethod`类中实现一个函数指针，并在Wormhole.swift文件中直接使用这个函数指针来为`CFunctionPointer`类型的参数传值。  
 
-##总结
+## 总结
 
 来个效果图：  
 

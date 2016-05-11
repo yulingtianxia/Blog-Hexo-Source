@@ -9,9 +9,9 @@ tags:
 ---
 本文会从拓展性、游戏构造和性能三个方面分别讲述建立SpriteKit游戏时的一些实践经验和范例。建议先阅读[SpriteKit在iOS8和OSX10.10中的新特性](http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/)有助于理解本文内容。  
 <!--more-->
-##拓展性最佳范例
+## 拓展性最佳范例
 
-###硬编码问题
+### 硬编码问题
 
 在以前，程序员在场景中做了所有的事情，在代码中引用美工，游戏第一关采用硬编码，第二关第三关就是一顿复制粘贴修修补补。修改美工图片也意味着要改代码，每次预览修改后的效果都要Build和Run，而设计游戏的人甚至要会编程，因为修改设计（比如一些游戏参数）也要改代码。如果项目接着编写下去，这导致重复性的构建代码，将数据硬编码到代码中也是种低效率做法，编码与美工和设计人员之间合作困难。  
 
@@ -47,7 +47,7 @@ let scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as GameScen
 archiver.finishDecoding()
 ```
 
-##游戏构造最佳范例
+## 游戏构造最佳范例
 
 程序员总是想让游戏尽可能早地跑起来。为了完成这个目标，我们要懂得与美工和设计合作，毕竟程序员不能独自完成所有事情，下面列举下快速达成目标的步骤：  
 
@@ -76,11 +76,11 @@ PS：两种搜索节点元素的方法：
 
 > - “//he*”查找所有以“he”开头的子节点
 
-##性能最佳范例
+## 性能最佳范例
 
 我们要尽可能维持游戏每秒60帧频率的刷新，就需要从性能上优化。  
 
-###Drawing performance
+### Drawing performance
 影响绘图性能的两个主要因素：  
 
 - 绘制顺序：默认的绘制顺序是按照代码中构造节点树的顺序绘制的，先绘制父节点，然后依次绘制子节点，并向下迭代。你可以将`SKView`的`ignoresSiblingOrder`属性设为YES，然后利用Z轴的层级深浅关系来定制绘制次序。
@@ -98,7 +98,7 @@ showsQuadCount
 ```
 
 profile：检测硬件使用情况。
-###Actions and constraints
+### Actions and constraints
 
 使用`SKAction`类实现SpriteKit中的动画是很高效的。用一行代码就能实现诸如平移、旋转、缩放、渐入渐出等动画效果。你可以将多个动画组成一个序列（sequence）来依次执行，也可组成一个group来同时执行，sequence和group之间也可以互相嵌套。`SKAction`有很多方法，可以查看它的API文档。  
 
@@ -106,7 +106,7 @@ profile：检测硬件使用情况。
 
 `SKConstraints`类能在节点与节点或固定点之间建立约束。详见我的另一篇文章[SpriteKit在iOS8和OSX10.10中的新特性](http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/)中New Physics->Constraints小节。  
 
-###Physics
+### Physics
 
 模拟物理世界需要很多的硬件计算，当务之急就是减少能耗。  
 
@@ -128,7 +128,7 @@ profile：检测硬件使用情况。
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/140845150994.png)  
 
 上面两个场景是我的一个SpriteKit游戏[ColorAtom](http://coloratom.yulingtianxia.com)中的秘密模式和黑洞模式截图，欢迎Star和Follow。  
-###Shapes
+### Shapes
 
 `SKShapeNode`的耗能层级图如下：  
 
@@ -136,7 +136,7 @@ profile：检测硬件使用情况。
 
 上图中的分界线区分了低功耗和高功耗的Shape。绘制分段的linear strok所需的功耗也很少。  
 
-###Effects
+### Effects
 
 `SKEffectNode`可以将它的子节点渲染的更加出彩，比如用CoreImage滤镜等合成出复杂的特效。但这也会对性能有很大影响，请谨慎使用。  
 
@@ -151,7 +151,7 @@ SKTexture *texture = [myView textureFromNode:node size:size];
 SKTexture *texture = [myTexture textureByApplyingCIFiler:filer];
 ```
 
-###Lighting
+### Lighting
 
 光照的功耗是跟像素数量成比例的，每个`SKSpriteNode`最多能被八个光源照射，你可以利用光照掩码来优化性能。  
 

@@ -16,7 +16,7 @@ tags:
 
 ---
 <!--more-->
-##Core Data概述
+## Core Data概述
 Core Data本身既不是数据库也不是数据库访问框架。相反，Core Data是一个完整的数据模型解决方案。我简单理解为对持久层的封装，使得我们可以通过可视化建立数据模型，简化数据存取。有人会联想到Hibernate，其实Core Data比Hibernate强大得多，它不仅支持SQLite数据库，还能对XML文件、二进制文件、用户自定义文件进行操作。  
 
 即使不懂SQL语句，也依然可以使用Core Data。因为Core Data将底层的数据库SQL语句封装成了一套API，并可通过可视化操作来建立数据库的模型和表之间的关系，它甚至在数据变化时会帮你自动处理关系（比如删除了一门课程，所有选这门课程的学生也会自动解除与此门课程的关系），Core Data还能对非法数据进行过滤，还支持对数据操作的Undo/Redo功能。更重要的是，Core Data的`NSFetchRequest`类可以替代SQL中的Select语句，并提供了更高效的方法将查询结果显示在UITableView中。 
@@ -24,7 +24,7 @@ Core Data本身既不是数据库也不是数据库访问框架。相反，Core 
 iOS 3.0和Mac OS X10.5都支持Core Data，但iOS上不支持XML文件存储。Core Data对读取性能做了大量优化，其中惰性加载（Faulting）就是一个例子，毕竟设备的内存是有限切珍贵的。  
 在OSX上可以绑定利用KVO和KVC保持UI项与模型对象或属性之间的连接，无需编写任何代码，通过对象和数组控制器自动从Core Data存储区分批提取`NSManagedObject`对象。这就像在VS中用.Net构建基于SQLServer的桌面程序。  
 苹果公司单独为iOS平台的Core Data引入了`NSFetchedResultsController`类帮助视图与从持久化存储文件提取的数据之间的交互。它主要是用来充当`UITableiView`的数据源，负责调整`UITableiView`行与节（section）的显示数目，以及为各表格行提供内容。  
-##新建一个Core Data工程
+## 新建一个Core Data工程
 在Xcode5中，只有Master-Detail Application，Utility Application以及Empty Application支持创建时使用Core Data模板，我们选择带有UITableView的Master-Detail Application吧。  
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/14035339677.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
@@ -443,7 +443,7 @@ MyCDDemo.sqlite文件是在编译MyCDDemo.xcdatamodeld时生成的，同样生�
 
 DetailViewController的内容比较简单，不在叙述，到此结束，新建Core Data的模版工程代码已经解析完毕了。在下一期文章中将会亲手修改代码，探索Core Data更多的使用技巧。
 
-##总结  
+## 总结  
 Core Data框架基本的5个类：：NSPersistentStoreCoordinator、NSManagedObjectContext、NSManagedObjectModel、NSEntityDescription、NSManagedObject。  
 
 

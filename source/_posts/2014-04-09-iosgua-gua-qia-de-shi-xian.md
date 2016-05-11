@@ -8,10 +8,10 @@ tags:
 
 
 ---
-##前言
+## 前言
 去年在实习的期间，需要写一个类似刮刮乐的小功能，当时是从网上下载的demo，后来经过自己研读代码和debug后，终于整理出了一套比较easy的实现方法  
 <!-- more-->
-##正文
+## 正文
 需要源码的可以在[这里](https://github.com/yulingtianxia/ImageMask)下载  
 我用的是从网上下载的`ImageMaskView`类，这个类还调用了工具类`Matrix`以及`PointTransforms.h`,使用非ARC实现并且在`ImageMaskView`类中使用了Objective－C和C＋＋混编，废话不多说，介绍下具体搭建方法吧  
 首先需要使用IB在你的工程的某个ViewController中加入一个UIImageView，任选一张图片赋予它image属性，并在Identity Inspector中将其类型设置成我们的自定义类`ImageMaskView`  
@@ -61,6 +61,6 @@ tags:
 上面的代码先是做了个判断，当被涂刮的面积超过50%的时候，产生一个时长2秒的动画，让ImageMaskView渐渐变透明，传入的animations参数是个block块  
 好的，现在可以运行啦，我的demo效果如下  
 ![QQ20140409-4@2x](http://7ni3rk.com1.z0.glb.clouddn.com/140353391637.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
-##后记
+## 后记
 对iOS的Core Graphics不是很熟悉，还没有去深入看代码中的实现过程，不过修复了一个小bug：在UITouchPhaseBegan的时候刮开的圆形面积坐标错位了，并针对Retina和非Retina进行测试，效果都不错。以前用过其他的刮刮乐的代码，缺点是跟图片像素比之类的有关，显示效果很不好；但这个demo可以适配任意大小的Image而不用更改代码。
 

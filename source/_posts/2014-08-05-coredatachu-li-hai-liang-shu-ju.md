@@ -10,7 +10,7 @@ tags:
 
 随着iOS8和OSX10.10的发布，Core Data也迎来了更新。这次的更新可谓是重量级的，它使得程序员能够更加直接高效的操作数据库，在处理大量数据时速度明显提升（这在以前不知有多少程序员因为Core Data批量更新数据效率之低而不得不放弃使用它）。Batch Updates可用于批量快速更新数据，Asynchronous Fetching可用于异步抓取海量数据，并可以通过`NSProgress`实现进度跟踪和取消。    
 <!--more-->
-##Batch Updates
+## Batch Updates
 
 在CoreData中想要更新大量数据，我们往往要将大量修改后的`NSManagedObject`加载到`NSManagedObjectContext`中并保存，这会占用大量内存，试想想在iPhone这样的内存有限的移动设备上将是个灾难，数据有可能丢失。你可能会采取批处理的方式，即一小批一小批的更新`NSManagedObject`并保存到`NSManagedObjectContext`中，但这样会花费很多时间，用户体验较差。  
 
@@ -125,7 +125,7 @@ managedObjectContext?.performBlock({ () -> Void in
 
 Batch Updates的优势在于其效率，在处理上万条数据的时候，它执行的时间跟SQL语句执行时间相当。毕竟它绕开了`NSManagedObjectContext`直接修改底层数据库,节省内存,但千万别忘了手动更新 UI.  
 
-##Asynchronous Fetching
+## Asynchronous Fetching
 
 
 Asynchronous Fetching的加入依然是为了解决CoreData读取海量数据所带来的问题。通过使用Asynchronous Fetching，我们可以在抓取数据的同时不阻塞占用`NSManagedObjectContext`，并可以随时取消抓取行为，随时跟踪抓取数据的进度。  

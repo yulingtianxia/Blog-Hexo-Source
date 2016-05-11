@@ -10,7 +10,7 @@ tags:
 
 在iOS8和OSX10.10中SpriteKit迎来了重大升级。在物理表现方面增加了着色器，光照和阴影；在物理模拟方面增加了像素物理体、力场和宇宙动力学和约束等；在Xcode中集成了场景编辑器，你不需要写代码就能完成一些复杂的工作；此外它还集成了SceneKit以及其他的改进。  
 <!--more-->
-##Shader
+## Shader
 
 有时候为了表现一些形变和模糊效果，比如透过热气和火焰看一些物体，或者是飞船被攻击而产生弯曲。SpriteKit新加入了`SKShader`类来帮助我们更简单的实现这个效果。它通过使用自定义的OpenGL ES碎片着色来完成绘制一些`SKNode`的自定义行为。现在支持以下几种类型的绘制：  
 
@@ -45,7 +45,7 @@ tags:
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/140738949518.png)
 
-##Lighting and Shadows
+## Lighting and Shadows
 
 灯光和阴影效果可以给游戏增加真实感，SpriteKit这次增加了`SKLightNode`来作为光源节点。我们可以定义光源的颜色，阴影和衰弱程度。  
 
@@ -80,9 +80,9 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 在一个场景中可以添加多个光源，程序会运行的很快；但是如果用两个或以上的光源照亮同一个精灵，在某些iOS设备上可能保证不了60帧的刷新频率。  
 
-##New Physics
+## New Physics
 
-###Per-Pixel Physics
+### Per-Pixel Physics
 
 在定义一些复杂轮廓的物理体时，我们经常用简单图形代替，否则就用`CGPath`一点点描绘多边形或者把多个物理体组合在一起（这也是新加入的API，后面会提到），比如下面这把斧头，大多数程序员直接用矩形当做它的物理体：  
 
@@ -100,7 +100,7 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 因为SpriteKit是逐个像素计算才得出精确的物理体轮廓，所以我们应该尽量给出合适大小的图片，不要将分辨率过高的图片用在很小的`SKSpriteNode`上。  
 
-###Constrains
+### Constrains
 
 试想如果你要做一款塔防游戏，你需要让你的大炮一直瞄准某个怪物，大炮会随着怪物的行走来转动炮台。我们需要不停地根据怪物和大炮的位置来计算需要旋转的角度，甚至当怪物跑的快的时候还要考虑怪物的速度来调整大炮旋转的速度，这是一个很麻烦的事情。现在SpriteKit帮你把这些都做好了，你只需要建立一个`SKConstrains`对象，并约束大炮的角度跟怪物一致就行。  
 
@@ -147,7 +147,7 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 向`SKNode`添加约束很简单，只需要将一个`SKConstrains`数组赋值给`SKNode.constraints`属性即可。约束执行的顺序取决于它们在数组中的顺序。  
 
-###Inverse Kinematics
+### Inverse Kinematics
 
 反向运动学，没有机械工程学位或没写过动画引擎的人干脆不知道这是个啥。它其实是解决连接体运动的，比如现在有一个机器人的手臂，我们想让它动起来去用手抓某个东西。我们会想到每个关节转多少度才能准确让机器手抓到物体，计算的时候还应该考虑连接体的层级关系：肩膀连接上臂，上臂连接小臂，小臂连接手。哦天啊这真蛋疼，不过SpriteKit的反向动力学解决了这一点，我们只需要指定每个`SKNode`的活动约束还有需要抓取物体的位置，那么这一切只需要几行代码就能搞定。  
 
@@ -174,7 +174,7 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 PS：IK（Inverse Kinematics）也能在SceneKit上运行。  
 
-###Physics Fields
+### Physics Fields
 
 在一个模拟宇宙空间的游戏中，星球对其他物体的引力是不可忽视的，这就涉及到物理场。SpriteKit为我们提供了一个专门描述物理场的类`SKFieldNode`，它继承于`SKNode`，也就是说它可以被添加到其他节点中。它能够描述多种场：电场、磁场、矢量重力场、辐射重力场、噪声场等十余种场。`SKFieldNode`的`strength`和`falloff`属性决定了场的强度和衰减比率。  
 
@@ -188,7 +188,7 @@ PS：IK（Inverse Kinematics）也能在SceneKit上运行。
 
 我用SpriteKit的力场中的噪声场和辐射重力场做了一个小游戏[ColorAtom](http://coloratom.yulingtianxia.com)，有兴趣的可以去看看。应用了很多粒子系统和碰撞检测知识，把SpriteKit之前的内容能加的都加进去了，欢迎指正。    
 
-##Integration with SceneKit
+## Integration with SceneKit
 
 在SpriteKit这样的2D游戏引擎中也可以引入3D的内容，可以将SceneKit中的3D物体当做SpriteKit中的`SKNode`来操作，为了达到这一目的SpriteKit这次增加了`SK3DNode`类作为3D物体到SpriteKit中的桥接。  
 
@@ -196,7 +196,7 @@ PS：IK（Inverse Kinematics）也能在SceneKit上运行。
 
 由于我也不太了解“新”出的SceneKit，所以这部分不过多介绍了。  
 
-##Tools
+## Tools
 
 Xcode6增加了SpriteKit编辑器，一行代码都不用写就能创建出个游戏场景。这样你就将游戏内容从游戏逻辑冲分离出来。我们只需要将控件拖拽到游戏场景你想要的位置上，而不必每次调整一个飞船的位置，编译运行看看结果，然后再改代码微调位置再次编译运行。。。  
 
@@ -208,9 +208,9 @@ SpriteKit编辑器强大到你可以直接拖拽出一个SKSpriteNode并定义�
 
 Xcode能编辑fsh文件，与SpriteKit场景编辑器对照编辑，并做语法检查和编译。
 
-##Improvements
+## Improvements
 
-###SKScene
+### SKScene
 
 SpriteKit每一帧场景的执行过程：  
 
@@ -218,7 +218,7 @@ SpriteKit每一帧场景的执行过程：
 
 除了之前提到新加的Constrains，SpriteKit这次还加入了一个回调函数`didFinishUpdate`。这绝对是SpriteKit将每帧所有东西打包好交给GPU渲染之前调用的最后一个函数。  
 
-###SKTexture
+### SKTexture
 
 - `SKMutableTexture`是`SKTexture`新加的子类，它的内容可以通过`
 modifyPixelDataWithBlock:`方法动态地修改。  
@@ -226,18 +226,18 @@ modifyPixelDataWithBlock:`方法动态地修改。
 textureNoiseWithSmoothness:size:grayscale:`  
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/14074923846.png)  
 
-###SKShapeNode
+### SKShapeNode
 
 - 增加了一些常见图形便捷的构造方法，比如矩形，圆形，椭圆和曲线。  
 - 可以用贴图和Shader来美化形状的描边和填充
 
-###Physics Updates
+### Physics Updates
 
 - `SKPhysicsBody`新加了`pinned`属性来标志此物理体对应的节点是否被钉在它的父节点上。如果父节点也有物理体，那么这两个物理体被认为被一个pin连接。如果将`allowsRotation`设为NO并且`pinned`设为YES，那么它相当于被焊在父节点上了，因为它不能转动了。  
 - `SKPhysicsBody`允许用`bodyWithBodies:`把多个物理体组合在一起来创建一个新的物理体，还记得前面提到过的斧头么：  
 	![](http://7ni3rk.com1.z0.glb.clouddn.com/140749497219.png)   
 	
-###SKTexture Atlas
+### SKTexture Atlas
 
 - 同时支持SpriteKit和SceneKit
 - 同时支持Retina和非Retina

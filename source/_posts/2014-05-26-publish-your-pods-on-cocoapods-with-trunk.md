@@ -9,7 +9,7 @@ tags:
 
 ---
 
-##简介
+## 简介
 
 2014年5月20日，CocoaPods不再接受向[CocoaPods/Specs](git@github.com:CocoaPods/Specs.git)的pull request，官方的说法是为了安全考虑，防止每个人的pod被其他人修改，于是CocoaPods团队开发了trunk服务，这样每个人都是其发布的pod的owner，没有权限的人无法修改，这样更安全。  
 
@@ -25,7 +25,7 @@ tags:
 
 **废话不多说，简要介绍下如何使用trunk新建我们的pod：**  
 
-##开始注册
+## 开始注册
 trunk需要CocoaPods 0.33版本以上，用`pod --version`命令查看版本，如果版本低，需要升级：
 
 ```
@@ -56,7 +56,7 @@ bogon:YXYNumberAnimationLabel yangxiaoyu$ pod trunk me
 ```
 上面是我的注册信息，CocoaPods不通过密码来验证用户，而是通过一个session token。  
 
-##部署你的Pod
+## 部署你的Pod
 首先你需要建立一个podspec文件，这是我的podspec文件：  
 
 ```
@@ -127,7 +127,7 @@ pod trunk push命令做了如下三个工作：
    - Versions: 1.0.1, 1.0.0 [master repo]
 ```
 
-##将其他人加入到你的Pod
+## 将其他人加入到你的Pod
 
 为了让其他人也有权限来和你一起建设你的代码，你需要运行下面的命令来赋予别人权限，假如我将`kyle@cocoapods.org`加入到我的名字叫`ARAnalytics`的库中，我需要运行下面的命令：  
 

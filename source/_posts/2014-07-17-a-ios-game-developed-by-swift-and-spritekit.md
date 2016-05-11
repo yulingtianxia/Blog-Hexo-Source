@@ -27,7 +27,7 @@ tags:
 5. 按钮的绘制和截图分享  
 
 
-##准备工作
+## 准备工作
 
 SpriteKit是苹果iOS7新推出的2D游戏引擎，这里不再过多介绍。我们新建工程的时候选取iOS中的Game，然后选择SpriteKit作为游戏引擎，语言选择Swift，Xcode6会为我们自动创建一个游戏场景`GameScene`，它包含`GameScene.swift`和`GameScene.sks`两个文件，`sks`文件可以让我们可视化拖拽游戏控件到场景上，然后再代码中加载`sks`文件来完成场景的初始化：  
 
@@ -72,11 +72,11 @@ override func viewDidLoad() {
 
 [https://github.com/yulingtianxia/Spiral](https://github.com/yulingtianxia/Spiral)  
 
-##绘制基本界面
+## 绘制基本界面
 
 这部分的工作主要是绘制出螺旋线作为地图，并让四种精灵节点动起来。  
 
-###螺旋线的绘制
+### 螺旋线的绘制
 
 `SKNode`有一个子类`SKShapeNode`，专门用于绘制线条的，我们新建一个`Map`类，继承`SKShapeNode`。下面我们需要生成一个`CGPath`来赋值给`Map`的`path`属性： 
 
@@ -118,7 +118,7 @@ class Map: SKShapeNode {
 
 算法很简单，就是顺时针计算点坐标然后画线，这里把每一步的坐标都存入了`points`数组里，是为了以后计算其他数据时方便。因为这部分算法不难而且不是我们的重点，这里不过多介绍了。  
 
-###四种精灵的绘制
+### 四种精灵的绘制
 
 因为四种精灵都是沿着`Map`类的路径来顺时针运动，它们的动画绘制是相似的，所以我建立了一个`Shape`类作为基类来绘制动画，它继承于`SKSpriteKit`类，并拥有半径（`radius`）、移动速度（`moveSpeed`）和线段计数（`lineNum`）这三个属性。其中`lineNum`是用于标记精灵在螺旋线第几条线段上的，这样比较方便计算动画的参数。  
 
@@ -270,7 +270,7 @@ class Player: Shape {
 
 `restart(map:Map)`方法用于在游戏重新开始时重置`Player`的相关数据。  
 
-##Swift中用访问者模式处理碰撞
+## Swift中用访问者模式处理碰撞
 
 访问者模式是双分派（Double Dispatch）模式的一种实现，关于双分派模式的详细解释，参考我的另一篇文章：[Double Dispatch模式及其在iOS开发中实践](http://yulingtianxia.com/blog/2014/04/13/double-dispatchmo-shi-ji-qi-zai-ioskai-fa-zhong-shi-zhan/)，里面包含了C++，Java和Objective-C的实现，这次我们用Swift实现访问者模式。  
 
@@ -391,7 +391,7 @@ func visitKiller(body:SKPhysicsBody){
 
 我们设置`Player`碰撞到`Killer`游戏结束，碰撞到`Score`加两分，碰撞到`Shield`加一分并获得护甲（shield属性设为true）。可以看到这里大量用到了`Data`“类“”，它其实是一个存储并管理全局数据的结构体，它里面存储了一些静态的成员属性，也可看做非线程安全的单例。    
 
-##界面数据显示
+## 界面数据显示
 
 这部分很简单，主要是将`Data`结构体中存储的分数和等级等数据通过`SKLabelNode`显示在界面上，只不过我封装了一个`Display`类来将所有的`SKLabelNode`统一管理，并让其实现我定义的`DisplayData`协议来让`Data`中的数据变化驱动界面更新：  
 
@@ -473,7 +473,7 @@ struct Data{
 
 这里不得不提到一个更新界面时遇到的一个坑，当我想通过名字遍历`GameScene`子节点的时候，一般会用到`enumerateChildNodesWithName(name: String?, usingBlock: ((SKNode!, UnsafePointer<ObjCBool>) -> Void)?)`方法，但是这个方法在Xcode6Beta3更新后经常会抛异常强退，这让我很费解，恰巧遇到此问题的不只是我一个人，所以还是老老实实的自己写循环遍历加判断吧。  
 
-##按钮的绘制和截图分享
+## 按钮的绘制和截图分享
 
 参考我的另外两篇文章：[在游戏的SKScene中添加Button](http://yulingtianxia.com/blog/2014/04/27/zai-you-xi-de-skscenezhong-tian-jia-button/)和[SpriteKit截屏并分享至社交网络](http://yulingtianxia.com/blog/2014/04/22/spritekitjie-ping-bing-fen-xiang-zhi-she-jiao-wang-luo/)  
 
