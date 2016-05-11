@@ -24,9 +24,9 @@ tags:
 
 <!--more-->  
 
-##引言
+## 引言
 曾经觉得Objc特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把`[receiver message]`当成简单的方法调用，而无视了**“发送消息”**这句话的深刻含义。其实`[receiver message]`会被编译器转化为：  
-```objc
+```
 objc_msgSend(receiver, selector)
 ```
 如果消息含有参数，则为：  
@@ -39,7 +39,7 @@ objc_msgSend(receiver, selector, arg1, arg2, ...)
  
 Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 Objc 程序员需要了解的。  
 
-##简介
+## 简介
 
 因为Objc是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个Objc运行框架的一块基石。  
 
@@ -47,33 +47,33 @@ Runtime其实有两个版本:“modern”和 “legacy”。我们现在用的 O
 
 Runtime基本是用C和汇编写的，可见苹果为了动态系统的高效而作出的努力。你可以在[这里](http://www.opensource.apple.com/source/objc4/)下到苹果维护的开源代码。苹果和GNU各自维护一个开源的runtime版本，这两个版本之间都在努力的保持一致。   
 
-##与Runtime交互
+## 与Runtime交互
 
 Objc 从三种不同的层级上与 Runtime 系统进行交互，分别是通过 Objective-C 源代码，通过 Foundation 框架的`NSObject`类定义的方法，通过对 runtime 函数的直接调用。  
 
-###Objective-C源代码
+### Objective-C源代码
 
 大部分情况下你就只管写你的Objc代码就行，runtime 系统自动在幕后辛勤劳作着。  
 还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，Objc中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如`objc_msgSend`函数及其参数列表中的`id`和`SEL`都是啥）
 
-###NSObject的方法
+### NSObject的方法
 
 Cocoa 中大多数类都继承于`NSObject`类，也就自然继承了它的方法。最特殊的例外是`NSProxy`，它是个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。  
 
 有的`NSObject`中的方法起到了抽象接口的作用，比如`description`方法需要你重载它并为你定义的类提供描述内容。`NSObject`还有些方法能在运行时获得类的信息，并检查一些特性，比如`class`返回对象的类；`isKindOfClass:`和`isMemberOfClass:`则检查对象是否在指定的类继承体系中；`respondsToSelector:`检查对象能否响应指定的消息；`conformsToProtocol: `检查对象是否实现了指定协议类的方法；`methodForSelector:`则返回指定方法实现的地址。   
 
-###Runtime的函数
+### Runtime的函数
 Runtime 系统是一个由一系列函数和数据结构组成，具有公共接口的动态共享库。头文件存放于`/usr/include/objc`目录下。许多函数允许你用纯C代码来重复实现 Objc 中同样的功能。虽然有一些方法构成了`NSObject`类的基础，但是你在写 Objc 代码时一般不会直接用到这些函数的，除非是写一些 Objc 与其他语言的桥接或是底层的debug工作。在[Objective-C Runtime Reference](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/index.html)中有对 Runtime 函数的详细文档。  
 
-##Runtime术语
+## Runtime术语
 
 还记得引言中的`objc_msgSend:`方法吧，它的真身是这样的：  
-```objc
+```
 id objc_msgSend ( id self, SEL op, ... );
 ```
 下面将会逐渐展开介绍一些术语，其实它们都对应着数据结构。  
 
-###SEL
+### SEL
 `objc_msgSend`函数第二个参数类型为`SEL`，它是`selector`在Objc中的表示类型（Swift中是`Selector`类）。`selector`是方法选择器，可以理解为区分方法的 ID，而这个 ID 的数据结构是`SEL`:  
 ```
 typedef struct objc_selector *SEL;
@@ -83,7 +83,7 @@ sel_registerName`函数来获得一个`SEL`类型的方法选择器。
 
 不同类中相同名字的方法所对应的方法选择器是相同的，即使方法名字相同而变量类型不同也会导致它们具有相同的方法选择器，于是 Objc 中方法命名有时会带上参数类型(`NSNumber`一堆抽象工厂方法拿走不谢)，Cocoa 中有好多长长的方法哦。  
 
-###id
+### id
 `objc_msgSend`第一个参数类型为`id`，大家对它都不陌生，它是一个指向类实例的指针：  
 ```
 typedef struct objc_object *id;
@@ -96,7 +96,7 @@ struct objc_object { Class isa; };
 
 PS:`isa`指针不总是指向实例对象所属的类，不能依靠它来确定类型，而是应该用`class`方法来确定实例对象的类。因为KVO的实现机理就是将被观察对象的`isa`指针指向一个中间类而不是真实的类，这是一种叫做 **isa-swizzling** 的技术，详见[官方文档](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/KeyValueObserving/Articles/KVOImplementation.html)
 
-###Class
+### Class
 之所以说`isa`是指针是因为`Class`其实是一个指向`objc_class`结构体的指针：  
 ```
 typedef struct objc_class *Class;
@@ -161,7 +161,7 @@ struct objc_method_list {
 
 上图实线是 `super_class` 指针，虚线是`isa`指针。 有趣的是根元类的超类是`NSObject`，而`isa`指向了自己，而`NSObject`的超类为`nil`，也就是它没有超类。  
   
-####Method
+#### Method
 `Method`是一种代表类中的某个方法的类型。  
 ```
 typedef struct objc_method *Method;
@@ -178,7 +178,7 @@ struct objc_method {
 - 方法类型`method_types`是个`char`指针，其实存储着方法的参数类型和返回值类型。
 - `method_imp`指向了方法的实现，本质上是一个函数指针，后面会详细讲到。  
 
-####Ivar
+#### Ivar
 `Ivar`是一种代表类中实例变量的类型。  
 ```
 typedef struct objc_ivar *Ivar;
@@ -221,7 +221,7 @@ struct objc_ivar {
 
 `class_copyIvarList` 函数获取的不仅有实例变量，还有属性。但会在原本的属性名前加上一个下划线。
 
-###IMP
+### IMP
 `IMP`在`objc.h`中的定义是：  
 ```
 typedef id (*IMP)(id, SEL, ...);
@@ -230,7 +230,7 @@ typedef id (*IMP)(id, SEL, ...);
 
 你会发现`IMP`指向的方法与`objc_msgSend`函数类型相同，参数都包含`id`和`SEL`类型。每个方法名都对应一个`SEL`类型的方法选择器，而每个实例对象中的`SEL`对应的方法实现肯定是唯一的，通过一组`id`和`SEL`参数就能确定唯一的方法实现地址；反之亦然。  
 
-###Cache
+### Cache
 在`runtime.h`中Cache的定义如下：  
 ```
 typedef struct objc_cache *Cache
@@ -245,7 +245,7 @@ struct objc_cache {
 ```
 `Cache`为方法调用的性能进行优化，通俗地讲，每当实例对象接收到一个消息时，它不会直接在`isa`指向的类的方法列表中遍历查找能够响应消息的方法，因为这样效率太低了，而是优先在`Cache`中查找。Runtime 系统会把被调用的方法存到`Cache`中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高。这根计算机组成原理中学过的 CPU 绕过主存先访问`Cache`的道理挺像，而我猜苹果为提高`Cache`命中率应该也做了努力吧。  
 
-###Property
+### Property
 `@property`标记了类中的属性，这个不必多说大家都很熟悉，它是一个指向`objc_property`结构体的指针：  
 ```
 typedef struct objc_property *Property;
@@ -298,9 +298,9 @@ for (i = 0; i < outCount; i++) {
 
 对比下 `class_copyIvarList` 函数，使用 `class_copyPropertyList` 函数只能获取类的属性，而不包含成员变量。但此时获取的属性名是不带下划线的。
 
-##消息
+## 消息
 前面做了这么多铺垫，现在终于说到了消息了。Objc 中发送消息是用中括号（`[]`）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。  
-###objc_msgSend函数
+### objc_msgSend函数
 在引言中已经对`objc_msgSend`进行了一点介绍，看起来像是`objc_msgSend`返回了数据，其实`objc_msgSend`从不返回数据而是你的方法被调用后返回了数据。下面详细叙述下消息发送步骤： 
 
 1. 检测这个 `selector` 是不是要忽略的。比如 Mac OS X 开发，有了垃圾回收就不理会 `retain`, `release` 这些函数了。
@@ -320,7 +320,7 @@ PS:这里说的分发表其实就是`Class`中的方法列表，它将方法选�
 
 PS：有木有发现这些函数的命名规律哦？带“Super”的是消息传递给超类；“stret”可分为“st”+“ret”两部分，分别代表“struct”和“return”；“fpret”就是“fp”+“ret”，分别代表“floating-point”和“return”。  
 
-###方法中的隐藏参数
+### 方法中的隐藏参数
 我们经常在方法中使用`self`关键字来引用实例本身，但从没有想过为什么`self`就能取到调用当前方法的对象吧。其实`self`的内容是在方法运行时被偷偷的动态传入的。  
 
 当`objc_msgSend`找到方法对应的实现时，它将直接调用该方法实现，并将消息中所有的参数都传递给方法实现,同时,它还将传递两个隐藏的参数:  
@@ -348,7 +348,7 @@ struct objc_super { id receiver; Class class; };
 ```
 这个结构体指明了消息应该被传递给特定超类的定义。但`receiver`仍然是`self`本身，这点需要注意，因为当我们想通过`[super class]`获取超类时，编译器只是将指向`self`的`id`指针和`class`的SEL传递给了`objc_msgSendSuper`函数，因为只有在`NSObject`类才能找到`class`方法，然后`class`方法调用`object_getClass()`，接着调用`objc_msgSend(objc_super->receiver, @selector(class)) `，传入的第一个参数是指向`self`的`id`指针，与调用`[self class]`相同，所以我们得到的永远都是`self`的类型。    
 
-###获取方法地址
+### 获取方法地址
 在`IMP`那节提到过可以避开消息绑定而直接获取方法的地址并调用方法。这种做法很少用，除非是需要持续大量重复调用某方法的极端情况，避开消息发送泛滥而直接调用该方法会更高效。  
 
 `NSObject`类中有个`methodForSelector:`实例方法，你可以用它来获取某个方法选择器对应的`IMP`，举个栗子：  
@@ -365,7 +365,7 @@ for ( i = 0 ; i < 1000 ; i++ )
 
 PS：`methodForSelector:`方法是由 Cocoa 的 Runtime 系统提供的，而不是 Objc 自身的特性。  
 
-##动态方法解析
+## 动态方法解析
 你可以动态地提供一个方法的实现。例如我们可以用`@dynamic`关键字在类的实现文件中修饰一个属性：  
 ```
 @dynamic propertyName;
@@ -422,11 +422,11 @@ m 文件：
 
 凡是涉及到类方法时，一定要弄清楚元类、selector、IMP 等概念，这样才能做到举一反三，随机应变。
 
-##消息转发
+## 消息转发
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20141113-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
 
-###重定向
+### 重定向
 在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载`- (id)forwardingTargetForSelector:(SEL)aSelector`方法替换消息的接受者为其他对象：  
 ```
 - (id)forwardingTargetForSelector:(SEL)aSelector
@@ -438,7 +438,7 @@ m 文件：
 }
 ```
 毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，~~不过千万别返回`self`，因为那样会死循环。~~ 如果此方法返回nil或self,则会进入消息转发机制(`forwardInvocation:`);否则将向返回的对象重新发送消息。  
-###转发
+### 转发
 当动态方法解析不作处理返回`NO`时，消息转发机制会被触发。在这时`forwardInvocation:`方法会被执行，我们可以重写这个方法来定义我们的转发逻辑：  
 ```
 - (void)forwardInvocation:(NSInvocation *)anInvocation
@@ -459,7 +459,7 @@ m 文件：
 `forwardInvocation:`方法就像一个不能识别的消息的分发中心，将这些消息转发给不同接收对象。或者它也可以象一个运输站将所有的消息都发送给同一个接收对象。它可以将一个消息翻译成另外一个消息，或者简单的"吃掉“某些消息，因此没有响应也没有错误。`forwardInvocation:`方法也可以对不同的消息提供同样的响应，这一切都取决于方法的具体实现。该方法所提供是将不同的对象链接到消息链的能力。  
 
 注意： `forwardInvocation:`方法只有在消息接收对象中无法正常响应消息时才会被调用。 所以，如果我们希望一个对象将`negotiate`消息转发给其它对象，则这个对象不能有`negotiate`方法。否则，`forwardInvocation:`将不可能会被调用。  
-###转发和多继承
+### 转发和多继承
 转发和继承相似，可以用于为Objc编程添加一些多继承的效果。就像下图那样，一个对象把消息转发出去，就好似它把另一个对象中的方法借过来或是“继承”过来一样。    
 
 ![](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Art/forwarding.gif)  
@@ -467,11 +467,11 @@ m 文件：
 这使得不同继承体系分支下的两个类可以“继承”对方的方法，在上图中`Warrior`和`Diplomat`没有继承关系，但是`Warrior`将`negotiate`消息转发给了`Diplomat`后，就好似`Diplomat`是`Warrior`的超类一样。  
 
 消息转发弥补了 Objc 不支持多继承的性质，也避免了因为多继承导致单个类变得臃肿复杂。它将问题分解得很细，只针对想要借鉴的方法才转发，而且转发机制是透明的。  
-###替代者对象(Surrogate Objects)
+### 替代者对象(Surrogate Objects)
 
 转发不仅能模拟多继承，也能使轻量级对象代表重量级对象。弱小的女人背后是强大的男人，毕竟女人遇到难题都把它们转发给男人来做了。这里有一些适用案例，可以参看[官方文档](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtForwarding.html#//apple_ref/doc/uid/TP40008048-CH105-SW11)。  
 
-###转发与继承
+### 转发与继承
 
 尽管转发很像继承，但是`NSObject`类不会将两者混淆。像`respondsToSelector:` 和 `isKindOfClass:`这类方法只会考虑继承体系，不会考虑转发链。比如上图中一个`Warrior`对象如果被问到是否能响应`negotiate`消息：  
 ```
@@ -505,7 +505,7 @@ if ( [aWarrior respondsToSelector:@selector(negotiate)] )
     return signature;
 }
 ```
-##健壮的实例变量(Non Fragile ivars)
+## 健壮的实例变量(Non Fragile ivars)
 
 在 Runtime 的现行版本中，最大的特点就是健壮的实例变量。当一个类被编译时，实例变量的布局也就形成了，它表明访问类的实例变量的位置。从对象头部开始，实例变量依次根据自己所占空间而产生位移：  
 
@@ -523,7 +523,7 @@ if ( [aWarrior respondsToSelector:@selector(negotiate)] )
 
 需要注意的是在健壮的实例变量下，不要使用`sizeof(SomeClass)`，而是用`class_getInstanceSize([SomeClass class])`代替；也不要使用`offsetof(SomeClass, SomeIvar)`，而要用`ivar_getOffset(class_getInstanceVariable([SomeClass class], "SomeIvar"))`来代替。
 
-##Objective-C Associated Objects
+## Objective-C Associated Objects
 
 在 OS X 10.6 之后，Runtime系统让Objc支持向对象动态添加变量。涉及到的函数有以下三个：  
 ```
@@ -543,7 +543,7 @@ enum {
 ```
 这些常量对应着引用关联值的政策，也就是 Objc 内存管理的引用计数机制。  
 
-##Method Swizzling
+## Method Swizzling
 之前所说的消息转发虽然功能强大，但需要我们了解并且能更改对应类的源代码，因为我们需要实现自己的转发逻辑。当我们无法触碰到某个类的源代码，却想更改这个类某个方法的实现时，该怎么办呢？可能继承类并重写方法是一种想法，但是有时无法达到目的。这里介绍的是 Method Swizzling ，它通过重新映射方法对应的实现来达到“偷天换日”的目的。跟消息转发相比，Method Swizzling 的做法更为隐蔽，甚至有些冒险，也增大了debug的难度。  
 
 这里摘抄一个 NSHipster 的例子：  
@@ -710,7 +710,7 @@ SKNode.yxy_swizzleRemoveFromParent()
 ```
 因为 Swift 中的 extension 的特殊性,最好在某个类的`load()` 方法中调用上面的两个方法.我是在AppDelegate 中调用的,于是保证了应用启动时能够执行上面两个方法.
 
-##总结
+## 总结
 我们之所以让自己的类继承`NSObject`不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的`[receiver message]`背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。
 
 参考链接：  

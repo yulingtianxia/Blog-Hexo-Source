@@ -18,7 +18,7 @@ widgets:
 - tagcloud
 - rss
 - weibo
-
+- douban
 ## provide seven widgets:category,tag,rss,archive,tagcloud,links,weibo,douban
 
 
@@ -36,6 +36,10 @@ banner_img: #img/banner.jpg ## size:1920px*200px+. Banner Picture
 ### Theme Color
 theme_color:
     theme: '#a787d4'    ##the defaut theme color is blue
+
+# 代码高亮主题
+# available: default | night
+highlight_theme: night
 
 #### index post is expanding or not
 index:
