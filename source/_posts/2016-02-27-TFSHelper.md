@@ -247,7 +247,7 @@ func handlePasteboard() {
 
 手动打开链接更简单了，直接调用 `handlePasteboard` 即可。
 
-## 总结
+# 总结
 
 诸如 UI 上一些细节实现就不叙述了，比如在显示常用链接时我只显示了路径的最后一段文字，方便查看，否则链接过长影像体验。因为我是为 TFS 格式量身定制的，所以你也可以通过修改我源码中的匹配规则来为你自己所用。Github 链接：https://github.com/yulingtianxia/TFSHelper
 
