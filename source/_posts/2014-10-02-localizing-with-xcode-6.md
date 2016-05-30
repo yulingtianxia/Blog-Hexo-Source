@@ -45,7 +45,8 @@ let text = String.localizedStringWithFormat(NSLocalizedString("I got %d points i
 "I got %d points in Spiral. Come on with me! https://itunes.apple.com/us/app/square-spiral/id920811081"="我在Spiral游戏中得了%1$d分，快来超越我吧！https://itunes.apple.com/cn/app/square-spiral/id920811081";
 ```
 
-这样就将英文与中文键值对应起来了，注意那个“1$”表示是在键内容（即英文原文）中第一个插入的数据，因为不用语言表达同一个意思时，插入字符串中的数据顺序可能会有变化，这个"数字+$"的标记记录了它们原本的顺序。  
+这样就将英文与中文键值对应起来了，注意那个`1$`表示是在键内容（即英文原文）中第一个插入的数据，因为不用语言表达同一个意思时，插入字符串中的数据顺序可能会有变化，这个`数字+$`的标记记录了它们原本的顺序。
+
 ### NSFormatter
 NSFormatter算是老朋友了，它把数据转化成人们易读的字符串，而且还会根据不同语言和区域进行格式上的优化。它默认使用当地的语言习惯，我们不需要配置任何参数。比如显示时间日期，数字，金融，字节计数等格式上的本地化。现在iOS8和OSX Yosemite加入了健康相关的功能，NSFormatter也加入了很多新的量词，比如能量、长度高度、重量等方面。  
 ### NSBundle

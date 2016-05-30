@@ -390,13 +390,14 @@ void dynamicMethodIMP(id self, SEL _cmd) {
 
 PS：动态方法解析会在消息转发机制浸入前执行。如果 `respondsToSelector:` 或 `instancesRespondToSelector:`方法被执行，动态方法解析器将会被首先给予一个提供该方法选择器对应的`IMP`的机会。如果你想让该方法选择器被传送到转发机制，那么就让`resolveInstanceMethod:`返回`NO`。  
 
-评论区有人问如何用 `resolveClassMethod:` 解析类方法，我将他贴出有问题的代码做了纠正后如下：
+评论区有人问如何用 `resolveClassMethod:` 解析类方法，我将他贴出有问题的代码做了纠正和优化后如下，可以顺便将实例方法和类方法的动态方法解析对比下：
 头文件：
 ```
 #import <Foundation/Foundation.h>
 
 @interface Student : NSObject
 + (void)learnClass:(NSString *) string;
+- (void)goToSchool:(NSString *) name;
 @end
 ```
 m 文件：
@@ -405,20 +406,36 @@ m 文件：
 #import <objc/runtime.h>
 
 @implementation Student
-
 + (BOOL)resolveClassMethod:(SEL)sel {
     if (sel == @selector(learnClass:)) {
-        class_addMethod(object_getClass([self class]), sel, class_getMethodImplementation(object_getClass(self), @selector(myClassMethod:)), "v@:");
+        class_addMethod(object_getClass(self), sel, class_getMethodImplementation(object_getClass(self), @selector(myClassMethod:)), "v@:");
         return YES;
     }
-    return [class_getSuperclass([self class]) resolveClassMethod:sel];
+    return [class_getSuperclass(self) resolveClassMethod:sel];
+}
+
++ (BOOL)resolveInstanceMethod:(SEL)aSEL
+{
+    if (aSEL == @selector(goToSchool:)) {
+        class_addMethod([self class], aSEL, class_getMethodImplementation([self class], @selector(myInstanceMethod:)), "v@:");
+        return YES;
+    }
+    return [super resolveInstanceMethod:aSEL];
 }
 
 + (void)myClassMethod:(NSString *)string {
     NSLog(@"myClassMethod = %@", string);
 }
+
+- (void)myInstanceMethod:(NSString *)string {
+    NSLog(@"myInstanceMethod = %@", string);
+}
 @end
 ```
+
+需要深刻理解 `[self class]` 与 `object_getClass(self)` 甚至 `object_getClass([self class])` 的关系，其实并不难，重点在于 `self` 的类型：
+1. 当 `self` 为实例对象时，`[self class]` 与 `object_getClass(self)` 等价，因为前者会调用后者。`object_getClass([self class])` 得到元类。
+2. 当 `self` 为类对象时，`[self class]` 返回值为自身，还是 `self`。`object_getClass(self)` 与 `object_getClass([self class])` 等价。
 
 凡是涉及到类方法时，一定要弄清楚元类、selector、IMP 等概念，这样才能做到举一反三，随机应变。
 
