@@ -26,7 +26,7 @@ id objc_msgSend(id self, SEL _cmd, ...) {
 
 ### 源码解析
 
-为啥老用伪代码？因为 `objc_msgSend` 是用汇编语言写的，针对不同架构有不同的实现。如下为 x86_64 架构下的源码，可以在 [objc-msg-x86_64.s](https://github.com/opensource-apple/objc4/blob/master/runtime/Messengers.subproj/objc-msg-x86_64.s) 文件中找到，关键代码如下：
+为啥老用伪代码？因为 `objc_msgSend` 是用汇编语言写的，针对不同架构有不同的实现。如下为 `x86_64` 架构下的源码，可以在 [objc-msg-x86_64.s](https://github.com/opensource-apple/objc4/blob/master/runtime/Messengers.subproj/objc-msg-x86_64.s) 文件中找到，关键代码如下：
 
 ```
 	ENTRY	_objc_msgSend
@@ -55,9 +55,9 @@ LCacheMiss:
 
 `NilTest` 宏，判断被发送消息的对象是否为 `nil` 的。如果为 `nil`，那就直接返回 `nil`。这就是为啥也可以对 `nil` 发消息。
 
-`GetIsaFast` 宏可以『快速地』获取到对象的 `isa` 指针地址（放到r11寄存器，r10会被重写；在 arm架构上是直接赋值到r9）
+`GetIsaFast` 宏可以『快速地』获取到对象的 `isa` 指针地址（放到 `r11` 寄存器，`r10` 会被重写；在 arm 架构上是直接赋值到 `r9`）
 
-`CacheLookup` 这个宏是在类以及父类的缓存中查找 selector 对应的 IMP（放到 r10）并执行。如果缓存没中，那就得到 Class 的方法表中查找了。
+`CacheLookup` 这个宏是在类的缓存中查找 selector 对应的 IMP（放到 `r10`）并执行。如果缓存没中，那就得到 Class 的方法表中查找了。
 
 `MethodTableLookup` 宏是重点，负责在缓存没命中时在方法表中负责查找 IMP：
 ```
@@ -82,14 +82,14 @@ LCacheMiss:
 .endmacro
 ```
 
-从上面的代码可以看出方法查找 IMP 的工作交给了 OC 中的 `_class_lookupMethodAndLoadCache3` 函数，并将 IMP 返回（从 r11 挪到 rax）。最后在 `objc_msgSend` 中调用 IMP。
+从上面的代码可以看出方法查找 IMP 的工作交给了 OC 中的 `_class_lookupMethodAndLoadCache3` 函数，并将 IMP 返回（从 `r11` 挪到 `rax`）。最后在 `objc_msgSend` 中调用 IMP。
 
 ### 为什么使用汇编语言
 
 其实在 [objc-msg-x86_64.s](https://github.com/opensource-apple/objc4/blob/master/runtime/Messengers.subproj/objc-msg-x86_64.s) 中包含了多个版本的 `objc_msgSend` 方法，它们是根据返回值的类型和调用者的类型分别处理的：
 
-- `objc_msgSendSuper`:向父类发消息，返回值类型为 id
-- `objc_msgSend_fpret`:返回值类型为 floating-point，其中包含 `objc_msgSend_fp2ret` 入口处理返回值为 long double的情况
+- `objc_msgSendSuper`:向父类发消息，返回值类型为 `id`
+- `objc_msgSend_fpret`:返回值类型为 floating-point，其中包含 `objc_msgSend_fp2ret` 入口处理返回值为 `long double` 类型的情况
 - `objc_msgSend_stret`:返回值为结构体
 - `objc_msgSendSuper_stret`:想父类发消息，返回值类型为结构体
 
@@ -330,7 +330,7 @@ libc++abi.dylib: terminating with uncaught exception of type NSException
 
 这个日志场景熟悉得不能再熟悉了，可以看出 `_CF_forwarding_prep_0` 函数调用了 `___forwarding___` 函数，接着又调用了 `doesNotRecognizeSelector` 方法，最后抛出异常。**但是靠这些是无法说服看客的，还得靠逆向工程反编译后再反汇编成伪代码来一探究竟，刨根问底。**
 
-`__CF_forwarding_prep_0` 和 `___forwarding_prep_1___` 函数都调用了 `___forwarding___`，只是传入参数不同。`___forwarding___` 有两个参数，第一个参数为将要被转发消息的栈指针（可以简单理解成 IMP），第二个参数标记是否返回结构体。`__CF_forwarding_prep_0` 第二个参数传入 0，`___forwarding_prep_1___` 传入的是 1，从函数名都能看得出来。下面是这两个函数的伪代码：
+`__CF_forwarding_prep_0` 和 `___forwarding_prep_1___` 函数都调用了 `___forwarding___`，只是传入参数不同。`___forwarding___` 有两个参数，第一个参数为将要被转发消息的栈指针（可以简单理解成 IMP），第二个参数标记是否返回结构体。`__CF_forwarding_prep_0` 第二个参数传入 `0`，`___forwarding_prep_1___` 传入的是 `1`，从函数名都能看得出来。下面是这两个函数的伪代码：
 
 ```
 int __CF_forwarding_prep_0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
@@ -526,7 +526,7 @@ void +[NSObject doesNotRecognizeSelector:](void * self, void * _cmd, void * arg2
 
 我将整个实现流程绘制出来，过滤了一些不会进入的分支路径和跟主题无关的细节：
 
-![消息发送与转发路径流程图](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E4%B8%8E%E8%BD%AC%E5%8F%91.svg) 
+![消息发送与转发路径流程图](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E4%B8%8E%E8%BD%AC%E5%8F%91.jpg) 
 
 介于国内关于这块知识的好多文章描述不够准确和详细，或是对消息转发的原理描述理解不够深刻，或是侧重贴源码而欠思考，所以我做了一个比较全面详细的讲解。
 
