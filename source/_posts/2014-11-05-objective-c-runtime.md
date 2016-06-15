@@ -299,7 +299,11 @@ for (i = 0; i < outCount; i++) {
 对比下 `class_copyIvarList` 函数，使用 `class_copyPropertyList` 函数只能获取类的属性，而不包含成员变量。但此时获取的属性名是不带下划线的。
 
 ## 消息
+
 前面做了这么多铺垫，现在终于说到了消息了。Objc 中发送消息是用中括号（`[]`）把接收者和消息括起来，而直到运行时才会把消息与方法实现绑定。  
+
+**有关消息发送和消息转发机制的原理，可以查看[这篇文章](http://yulingtianxia.com/blog/2016/06/15/Objective-C-Message-Sending-and-Forwarding/)。**
+
 ### objc_msgSend函数
 在引言中已经对`objc_msgSend`进行了一点介绍，看起来像是`objc_msgSend`返回了数据，其实`objc_msgSend`从不返回数据而是你的方法被调用后返回了数据。下面详细叙述下消息发送步骤： 
 
@@ -558,7 +562,7 @@ enum {
    OBJC_ASSOCIATION_COPY  = 01403
 };
 ```
-这些常量对应着引用关联值的政策，也就是 Objc 内存管理的引用计数机制。  
+这些常量对应着引用关联值的政策，也就是 Objc 内存管理的引用计数机制。**有关 Objective-C 引用计数机制的原理，可以查看[这篇文章](http://yulingtianxia.com/blog/2015/12/06/The-Principle-of-Refenrence-Counting/)**。
 
 ## Method Swizzling
 之前所说的消息转发虽然功能强大，但需要我们了解并且能更改对应类的源代码，因为我们需要实现自己的转发逻辑。当我们无法触碰到某个类的源代码，却想更改这个类某个方法的实现时，该怎么办呢？可能继承类并重写方法是一种想法，但是有时无法达到目的。这里介绍的是 Method Swizzling ，它通过重新映射方法对应的实现来达到“偷天换日”的目的。跟消息转发相比，Method Swizzling 的做法更为隐蔽，甚至有些冒险，也增大了debug的难度。  
