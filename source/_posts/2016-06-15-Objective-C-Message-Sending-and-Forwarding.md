@@ -89,13 +89,13 @@ LCacheMiss:
 其实在 [objc-msg-x86_64.s](https://github.com/opensource-apple/objc4/blob/master/runtime/Messengers.subproj/objc-msg-x86_64.s) 中包含了多个版本的 `objc_msgSend` 方法，它们是根据返回值的类型和调用者的类型分别处理的：
 
 - `objc_msgSendSuper`:向父类发消息，返回值类型为 `id`
-- `objc_msgSend_fpret`:返回值类型为 floating-point，其中包含 `objc_msgSend_fp2ret` 入口处理返回值为 `long double` 类型的情况
+- `objc_msgSend_fpret`:返回值类型为 floating-point，其中包含 `objc_msgSend_fp2ret` 入口处理返回值类型为 `long double` 的情况
 - `objc_msgSend_stret`:返回值为结构体
-- `objc_msgSendSuper_stret`:想父类发消息，返回值类型为结构体
+- `objc_msgSendSuper_stret`:向父类发消息，返回值类型为结构体
 
 当需要发送消息时，编译器会生成中间代码，根据情况分别调用 `objc_msgSend`, `objc_msgSend_stret`, `objc_msgSendSuper`, 或 `objc_msgSendSuper_stret` 其中之一。
 
-这也是为什么 `objc_msgSend` 要用汇编语言而不是 OC、C 或 C++ 语言来实现，因为单独一个方法定义满足不了多种类型返回值，有的方法返回 id，有的返回 int。除此之外还有其他原因，比如其可变参数用汇编处理起来最方便，因为找到 IMP 地址后参数都在栈上。要是用 C++ 传递可变参数那就悲剧了，prologue 机制会弄乱地址（比如i386上为了存储 ebp 向后移位 4byte），最后还要用 epilogue 打扫战场。此外还好考虑不同类型参数排列组合映射不同方法签名（method signature）的问题，那 switch 语句得老长了。。。其实最重要的原因还是因为汇编程序执行快啊！在 Objective-C Runtime 中调用频率较高的函数好多都用汇编写的。
+这也是为什么 `objc_msgSend` 要用汇编语言而不是 OC、C 或 C++ 语言来实现，因为单独一个方法定义满足不了多种类型返回值，有的方法返回 `id`，有的返回 `int`。除此之外还有其他原因，比如其可变参数用汇编处理起来最方便，因为找到 IMP 地址后参数都在栈上。要是用 C++ 传递可变参数那就悲剧了，prologue 机制会弄乱地址（比如 i386 上为了存储 `ebp` 向后移位 4byte），最后还要用 epilogue 打扫战场。此外还好考虑不同类型参数排列组合映射不同方法签名（method signature）的问题，那 switch 语句得老长了。。。而且汇编程序执行效率高，在 Objective-C Runtime 中调用频率较高的函数好多都用汇编写的。
 
 
 ## 使用 lookUpImpOrForward 快速查找 IMP 
@@ -110,7 +110,7 @@ IMP _class_lookupMethodAndLoadCache3(id obj, SEL sel, Class cls)
 }
 ```
 
-注意 `lookUpImpOrForward` 调用时使用缓存参数传入为 NO，因为之前已经尝试过查找缓存了。`IMP lookUpImpOrForward(Class cls, SEL sel, id inst, bool initialize, bool cache, bool resolver)` 实现了一套查找 IMP 的标准路径，也就是在消息转发（Forward）之前的逻辑。
+注意 `lookUpImpOrForward` 调用时使用缓存参数传入为 `NO`，因为之前已经尝试过查找缓存了。`IMP lookUpImpOrForward(Class cls, SEL sel, id inst, bool initialize, bool cache, bool resolver)` 实现了一套查找 IMP 的标准路径，也就是在消息转发（Forward）之前的逻辑。
 
 ### 优化缓存查找&类的初始化
 
@@ -183,7 +183,7 @@ IMP lookUpImpOrNil(Class cls, SEL sel, id inst,
 
 ## __forwarding__ 中路漫漫的消息转发
 
-### `objc_msgForward_impcache` 的转换
+### objc_msgForward_impcache 的转换
 
 `_objc_msgForward_impcache` 只是个内部的函数指针，只存储于上节提到的类的方法缓存中，需要被转化为 `_objc_msgForward` 和 `_objc_msgForward_stret` 才能被外部调用。但在 ~~Mac OS X~~ macOS 10.6 及更早版本的 libobjc.A.dylib 中是不能直接调用的，况且我们根本不会直接用到它。带 `stret` 后缀的函数依旧是返回值为结构体的版本。
 
@@ -526,7 +526,7 @@ void +[NSObject doesNotRecognizeSelector:](void * self, void * _cmd, void * arg2
 
 我将整个实现流程绘制出来，过滤了一些不会进入的分支路径和跟主题无关的细节：
 
-![消息发送与转发路径流程图](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E4%B8%8E%E8%BD%AC%E5%8F%91.jpg) 
+![消息发送与转发路径流程图](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/消息发送与转发路径流程图.jpg) 
 
 介于国内关于这块知识的好多文章描述不够准确和详细，或是对消息转发的原理描述理解不够深刻，或是侧重贴源码而欠思考，所以我做了一个比较全面详细的讲解。
 
