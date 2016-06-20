@@ -6,9 +6,9 @@ tags:
 - Objective-C
 
 ---
-消息发送和转发流程可以概括为：消息发送是 Runtime 通过 selector 快速查找 IMP 的过程，有了函数指针就可以执行对应的方法实现；消息转发是在查找 IMP 失败后执行一系列转发流程的慢速通道，如果不作转发处理，则会打日志和抛出异常。
+消息发送和转发流程可以概括为：消息发送（Messaging）是 Runtime 通过 selector 快速查找 IMP 的过程，有了函数指针就可以执行对应的方法实现；消息转发（Message Forwarding）是在查找 IMP 失败后执行一系列转发流程的慢速通道，如果不作转发处理，则会打日志和抛出异常。
 
-**本文不讲述开发者在消息发送和转发流程中需要做的事，而是讲述原理。能够很好地阅读本文的前提是你对 [Objective-C Runtime](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/) 已经有一定的了解，关于 Class 的结构，selector、IMP、元类等概念将不再赘述**。本文用到的源码为 objc4-680 和 CF-1153.18，逆向 CoreFoundation.framework 的系统版本为 macOS 10.11.5，汇编语言架构为 x86_64。
+**本文不讲述开发者在消息发送和转发流程中需要做的事，而是讲述原理。能够很好地阅读本文的前提是你对 [Objective-C Runtime](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/) 已经有一定的了解，关于什么是消息，Class 的结构，selector、IMP、元类等概念将不再赘述**。本文用到的源码为 objc4-680 和 CF-1153.18，逆向 CoreFoundation.framework 的系统版本为 macOS 10.11.5，汇编语言架构为 x86_64。
 
 <!--more-->
 
