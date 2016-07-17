@@ -126,7 +126,7 @@ PS:`OBJC2_UNAVAILABLE`之类的宏定义是苹果在  Objc  中对系统运行�
 
 Objective-C 2.0 的头文件虽然没暴露出`objc_class`结构体更详细的设计，我们依然可以从Objective-C 1.0 的定义中小窥端倪：  
 
-在`objc_class`结构体中：`ivars`是`objc_ivar_list`指针；`methodLists`是指向`objc_method_list`指针的指针。也就是说可以动态修改`*methodLists`的值来添加成员方法，这也是Category实现的原理，同样解释了Category不能添加属性的原因。关于二级指针，可以参考[这篇文章](http://www.fenesky.com/blog/2014/07/03/pointers-to-pointers.html)。而最新版的 Runtime 源码对这一块的[描述](http://www.opensource.apple.com/source/objc4/objc4-647/runtime/objc-runtime-new.h)已经有很大变化，可以参考下美团技术团队的[深入理解Objective-C：Category](http://tech.meituan.com/DiveIntoCategory.html)。   
+在`objc_class`结构体中：`ivars`是`objc_ivar_list`指针；`methodLists`是指向`objc_method_list`指针的指针。也就是说可以动态修改`*methodLists`的值来添加成员方法，这也是Category实现的原理，同样解释了Category不能添加属性的原因。而最新版的 Runtime 源码对这一块的[描述](http://www.opensource.apple.com/source/objc4/objc4-647/runtime/objc-runtime-new.h)已经有很大变化，可以参考下美团技术团队的[深入理解Objective-C：Category](http://tech.meituan.com/DiveIntoCategory.html)。   
 PS：任性的话可以在Category中添加`@dynamic`的属性，并利用运行期动态提供存取方法或干脆动态转发；或者干脆使用关联度对象（AssociatedObject）
 
 其中`objc_ivar_list`和`objc_method_list`分别是成员变量列表和方法列表：  

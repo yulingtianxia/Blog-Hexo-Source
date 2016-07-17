@@ -95,7 +95,7 @@ LCacheMiss:
 
 当需要发送消息时，编译器会生成中间代码，根据情况分别调用 `objc_msgSend`, `objc_msgSend_stret`, `objc_msgSendSuper`, 或 `objc_msgSendSuper_stret` 其中之一。
 
-这也是为什么 `objc_msgSend` 要用汇编语言而不是 OC、C 或 C++ 语言来实现，因为单独一个方法定义满足不了多种类型返回值，有的方法返回 `id`，有的返回 `int`。除此之外还有其他原因，比如其可变参数用汇编处理起来最方便，因为找到 IMP 地址后参数都在栈上。要是用 C++ 传递可变参数那就悲剧了，prologue 机制会弄乱地址（比如 i386 上为了存储 `ebp` 向后移位 4byte），最后还要用 epilogue 打扫战场。此外还好考虑不同类型参数排列组合映射不同方法签名（method signature）的问题，那 switch 语句得老长了。。。而且汇编程序执行效率高，在 Objective-C Runtime 中调用频率较高的函数好多都用汇编写的。
+这也是为什么 `objc_msgSend` 要用汇编语言而不是 OC、C 或 C++ 语言来实现，因为单独一个方法定义满足不了多种类型返回值，有的方法返回 `id`，有的返回 `int`。考虑到不同类型参数返回值排列组合映射不同方法签名（method signature）的问题，那 switch 语句得老长了。。。**这些原因可以总结为 [Calling Convention](https://en.wikipedia.org/wiki/Calling_convention)，也就是说函数调用者与被调用者必须约定好参数与返回值在不同架构处理器上的存取规则，比如参数是以何种顺序存储在栈上，或是存储在哪些寄存器上。**除此之外还有其他原因，比如其可变参数用汇编处理起来最方便，因为找到 IMP 地址后参数都在栈上。要是用 C++ 传递可变参数那就悲剧了，prologue 机制会弄乱地址（比如 i386 上为了存储 `ebp` 向后移位 4byte），最后还要用 epilogue 打扫战场。而且汇编程序执行效率高，在 Objective-C Runtime 中调用频率较高的函数好多都用汇编写的。
 
 
 ## 使用 lookUpImpOrForward 快速查找 IMP 

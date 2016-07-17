@@ -4,7 +4,7 @@ title: "在Mac上用WiFi共享校园网"
 date: 2014-09-07 18:00:14 +0800
 comments: true
 tags: 
-- MacOSX
+- Mac OS X
 
 ---
 
