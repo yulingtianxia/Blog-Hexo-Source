@@ -11,16 +11,12 @@ date: 2015-02-07 19:19:08
 - [个人寄语](http://yulingtianxia.com/about/aboutme.html)  
 - [我的简历](http://resume.yulingtianxia.com)  
 - 我的APP
+	- [Similarimagehunter](http://similarimagehunter.yulingtianxia.com)
+	- [TFSHelper](https://github.com/yulingtianxia/TFSHelper)
+	- [Spiral](http://spiral.yulingtianxia.com)
+	- [ColorAtom](http://coloratom.yulingtianxia.com)    
+	- [HardChoice](http://hardchoice.yulingtianxia.com)
 	- [畅游导航](http://changyou.yulingtianxia.com)  
-	- [ColorAtom](http://coloratom.yulingtianxia.com)  
-	- [Spiral](http://spiral.yulingtianxia.com)  
-	- [HardChoice](http://hardchoice.yulingtianxia.com)  
-	
-- 在手机上查看我的博客：
-	- [Android](http://7ni3rk.com1.z0.glb.clouddn.com/blog_android.apk)  
-	![](http://7ni3rk.com1.z0.glb.clouddn.com/qrcode-android.png)  
-	- [iOS(需越狱)](http://7ni3rk.com1.z0.glb.clouddn.com/玉令天下的Blog_0.3_iosbrk.ipa)  
-	![](http://7ni3rk.com1.z0.glb.clouddn.com/qrcode-ios.png)
 
 ###Donate to me
 ####用我的链接注册以下应用，你和我都能得到一些优惠  

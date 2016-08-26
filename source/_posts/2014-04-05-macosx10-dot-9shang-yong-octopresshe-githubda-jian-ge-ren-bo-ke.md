@@ -5,7 +5,7 @@ title: "MacOSX10.9上用Octopress和GitHub搭建个人博客"
 date: 2014-04-05 14:28:54 +0800
 comments: true
 tags: 
-- Mac OS X
+- macOS
 - Octopress
 - GitHub
 

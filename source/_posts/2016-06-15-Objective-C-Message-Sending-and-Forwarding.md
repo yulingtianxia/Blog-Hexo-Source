@@ -4,6 +4,8 @@ date: 2016-06-15 20:12:48
 tags:
 - Runtime
 - Objective-C
+- Message Forwarding
+- Messaging
 
 ---
 消息发送和转发流程可以概括为：消息发送（Messaging）是 Runtime 通过 selector 快速查找 IMP 的过程，有了函数指针就可以执行对应的方法实现；消息转发（Message Forwarding）是在查找 IMP 失败后执行一系列转发流程的慢速通道，如果不作转发处理，则会打日志和抛出异常。

@@ -449,6 +449,7 @@ m 文件：
 
 ### 重定向
 在消息转发机制执行前，Runtime 系统会再给我们一次偷梁换柱的机会，即通过重载`- (id)forwardingTargetForSelector:(SEL)aSelector`方法替换消息的接受者为其他对象：  
+
 ```
 - (id)forwardingTargetForSelector:(SEL)aSelector
 {
@@ -458,7 +459,20 @@ m 文件：
     return [super forwardingTargetForSelector:aSelector];
 }
 ```
+
 毕竟消息转发要耗费更多时间，抓住这次机会将消息重定向给别人是个不错的选择，~~不过千万别返回`self`，因为那样会死循环。~~ 如果此方法返回nil或self,则会进入消息转发机制(`forwardInvocation:`);否则将向返回的对象重新发送消息。  
+
+如果想替换**类方法**的接受者，需要覆写 `+ (id)forwardingTargetForSelector:(SEL)aSelector` 方法，并返回**类对象**：
+
+```
++ (id)forwardingTargetForSelector:(SEL)aSelector {
+	if(aSelector == @selector(xxx)) {
+		return NSClassFromString(@"Class name");
+	}
+	return [super forwardingTargetForSelector:aSelector];
+}
+```
+
 ### 转发
 当动态方法解析不作处理返回`NO`时，消息转发机制会被触发。在这时`forwardInvocation:`方法会被执行，我们可以重写这个方法来定义我们的转发逻辑：  
 ```

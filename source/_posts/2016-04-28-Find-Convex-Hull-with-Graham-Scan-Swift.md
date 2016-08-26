@@ -3,6 +3,7 @@ date: 2016-04-28 22:37:16
 tags:
 - Algorithm
 - Swift
+- macOS
 
 ---
 [凸包(Convex hull)](https://en.wikipedia.org/wiki/Convex_hull) 是一个数学上的概念，在二维平面上可以想象成用一个橡皮筋套住一堆钉在平面上的钉子。本文讲述如何使用 Swift 实现 [Graham scan](https://en.wikipedia.org/wiki/Graham_scan) 算法来寻找二维平面点集上的凸包。工程源码 Github：https://github.com/yulingtianxia/Algorithm-Experiment
