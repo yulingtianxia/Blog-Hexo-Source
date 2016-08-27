@@ -82,30 +82,30 @@ PS：这里之所以不 hook `addSubview:` 是因为在添加 subview 时，视�
     if (accessibilityIdentifier.length > 0 && [[accessibilityIdentifier substringToIndex:1] isEqualToString:@"("]) {
         return accessibilityIdentifier;
     }
+    else if ([accessibilityIdentifier isEqualToString:@"null"]) {
+        accessibilityIdentifier = @"";
+    }
     
     NSString *labelStr = [self.superview findNameWithInstance:self];
     
     if (labelStr && ![labelStr isEqualToString:@""]) {
-        labelStr = [NSString stringWithFormat:@"(%@)",[labelStr substringFromIndex:1]];// 去掉下划线
+        labelStr = [NSString stringWithFormat:@"(%@)",labelStr];
     }
     else {
         if ([self isKindOfClass:[UILabel class]]) {//UILabel 使用 text
-            labelStr = [NSString stringWithFormat:@"(%@)",((UILabel *)self).text];
+            labelStr = [NSString stringWithFormat:@"(%@)",((UILabel *)self).text?:@""];
         }
         else if ([self isKindOfClass:[UIImageView class]]) {//UIImageView 使用 image 的 imageName
-            labelStr = [NSString stringWithFormat:@"(%@)",((UIImageView *)self).image.accessibilityIdentifier];
+            labelStr = [NSString stringWithFormat:@"(%@)",((UIImageView *)self).image.accessibilityIdentifier?:[NSString stringWithFormat:@"image%ld",(long)((UIImageView *)self).tag]];
         }
         else if ([self isKindOfClass:[UIButton class]]) {//UIButton 使用 button 的 text 和 image
-            labelStr = [NSString stringWithFormat:@"(%@%@)",((UIButton *)self).titleLabel.text,((UIButton *)self).imageView.image.accessibilityIdentifier];
+            labelStr = [NSString stringWithFormat:@"(%@%@)",((UIButton *)self).titleLabel.text?:@"",((UIButton *)self).imageView.image.accessibilityIdentifier?:@""];
         }
         else if (accessibilityIdentifier) {// 已有 label，则在此基础上再次添加更多信息
             labelStr = [NSString stringWithFormat:@"(%@)",accessibilityIdentifier];
         }
-        else {// 万不得已使用 tag
-            labelStr = [NSString stringWithFormat:@"%ld",(long)self.tag];
-        }
         if ([self isKindOfClass:[UIButton class]]) {
-            self.accessibilityValue = [NSString stringWithFormat:@"(%@)",((UIButton *)self).currentBackgroundImage.accessibilityIdentifier];
+            self.accessibilityValue = [NSString stringWithFormat:@"(%@)",((UIButton *)self).currentBackgroundImage.accessibilityIdentifier?:@""];
         }
     }
     if ([labelStr isEqualToString:@"()"] || [labelStr isEqualToString:@"(null)"] || [labelStr isEqualToString:@"null"]) {
@@ -114,12 +114,32 @@ PS：这里之所以不 hook `addSubview:` 是因为在添加 subview 时，视�
     [self setAccessibilityIdentifier:labelStr];
     return labelStr;
 }
+
+- (NSString *)tb_accessibilityLabel
+{
+    if ([self isKindOfClass:[UIImageView class]]) {//UIImageView 特殊处理
+        NSString *name = [self.superview findNameWithInstance:self];
+        if (name) {
+            self.accessibilityIdentifier = [NSString stringWithFormat:@"(%@)",name];
+        }
+        else {
+            self.accessibilityIdentifier = [NSString stringWithFormat:@"(%@)",((UIImageView *)self).image.accessibilityIdentifier?:[NSString stringWithFormat:@"image%ld",(long)((UIImageView *)self).tag]];
+        }
+    }
+    if ([self isKindOfClass:[UITableViewCell class]]) {//UITableViewCell 特殊处理
+        self.accessibilityIdentifier = [NSString stringWithFormat:@"(%@)",((UITableViewCell *)self).reuseIdentifier];
+    }
+    return [self tb_accessibilityLabel];
+}
 @end
 ```
 
-在获取到变量名之后，还需要进行处理才能作为标签。首先是去掉开头的下划线，因为在Runtime中保存的其实是成员变量的名称，默认都是带有下划线前缀的。然后还需要在变量名外加一层括号，目的是区分下此标签是代码生成的而不是手动加上去的。方法结尾的 ` [self setAccessibilityIdentifier:subLabelStr]` 用来给 `_accessibilityIdentifier` 赋值生成好的标签。
+在获取到变量名之后，还需要进行处理才能作为标签。首先在变量名外加一层括号，目的是区分下此标签是代码生成的而不是手动加上去的。方法结尾的 ` [self setAccessibilityIdentifier:subLabelStr]` 用来给 `_accessibilityIdentifier` 赋值生成好的标签。
 
 对于获取不到变量名的临时变量和视图层级中一些系统私有的视图变量，才去之前分析中提到的方案特殊处理。好一长串的 `if-else` 啊，为了处理这些特殊情况写一坨脏代码我也是醉了。最后别忘处理下无意义的字符串，比如 "null"。
+
+在 UIAutomation 生成控件树时，大部分 `UIImageView` 和 `UITableViewCell` 无法通过 hook `accessibilityIdentifier` 来在控件树中获取到自动化测试标签，或者获得的标签不是属性名而是图片资源名。解决方案是 hook accessibilityLabel 方法，并在其中为 `UIImageView` 和 `UITableViewCell` 加自动化测试标签。
+
 
 为了将 `UIImage` 的图片资源名和实例绑定，我又 hook 了 `UIImage` 的 `imageNamed:` 类方法：
 
@@ -163,13 +183,16 @@ PS：这里之所以不 hook `addSubview:` 是因为在添加 subview 时，视�
     if (!name) {
         return [nextResponder findNameWithInstance:instance];
     }
+    if ([name hasPrefix:@"_"]) {  //去掉变量名的下划线前缀
+        name = [name substringFromIndex:1];
+    }
     return name;
 }
-
-@end
 ```
 
 因为我们并不知道某个视图对象在哪个类中充当了属性或成员变量，所以 `findNameWithInstance:` 方法会沿着响应链向上递归查找，范围不仅涵盖 `UIView`，连 `UIViewController` 都不能放过。每找一层就要调用 `nameWithInstance:` 方法用 [Objective-C Runtime](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/) 遍历成员变量列表的方式查找变量名。
+
+别忘去掉开头的下划线，因为在Runtime中保存的其实是成员变量的名称，默认都是带有下划线前缀的。
 
 因为 hook 的方法不是 `accessibilityLabel`，所以不能通过 Xcode 中的 View Debug 页面来查看加标签的效果。最好的方法还是通过 UIAutomation 抓取控件树，这样的效果比较真实。为了便于在真机上查看标签内容，我为所有视图增加了长按手势，长按视图后弹警告框显示自动化测试标签的内容。 
 
@@ -221,25 +244,10 @@ hook  `addSubview:` 方法，在其中添加长按手势。 `longPress:` 方法�
 @end
 ```
 
-**2016.04.13 更新**
-在 UIAutomation 生成控件树时，大部分 `UIImageView` 无法通过 hook `accessibilityIdentifier` 来在控件树中获取到自动化测试标签，或者获得的标签不是属性名而是图片资源名。解决方案是 hook accessibilityLabel 方法，并在其中为 `UIImageView` 加自动化测试标签：
-
-```
-- (NSString *)tb_accessibilityLabel
-{
-    if ([self isKindOfClass:[UIImageView class]]) {
-        NSString *name = [self.superview findNameWithInstance:self];
-        self.accessibilityIdentifier = [NSString stringWithFormat:@"(%@)",name];
-        //balabala...
-    }
-    return [self tb_accessibilityLabel];
-}
-```
-
 ## 感受&总结
 
 ~~我是杨(gu)阿莫，今天我给大家要讲的是一个月前测试帅哥要求加自动化测试标签后老大开会讨论方案组内高工一致不赞同手动加并要求自动加并在最后老大钦点这个事情就交给我了的故事。这其中还经历了方案的各种改，五子棋同学的实力参(jiao)谋(ji)，以及拉屎时把本该思考人生的时间花在了改进方案。这个月博客实在不知道该写啥眼看月底了再不更新怕以后再也不想更新了呢所以你会发现这篇文章水水的科科！~~
 
-呵呵后来发现~~大部分人~~所有人都看不懂，但这个方案真的好用！**2016.07.26 Update**
+呵呵后来发现~~大部分人~~所有人都看不懂，但这个方案真的好用！
 
 如果大家有更好的方案，或者觉得我的方案一开始就跑偏了，甚至是已经有一个不用手动加标签代码的现成的超屌超牛逼的 iOS 自动化测试框架，请告诉我！据说整个腾讯都是手动加自动化测试标签，老大说做有挑战的事情才有意思嘛。
