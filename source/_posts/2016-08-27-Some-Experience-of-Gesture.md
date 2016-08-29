@@ -93,7 +93,7 @@ tags:
 
 总之，`transform` 属性改变的是视图的 `frame`，而 `bounds` 和子视图的 `frame` 都不会变。也就是**视图内部的坐标系不会改变**。记住这点，很有用。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/SomeExperienceofGesture/transform%E5%AF%B9%E6%AF%94%E5%9D%90%E6%A0%87.png)
+![改变 transform 后的坐标系](http://7ni3rk.com1.z0.glb.clouddn.com/SomeExperienceofGesture/transform%E5%AF%B9%E6%AF%94%E5%9D%90%E6%A0%87.png)
 
 上图展示的是缩放后的坐标变换，也同样适用于旋转。都是相对坐标系的知识罢了。
 
