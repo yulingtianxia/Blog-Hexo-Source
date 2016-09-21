@@ -6,9 +6,10 @@ tags:
 - macOS
 - Swift
 - AppleScript
+
 ---
 
-工作时经常会收到同事发来的一些链接，有的带空格的链接会断开，不能直接点击查看，需要手动复制完整链接并粘贴查看。所以我做了个 Mac 系统上的 URL 辅助工具，在复制 URL 时自动将其打开。还实现缓存常用链接、自动/手动连接切换、登录时启动等功能。开发语言为 Swift 和 AppleScript。
+工作时经常会收到同事发来的一些链接，有的带空格的链接会断开，不能直接点击查看，需要手动复制完整链接并粘贴查看。所以我做了个 Mac 系统上的 URL 辅助工具，在复制 URL 时自动将其打开。还实现缓存常用链接、自动/手动连接切换、登录时启动等功能。开发语言为 Swift 3 和 AppleScript。
 
 <!--more-->
 
@@ -24,13 +25,13 @@ tags:
 
 ```
 func catchTFSLocation() -> String? {
-    if let texts = NSPasteboard.generalPasteboard().readObjectsForClasses([NSString.self as AnyClass], options: nil) as? [String] {
+    if let texts = NSPasteboard.general().readObjects(forClasses: [NSString.self as AnyClass], options: nil) as? [String] {
         for var text in texts {
-            if let range = text.rangeOfString("\\\\tencent") {
-                text = convert(text.substringFromIndex(range.startIndex))
+            if let range = text.range(of: "\\\\tencent") {
+                text = convert(text.substring(from: range.lowerBound))
             }
-            if let range = text.rangeOfString("smb://") {
-                text = text.substringFromIndex(range.startIndex)
+            if let range = text.range(of: "smb://") {
+                text = text.substring(from: range.lowerBound)
                 return text
             }
         }
@@ -41,9 +42,9 @@ func catchTFSLocation() -> String? {
 然后将处理后的 URL 写入剪贴板，注意这里写入剪贴板的类型为 `NSStringPboardType`：
 
 ```
-func writePasteboard(location: String) {
-    NSPasteboard.generalPasteboard().declareTypes([NSStringPboardType], owner: nil)
-    NSPasteboard.generalPasteboard().setString(location, forType: NSStringPboardType)
+func writePasteboard(_ location: String) {
+    NSPasteboard.general().declareTypes([NSStringPboardType], owner: nil)
+    NSPasteboard.general().setString(location, forType: NSStringPboardType)
 }
 ```
 
@@ -53,10 +54,10 @@ func writePasteboard(location: String) {
 
 ```
 func simulateKeys() {
-    let task = NSTask()
-    task.launchPath = "/usr/bin/osascript"
-    task.arguments = ["\(NSBundle.mainBundle().resourcePath!)/simulateKeys.scpt"]
-    task.launch()
+   let task = Process()
+   task.launchPath = "/usr/bin/osascript"
+   task.arguments = ["\(Bundle.main.resourcePath!)/simulateKeys.scpt"]
+   task.launch()
 }
 ```
 
@@ -89,8 +90,8 @@ tell application "Finder"	activateend telltell application "System Events"	
 ```
 class LRUCache <K:Hashable, V> : NSObject, NSCoding, SequenceType {
     
-    private var _cache = [K:V]()
-    private var _keys = [K]()
+    fileprivate var _cache = [K:V]()
+    fileprivate var _keys = [K]()
     
     var countLimit:Int = 0
     
@@ -110,7 +111,7 @@ class LRUCache <K:Hashable, V> : NSObject, NSCoding, SequenceType {
         }
         set(obj) {
             if obj == nil {
-                _cache.removeValueForKey(key)
+                _cache.removeValue(forKey: key)
             }
             else {
                 useKey(key)
@@ -119,18 +120,18 @@ class LRUCache <K:Hashable, V> : NSObject, NSCoding, SequenceType {
         }
     }
     
-    private func useKey(key: K) {
-        if let index = _keys.indexOf(key) {// key 已存在数组中，只需要将其挪至 index 0
-            _keys.insert(_keys.removeAtIndex(index), atIndex: 0)
+    fileprivate func useKey(_ key: K) {
+        if let index = _keys.index(of: key) {// key 已存在数组中，只需要将其挪至 index 0
+            _keys.insert(_keys.remove(at: index), at: 0)
         }
         else {// key 不存在数组中，需要将其插入 index 0，并在超出缓存大小阈值时移走最后面的元素
             if _keys.count >= countLimit {
-                _cache.removeValueForKey(_keys.last!)
+                _cache.removeValue(forKey: _keys.last!)
                 _keys.removeLast()
             }
-            _keys.insert(key, atIndex: 0)
+            _keys.insert(key, at: 0)
         }
-    }  
+    }
     
     func cleanCache() {
         _cache.removeAll()
@@ -146,9 +147,9 @@ LRU 策略主要体现在维护 `_keys` 数组的排序上。每当需要记录�
 为了能够使用 `for...in` 遍历 `LRUCache`，需要让其实现 `SequenceType` 协议：
 
 ```
-typealias Generator = CacheGenerator<K>
+typealias Iterator = CacheGenerator<K>
     
-func generate() -> Generator {
+func makeIterator() -> Iterator {
    return CacheGenerator(keys:_keys)
 }
 ```
@@ -156,7 +157,7 @@ func generate() -> Generator {
 因为我们遍历的内容是“键”，所以初始化 `CacheGenerator` 时传入 `_keys`，并在 `CacheGenerator` 内部维护一个计数器 `counter`，在 `next` 方法中以正序返回数组中的键：
 
 ```
-class CacheGenerator<T:Hashable> : GeneratorType {
+class CacheGenerator<T:Hashable> : IteratorProtocol {
     
     typealias Element = T
     
@@ -169,7 +170,9 @@ class CacheGenerator<T:Hashable> : GeneratorType {
     }
     
     func next() -> Element? {
-        return counter < array.count ? array[counter++] : nil
+        let result:Element? = counter < array.count ? array[counter] : nil
+        counter += 1
+        return result
     }
 }
 ```
@@ -181,17 +184,15 @@ class CacheGenerator<T:Hashable> : GeneratorType {
 ```
 // NSCoding
 @objc required init?(coder aDecoder: NSCoder) {
-   _keys = aDecoder.decodeObjectForKey("keys") as! [K]
-   _cache = aDecoder.decodeObjectForKey("cache") as! [K:V]
+   _keys = aDecoder.decodeObject(forKey: "keys") as! [K]
+   _cache = aDecoder.decodeObject(forKey: "cache") as! [K:V]
 }
     
-@objc func encodeWithCoder(aCoder: NSCoder) {
-   aCoder.encodeObject(_keys as! AnyObject as! NSArray, forKey: "keys")
-   aCoder.encodeObject(_cache as! AnyObject as! NSDictionary, forKey: "cache")
+@objc func encode(with aCoder: NSCoder) {
+   aCoder.encode(_keys, forKey: "keys")
+   aCoder.encode(_cache, forKey: "cache")
 }
 ```
-
-由此看出 Swift 的蛋疼之处，还是逃不了 Cocoa 的黑历史，自带的库支持不到位啊！
 
 ## 登陆时启动
 
@@ -220,13 +221,13 @@ Mac 开发开机启动有好几种方式，可以参考[Mac OSX的开机启动�
 自动打开链接的原理很简单，就是用定时器循环处理剪贴板内容：
 
 ```
-NSTimer.scheduledTimerWithTimeInterval(0.25, target: self, selector: "pollPasteboard:", userInfo: nil, repeats: true)
+Timer.scheduledTimer(timeInterval: 0.25, target: self, selector: #selector(AppDelegate.pollPasteboard(_:)), userInfo: nil, repeats: true)
 
-func pollPasteboard(timer: NSTimer) {
+func pollPasteboard(_ timer: Timer) {
    if !autoCatch {
        return
    }
-   let currentChangeCount = NSPasteboard.generalPasteboard().changeCount
+   let currentChangeCount = NSPasteboard.general().changeCount
    if currentChangeCount == previousChangeCount {
        return
    }
@@ -239,11 +240,11 @@ func pollPasteboard(timer: NSTimer) {
 ```
 func handlePasteboard() {
     if let result = catchTFSLocation() {
-        recentUseLinks[result] = NSURL(fileURLWithPath: result).pathComponents?.last
+        recentUseLinks[result] = URL(fileURLWithPath: result).pathComponents.last
         writePasteboard(result)
-        simulateKeys()
+        DistributedNotificationCenter.default().post(name: Notification.Name("simulateKeys"), object: Bundle.main.bundleIdentifier!)
     }
-    previousChangeCount = NSPasteboard.generalPasteboard().changeCount
+    previousChangeCount = NSPasteboard.general().changeCount
 }
 ```
 
