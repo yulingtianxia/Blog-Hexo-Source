@@ -112,13 +112,39 @@ XCConfigurationList
 
 我收集了一些可以操作 project.pbxproj 文件的优秀轮子，原理大都是用 `plutil` 转成 json 或 xml 后进行处理，不仅功能非常局限，且都无法完美还原为 OpenStep 格式的内容：
 
-- [Xcodeproj](https://github.com/CocoaPods/Xcodeproj) CocoaPods 写的 Ruby 解析库，用于修改引入 CocoaPods 的工程文件并保存为 XML 格式。
+- [Xcodeproj](https://github.com/CocoaPods/Xcodeproj) CocoaPods 写的 Ruby 解析库，用于修改引入 CocoaPods 的工程文件并保存为 XML 格式。CocoaPods 本身是很强大的，还可以用来操作 Xcode workspaces (.xcworkspace), configuration files (.xcconfig) 和 Xcode Scheme files (.xcscheme).
 - [mod-pbxproj](https://github.com/kronenthaler/mod-pbxproj) 强大的 Python 解析库，支持一定的修改操作，可输出 OpenStep 格式，但是顺序和注释内容无法完美还原，有些鸡肋。
 - [xUnique](https://github.com/truebit/xUnique) 用 Python 写的统一多设备生成的 UUID 的工具，主要用途是统一工程在多设备上生成的 UUID，避免工程文件冲突。
 - [pbxplorer](https://github.com/mjmsmith/pbxplorer)  Ruby 写的解析库。
 - [node-xcode](https://github.com/alunny/node-xcode) Cordova 基于它管理 Xcode 工程
 
-不过 **Xcode 可以打开 XML 格式的 project.pbxproj，一旦在 Xcode 界面上修改工程配置就会重新将 project.pbxproj 转成 OpenStep 风格。解铃还须系铃人，经过多番对比之后发现最终还是 Xcode 自己才能将 XML 完美还原成原来的 OpenStep 格式，且 `diff` 对比毫无差错。**原因很简单，Xcode 使用的私有 API 的导出结果是个黑盒，外界无论怎么猜都会有瑕疵。所以还是导出为 XML 后手动在 Xcode 界面中触发下吧。
+不过 **Xcode 可以打开 XML 格式的 project.pbxproj，一旦在 Xcode 界面上修改工程配置就会重新将 project.pbxproj 转成 OpenStep 风格。解铃还须系铃人，经过多番对比之后发现最终还是 Xcode 自己才能将 XML 完美还原成原来的 OpenStep 格式，且 `diff` 对比毫无差错。**原因很简单，Xcode 使用的私有 API 的导出结果是个黑盒，外界无论怎么猜都会有瑕疵。所以还是导出为 XML 后手动在 Xcode 界面中触发下吧。既然这样的话，如果能够简单高效地生成出 XML 文件作为工程文件就好了。基于此想法我开发了一款叫做 [pbxprojHelper](https://github.com/yulingtianxia/pbxprojHelper) 的 Mac App：
+
+![Main Window](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/MainWindow@2x.png?raw=true)
+
+操作简单粗暴：
+1. 选择一个工程文件然后内容会自动解析在下面的 Outline 列表中，Filter 输入框便于过滤查看内容。
+2. 单击 Outline 列表中的文字即可复制内容到剪贴板，双击复制整个keypath！ 
+3. 对 project.pbxproj 文件的增删改操作都配置在 json 文件中，每次想对工程进行修改只需选择对应的 json 配置文件然后点击 "Apply" 即可完成写入替换哦！
+4. 不小心误操作的话还可以点 "Revert" 回滚到上个版本哦！
+5. 什么？懒得写 json 配置文件？下面这个附带的 json 配置生成器可以帮你直接生成一个哦！使用 ⇧⌘0 快捷键即可召唤此神器！选择两个工程文件和 json 保存路径后轻轻一点 "Generate" 就搞定咯：
+
+![Generator Window](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/GeneratorWindow@2x.png?raw=true)
+
+所以处理工程文件的正确姿势是：
+
+1. 拷贝出一份原始的 project.pbxproj 文件
+2. 在 Xcode 界面上修改工程配置，比如修改编译选项，使用自己的证书等
+3. 使用 pbxprojHelper 的 JSON Configuration Generator 来对比修改后的工程文件和原始的工程文件，自动生成 JSON 配置文件
+4. 以后想要在工程文件上施加自己的修改时，只需要应用之前生成好的 JSON 配置文件即可
+
+pbxprojHelper 的**优势在于可以自由地增删改查任意属性，原生 UI 降低了使用门槛。功能强大的同时人性化的设计使得更快捷浏览工程文件中的内容。无需写任何代码即可一键配置自己想要的工程文件**
+
+你可以在 GitHub 上下载最新的 [Release](https://github.com/yulingtianxia/pbxprojHelper/releases) 版。
+
+**本项目完全手撸，没依赖上面提到的任何轮子😃**
+
+想了解更多信息请查看 GitHub 主页：https://github.com/yulingtianxia/pbxprojHelper
 
 ## Reference
 
