@@ -9,6 +9,8 @@ tags:
 
 project.pbxproj 文件被包含于 Xcode 工程文件 *.xcodeproj 之中，存储着 Xcode 工程的各项配置参数。它本质上是一种旧风格的 Property List 文件，历史可追溯到 NeXT 的 OpenStep。其可读性不如 xml 和 json，苹果却一直沿用至今，作为一家以创新闻名的公司可能这里剩下的就是情怀吧。
 
+本文谈了下 project.pbxproj 的知识，并总结了一些操作工程文件的优秀轮子，并在最后给出了自己的解决方案 [pbxprojHelper](https://github.com/yulingtianxia/pbxprojHelper)。
+
 <!--more-->
 
 ## Property List 的历史
@@ -74,6 +76,32 @@ project.pbxproj 使用 UUID 作为交叉引用的索引，保证每个配置信�
 **每个对象内部的属性（也是键值对）会把 `isa` 排在最前面，其余的按照字典序排列。**
 
 数组内部的顺序完全按照元素内容的字典序排列。
+
+下面是 `objects` 中 `PBXNativeTarget` section 的一个对象，感受一下格式：
+
+```
+/* Begin PBXNativeTarget section */
+		A450185D1D9D68D60002869D /* projectTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A45018751D9D68D60002869D /* Build configuration list for PBXNativeTarget "projectTest" */;
+			buildPhases = (
+				A450185A1D9D68D60002869D /* Sources */,
+				A450185B1D9D68D60002869D /* Frameworks */,
+				A450185C1D9D68D60002869D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = projectTest;
+			productName = projectTest;
+			productReference = A450185E1D9D68D60002869D /* projectTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+```
+
+可以根据 `A45018751D9D68D60002869D` 找到对应的 `buildConfigurationList` 对象的内容，所以说 project.pbxproj 使用 UUID 作为交叉引用的索引。通过这种关系，可以递归构建一张有向图，每个对象都是一个节点。
 
 ### 内容类型
 
