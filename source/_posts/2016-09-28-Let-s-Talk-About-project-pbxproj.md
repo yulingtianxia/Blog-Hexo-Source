@@ -179,3 +179,4 @@ pbxprojHelper 的**优势在于可以自由地增删改查任意属性，原生 
 https://en.wikipedia.org/wiki/Property_list
 http://www.monobjc.net/xcode-project-file-format.html
 http://stackoverflow.com/questions/1452707/library-to-read-write-pbxproj-xcodeproj-files
+https://github.com/CocoaPods/Xcodeproj/issues/52
