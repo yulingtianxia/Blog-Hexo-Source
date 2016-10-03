@@ -168,7 +168,7 @@ XCConfigurationList
 
 pbxprojHelper 的**优势在于可以自由地增删改查任意属性，原生 UI 降低了使用门槛。功能强大的同时人性化的设计使得更快捷浏览工程文件中的内容。无需写任何代码即可一键配置自己想要的工程文件**
 
-你可以在 GitHub 上下载最新的 [Release](https://github.com/yulingtianxia/pbxprojHelper/releases) 版。
+你可以在 GitHub 上下载最新的 [Release](https://github.com/yulingtianxia/pbxprojHelper/releases/latest) 版。
 
 **本项目完全手撸，没依赖上面提到的任何轮子😃**
 
