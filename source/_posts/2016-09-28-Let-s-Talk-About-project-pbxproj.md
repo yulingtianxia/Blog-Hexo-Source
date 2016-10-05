@@ -168,9 +168,22 @@ XCConfigurationList
 
 pbxprojHelper 的**优势在于可以自由地增删改查任意属性，原生 UI 降低了使用门槛。功能强大的同时人性化的设计使得更快捷浏览工程文件中的内容。无需写任何代码即可一键配置自己想要的工程文件**
 
-你可以在 GitHub 上下载最新的 [Release](https://github.com/yulingtianxia/pbxprojHelper/releases) 版。或者在 App Store 中下载：https://itunes.apple.com/cn/app/pbxprojhelper/id1160801848?mt=12
+此外还提供了命令行工具 `pbxproj`, 它具有 pbxprojHelper.app 具有的大部分功能：
 
-**本项目完全手撸，没依赖上面提到的任何轮子😃**
+```
+Usage: pbxproj [command_option] file
+Command options are (-convert is the default):
+-compare modified_file -o path          compare modified property list file with property list file and generate a json result at the given path
+-apply json_file                        apply a json file on property list file
+-revert                                 revert property list file to latest backup
+-convert                                rewrite property list files in xml format
+```
+
+可以使用 `pbxproj` 搭配 DevToolsCore 私有 framework 来完成修改工程文件并转化成 OpenStep 格式的一条龙自动化程序。
+
+你可以在 GitHub 上下载最新的 [Release](https://github.com/yulingtianxia/pbxprojHelper/releases/latest) 版。或者在 App Store 中下载：https://itunes.apple.com/cn/app/pbxprojhelper/id1160801848?mt=12
+
+**本项目完全手撸，没依赖上面提到的任何轮子😃。**但由于使用 Swift 3 来开发，所以最低只能支持 macOS 10.12 系统。
 
 想了解更多信息请查看 GitHub 主页：https://github.com/yulingtianxia/pbxprojHelper
 
