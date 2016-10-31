@@ -113,7 +113,7 @@ xcrun dyldinfo -rebase -bind -lazy_bind myapp.app/myapp
 
 `ImageLoader` 是一个用于加载可执行文件的基类，它负责链接镜像，但不关心具体文件格式，因为这些都交给子类去实现。每个可执行文件都会对应一个 `ImageLoader` 实例。`ImageLoaderMachO` 是用于加载 Mach-O 格式文件的 `ImageLoader` 子类，而 `ImageLoaderMachOClassic` 和 `ImageLoaderMachOCompressed` 都继承于 `ImageLoaderMachO`，分别用于加载那些 `__LINKEDIT` 段为传统格式和压缩格式的 Mach-O 文件。
 
-因为 dylib 之间有依赖关系，所以 `ImageLoader` 中的好多操作都是沿着依赖链递归操作的，Rebasing 和 Binding 也不例外，分别对应着 `recursiveBind()` 和 `recursiveBind()` 这两个方法。因为是递归，所以会自底向上地分别调用 `doRebase()` 和 `doBind()` 方法，这样被依赖的 dylib 总是先于依赖它的 dylib 执行 Rebasing 和 Binding。传入 `doRebase()` 和 `doBind()` 的参数包含一个 `LinkContext` 上下文，存储了可执行文件的一堆状态和相关的函数。
+因为 dylib 之间有依赖关系，所以 `ImageLoader` 中的好多操作都是沿着依赖链递归操作的，Rebasing 和 Binding 也不例外，分别对应着 `recursiveRebase()` 和 `recursiveBind()` 这两个方法。因为是递归，所以会自底向上地分别调用 `doRebase()` 和 `doBind()` 方法，这样被依赖的 dylib 总是先于依赖它的 dylib 执行 Rebasing 和 Binding。传入 `doRebase()` 和 `doBind()` 的参数包含一个 `LinkContext` 上下文，存储了可执行文件的一堆状态和相关的函数。
 
 在 Rebasing 和 Binding 前会判断是否已经 Prebinding。如果已经进行过预绑定（Prebinding），那就不需要 Rebasing 和 Binding 这些 Fix-up 流程了，因为已经在预先绑定的地址加载好了。
 
