@@ -6,6 +6,7 @@ tags:
 ---
 UIAutomation 是苹果提供的自动化测试框架，iOS 不像 Android 那样可以在 xml 文件中自动生成唯一的 id 作为标签，需要我们手动为控件添加可访问性（Accessibility）。如何让一个控件的可访问标签在当前页面唯一且不变呢？当然纯手工在代码中插入加标签的逻辑代码肯定是可行的，但费时费力，所以我在这里做一些用程序自动化添加标签尝试性的探索。
 
+Github 传送门: [TBUIAutoTest](https://github.com/yulingtianxia/TBUIAutoTest)
 
 <!--more-->
 ## 分析&方案
@@ -251,3 +252,5 @@ hook  `addSubview:` 方法，在其中添加长按手势。 `longPress:` 方法�
 呵呵后来发现~~大部分人~~所有人都看不懂，但这个方案真的好用！
 
 如果大家有更好的方案，或者觉得我的方案一开始就跑偏了，甚至是已经有一个不用手动加标签代码的现成的超屌超牛逼的 iOS 自动化测试框架，请告诉我！据说整个腾讯都是手动加自动化测试标签，老大说做有挑战的事情才有意思嘛。
+
+欢迎给 [TBUIAutoTest](https://github.com/yulingtianxia/TBUIAutoTest) 提 PR 和 Issue！
