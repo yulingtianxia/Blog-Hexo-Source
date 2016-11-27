@@ -10,9 +10,9 @@ tags:
 
 [pbxprojHelper](https://github.com/yulingtianxia/pbxprojHelper) 可以帮你快速配置 Xcode 工程文件，省去麻烦的人工手动操作。项目开源，使用 Swift 开发，详细介绍请见[使用说明](https://github.com/yulingtianxia/pbxprojHelper/blob/master/Documentation/README_ZH.md)。除了 Mac App 外还提供了命令行工具 [`pbxproj`](https://github.com/yulingtianxia/pbxprojHelper/releases/download/1.1.3/pbxproj)，它集成了 [pbxprojHelper](https://github.com/yulingtianxia/pbxprojHelper) 的核心功能，同样简易实用。
 
-<!--more-->
-
 因为 [README_ZH](https://github.com/yulingtianxia/pbxprojHelper/blob/master/Documentation/README_ZH.md) 中对使用方法已经讲得很详细了，这里重点说的是产品方案和技术实现。
+
+<!--more-->
 
 ## 产品方案
 
@@ -441,7 +441,7 @@ func isItem(_ item: Any, containsKeyWord word: String) -> Bool {
 
 下拉列表的 UI 实现很简单，就是一个 `NSView` 里面放几个 `NSTextField`。维护常用工程文件列表需要在每次用户选择工程文件后将其加入列表，实现 LRU 算法。
 
-这里对 LRU 缓存的需求跟 [自制一款 Mac 平台 URL 辅助工具](http://yulingtianxia.com/blog/2016/02/27/TFSHelper/#缓存常用链接) 这篇文章中的 TFSHelper 的是一样的。我直接把代码搬过来了。
+这里对 LRU 缓存的需求跟 [自制一款 Mac 平台 URL 辅助工具](http://yulingtianxia.com/blog/2016/02/27/TFSHelper/#缓存常用链接) 这篇文章中的 TFSHelper 的是一样的。我直接把代码搬过来了。我将其放到 Github Gist 上了，可能需要科学上网：[LRUCache](https://gist.github.com/yulingtianxia/5d61afdb241dcd5562b211cb485883fa)。
 
 下拉列表的点击操作交由 `NSClickGestureRecognizer` 捕获处理。
 
