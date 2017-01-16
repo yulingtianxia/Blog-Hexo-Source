@@ -4,6 +4,10 @@ date: 2017-01-16 13:23:17
 tags:
 ---
 
+公司项目中有个页面是双向滑动的列表，遂用 `UIScrollView` 手撸了之，把一些 UI 和数据上的心得记录下来。
+
+<!--more-->
+
 ## 需求简介
 
 UI 上的主要内容就是一个 `UITableView`，其中一些 cell 内会嵌套一个横向滑动的 `ListView`，`ListView` 中包含一些尺寸相同可点击的 ItemView，ItemView 中的图片内容需要从网络加载。
