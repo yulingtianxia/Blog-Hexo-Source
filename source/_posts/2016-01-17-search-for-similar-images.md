@@ -11,7 +11,7 @@ tags:
 
 Github 地址：https://github.com/yulingtianxia/SimilarImageHunter
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20160117-2.png)
+![](https://github.com/yulingtianxia/SimilarImageHunter/blob/master/images/01.png?raw=true)
 
 <!--more-->
 
