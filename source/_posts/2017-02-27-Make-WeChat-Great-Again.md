@@ -109,6 +109,8 @@ mobiledevice install_app extracted.ipa
 
 是啊，头文件有了，UI 层级有了，该猜了！那么检验是否猜对需要做啥？Hook 呗！`CaptainHook` 的用法很简单，新建工程的模板注释里面已经写得很详细了，就不赘述了。
 
+> Mac 上需要安装 `iOSOpenDev` 或 `theos`，本项目新建工程时使用 `iOSOpenDev` 的 `CaptainHook` 模板。
+
 ### 关闭『发现』页面的各种入口 - 清君侧
 
 在关掉各种乱码七糟的功能之后，发现页面仍留下几个无法关闭的入口。本次逆向微信的动机也由此引发：我只想关闭朋友圈入口，并没想关闭自己朋友圈内容，不过微信的这项策略也是很符合一些人的需求的。很多人真的想关闭自己朋友圈不让别人看，不过将这个需求跟旧的『关闭朋友圈入口』功能强绑定在一起，就有些绑架用户的味道了，鱼和熊掌不可兼得啊！不过关闭朋友圈后，别人依然能看到自己在 TimeLine 上新发的内容，但是一旦点击头像进入主页后就提示『该朋友暂未开启朋友圈』，奇怪的是回到自己的 TimeLine 上后，以前那条新发的内容就消失了。我觉得这不是 bug，而是产品策略。微信在努力保持用户粘性，不得不在用户需求和产品数据之间权衡。好吧，扯远了。。。
@@ -264,12 +266,24 @@ CHOptimizedMethod1(self, void, UIView, didAddSubview, UIView *, subview)
 
 在 『[让你的微信不再被人撤回消息](http://yulingtianxia.com/blog/2016/05/06/Let-your-WeChat-for-Mac-never-revoke-messages/)』 里我介绍过用 Hopper 逆向的方法。直接看汇编代码来的不那么直接，还是 hook OC 代码稳一些。
 
+撤回消息时会先调用 `-[CMessageMgr onRevokeMsg:]` 方法，然后调用 `-[CMessageMgr DelMsg:MsgList: DelAll:]` 方法删除消息。随意在撤回的时候记录下标志位就好，不影响删除消息功能。
+
 ```
 // 阻止撤回消息
 CHOptimizedMethod1(self, void, CMessageMgr, onRevokeMsg, id, msg)
 {
-    NSLog(@"onRevokeMsg: %@", msg);
-    return;
+    [FishConfigurationCenter sharedInstance].revokeMsg = YES;
+    CHSuper1(CMessageMgr, onRevokeMsg, msg);
+}
+
+CHDeclareMethod3(void, CMessageMgr, DelMsg, id, arg1, MsgList, id, arg2, DelAll, BOOL, arg3)
+{
+    if ([FishConfigurationCenter sharedInstance].revokeMsg) {
+        [FishConfigurationCenter sharedInstance].revokeMsg = NO;
+    }
+    else {
+        CHSuper3(CMessageMgr, DelMsg, arg1, MsgList, arg2, DelAll, arg3);
+    }
 }
 ```
 
