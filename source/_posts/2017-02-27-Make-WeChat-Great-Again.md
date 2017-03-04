@@ -90,6 +90,7 @@ mobiledevice install_app extracted.ipa
 1. Mac 上需要有唯一可用的 iPhone 开发者证书，如果有多个，默认选最后一个
 2. `yololib` 工具用于注入 dylib 文件到二进制文件中
 3. `mobiledevice` 可以将 ipa 安装到 USB 连接到 Mac 上的手机中
+4. 一个可用的 mobileprovision 文件，十分关键，可以新建个工程在自己手机 Run 一下，新生成的 app 里面就有 mobileprovision 文件。
 
 在这里多再说几句：
 
@@ -109,7 +110,7 @@ mobiledevice install_app extracted.ipa
 
 是啊，头文件有了，UI 层级有了，该猜了！那么检验是否猜对需要做啥？Hook 呗！`CaptainHook` 的用法很简单，新建工程的模板注释里面已经写得很详细了，就不赘述了。
 
-> Mac 上需要安装 `iOSOpenDev` 或 `theos`，本项目新建工程时使用 `iOSOpenDev` 的 `CaptainHook` 模板。
+> Mac 上需要安装 `iOSOpenDev` 或 `theos`，本项目新建工程时使用 `iOSOpenDev` 的 `CaptainHook` 模板。编译的时候要选自己的手机，不要选模拟器。
 
 ### 关闭『发现』页面的各种入口 - 清君侧
 
