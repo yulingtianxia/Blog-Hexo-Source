@@ -4,7 +4,7 @@ date: 2017-03-06 00:06:51
 tags:
 ---
 
-在逆向工程中往往需要针对想要做的功能 Hook 到相应的方法和属性，小白面对 `class-dump` 后的大量头文件表示只能靠『猜』。这里我分享下逆向微信实现屏蔽群消息和好友消息的实战经验，适用于**非越狱机**，项目 GitHub 地址: [FishChat](https://github.com/yulingtianxia/FishChat)。
+在逆向工程中往往需要针对想要做的功能 Hook 到相应的方法和属性，小白面对 `class-dump` 后的大量头文件表示只能靠『猜』。这里我分享下逆向微信实现屏蔽群消息和好友消息的实战经验，适用于**非越狱机**，项目 GitHub 地址: [FishChat](https://github.com/yulingtianxia/FishChat)。为了能读懂此文，建议先阅读我的上一篇文章：[Make WeChat Great Again](http://yulingtianxia.com/blog/2017/02/28/Make-WeChat-Great-Again/)。
 
 <!--more-->
 
@@ -12,11 +12,9 @@ tags:
 
 先用 `Cycript` 或 Reveal 获取视图层级信息，然后从 `View` 和 `ViewController` 的头文件中寻找信息。然后就凭编程经验去猜了，比如一些方法属性的命名，一些常用的代码设计等等套路。
 
-比如现在我想在群信息页面和个人聊天详情页面增加个屏蔽消息的开关，先找到对应的 `ViewController` 类，然后到头文件中去找信息。因为这都是两个列表 UI，这种信息页面的列表 Cell 一般不需要重用的，直接数据配置即可。然后很容易发现这两个 `ViewController` 都有 `m_tableViewInfo` 这个属性，类型为 `MMTableViewInfo`。接着顺藤摸瓜，发现其与 `MMTableViewSectionInfo` 和 `MMTableViewCellInfo` 这两个类构成了整个列表的数据。Table-Section-Cell 这三个层级的的数据对应着 UI，熟悉 iOS 的很容易看懂。进而使用这三个类的方法来修改 `m_tableViewInfo` 中的数据，实现修改 UI 的目的。因为是列表数据，凭经验应该是 reloadData 的时候去做修改。恰好这两个 `ViewController` 中都有 `reloadTableData` 方法，Hook 后果然生效，效果如图：
+比如现在我想在群信息页面和个人聊天详情页面增加个屏蔽消息的开关，先找到对应的 `ViewController` 类，然后到头文件中去找信息。因为这都是两个列表 UI，这种信息页面的列表 Cell 一般不需要重用的，直接数据配置即可。然后很容易发现这两个 `ViewController` 都有 `m_tableViewInfo` 这个属性，类型为 `MMTableViewInfo`。接着顺藤摸瓜，发现其与 `MMTableViewSectionInfo` 和 `MMTableViewCellInfo` 这两个类构成了整个列表的数据。Table-Section-Cell 这三个层级的的数据对应着 UI，熟悉 iOS 的很容易看懂。进而使用这三个类的方法来修改 `m_tableViewInfo` 中的数据，实现修改 UI 的目的。因为是列表数据，凭经验应该是 `reloadData` 的时候去做修改。恰好这两个 `ViewController` 中都有 `reloadTableData` 方法，Hook 后果然生效，效果如图：
 
-<img src="https://github.com/yulingtianxia/FishChat/blob/master/Images/weichat_ignore_chatroom.PNG?raw=true" width="50%" height="50%">
-
-<img src="https://github.com/yulingtianxia/FishChat/blob/master/Images/wechat_ignore_somone.PNG?raw=true" width="50%" height="50%">
+<img src="https://github.com/yulingtianxia/FishChat/blob/master/Images/weichat_ignore_chatroom.PNG?raw=true" width="50%" height="50%"><img src="https://github.com/yulingtianxia/FishChat/blob/master/Images/wechat_ignore_somone.PNG?raw=true" width="50%" height="50%">
 
 逆向的时候需要处处为对方着想，换位思考。如果仅想着 Hook 系统的 API 来修改 UI，在这个例子里显然要多走些弯路。
 
@@ -117,7 +115,7 @@ Mar  2 00:37:36 yangxiaoyude-iPhone WeChat(FishChat.dylib)[22880] <Notice>: (
 
 1. 反汇编得出方法相对地址
 
-记得在选择 FAT 架构时选择跟手机 CPU 相匹配的架构，有 armv7 和 aarch64 两种可选。我这里以 aarch64 为例。
+记得在**选择 FAT 架构时选择跟手机 CPU 相匹配的架构**，有 armv7 和 aarch64 两种可选。我这里以 aarch64 为例。
 
 `-[CMessageMgr GetMsg:LocalID:]` 在 Hopper 中的地址 `0x000000010280e1d4`：
 
@@ -176,7 +174,7 @@ A 方法反汇编地址 - B 方法反汇编地址 = A 方法真实地址 - B 方
 
 根据反汇编地址在 Hopper 中定位方法名，快捷键 `G`。
 
-最终得到的方法调用栈如下：
+最终得到的方法调用栈如下，调用次序是自底向上：
 
 ```
 -[CSyncBaseEvent BatchAddMsg:ShowPush:]
@@ -189,7 +187,7 @@ A 方法反汇编地址 - B 方法反汇编地址 = A 方法真实地址 - B 方
 
 ## 从汇编代码继续猜
 
-虽然可以锁定添加消息的实现逻辑在 `-[CSyncBaseEvent BatchAddMsg:ShowPush:]` 方法里，但是查找头文件发现它的两个参数和一个返回值竟然都是 `BOOL` 类型，可以肯定的是在其内部通过单例或者类方法获取和处理了消息对象，然后才调用的 `-[CMessageMgr GetMsg:LocalID:]` 方法。
+虽然可以锁定添加消息的实现逻辑在 `-[CSyncBaseEvent BatchAddMsg:ShowPush:]` 方法里，但是查找头文件发现它的两个参数和一个返回值竟然都是 `BOOL` 类型。直接 Hook 掉并返回 `NO` 虽然可以屏蔽消息，但是却屏蔽了所有的消息，没有对消息来源进行筛选。可以肯定的是在其内部通过单例或者类方法获取和处理了消息对象，然后才调用的 `-[CMessageMgr GetMsg:LocalID:]` 方法。而真正添加消息的逻辑可能在 `-[CMessageMgr GetMsg:LocalID:]` 调用之前，也可能在它调用之后。而且好友消息和群消息的处理很可能还是两个不同的分支。
 
 在不能反编译的情况下，只能浏览下方法的汇编代码中调用到什么其他方法。消息被封装成 `CMessageWrap` 类，所以要格外注意这个类的一些属性名，或者 `MsgWrap` 这个词。进而找到 `BatchAddMsgInfo` 这个类有一些汇编中出现的消息处理的标志位（`isInsertNew`,`isNeedChangeDisplay`,`isNotify`,`isCanAddDB`） 和 `CMessageWrap`。又在汇编里找到 `MsgHelper` 的类，其类方法中带 `BatchAddMsgInfo` 中那些标志位的有两个，虽然按理说应该 Hook 参数更多的方法，但这里我为了偷懒，选的较短的 `+ AddMessageToDB:MsgWrap:Des:DB:Lock:GetChangeDisplay:InsertNew:`。PS：这也不短啊！
 
@@ -209,3 +207,15 @@ CHDeclareClassMethod7(BOOL, MsgHelper, AddMessageToDB, id, arg1, MsgWrap, id, ar
     return result;
 }
 ```
+
+最终屏蔽消息功能大功告成。
+
+## 总结
+
+这里只是做个示范，并不代表我 Hook 得最准。因为条条大路通罗马，只要达到目的就好。本来逆向工程就是在没有源码的情况下揣测和分析，所以不同的人会给出不同的逆向过程，这就像从南坡和北坡一起爬山一样。
+
+由于篇幅有限，没能讲解实现屏蔽消息功能的所有代码。源码 GitHub 地址 [FishChat](https://github.com/yulingtianxia/FishChat)，欢迎提 PR 一起切磋，钻研。
+
+本人是个 iOS 逆向新手，基本是现学现卖，如有疏漏，还请大牛们指正。
+
+本项目仅做学习研究用途，禁止用于黑产获利等行为。
