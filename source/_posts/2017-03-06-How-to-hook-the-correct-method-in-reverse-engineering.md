@@ -187,24 +187,34 @@ A 方法反汇编地址 - B 方法反汇编地址 = A 方法真实地址 - B 方
 
 ## 从汇编代码继续猜
 
-虽然可以锁定添加消息的实现逻辑在 `-[CSyncBaseEvent BatchAddMsg:ShowPush:]` 方法里，但是查找头文件发现它的两个参数和一个返回值竟然都是 `BOOL` 类型。直接 Hook 掉并返回 `NO` 虽然可以屏蔽消息，但是却屏蔽了所有的消息，没有对消息来源进行筛选。可以肯定的是在其内部通过单例或者类方法获取和处理了消息对象，然后才调用的 `-[CMessageMgr GetMsg:LocalID:]` 方法。而真正添加消息的逻辑可能在 `-[CMessageMgr GetMsg:LocalID:]` 调用之前，也可能在它调用之后。而且好友消息和群消息的处理很可能还是两个不同的分支。
+虽然可以锁定添加消息的实现逻辑在 `-[CSyncBaseEvent BatchAddMsg:ShowPush:]` 方法里，但是查找头文件发现它的两个参数和一个返回值竟然都是 `BOOL` 类型。直接 Hook 掉并返回 `NO` 虽然可以屏蔽消息，但是却屏蔽了所有的消息，没有对消息来源进行筛选。可以肯定的是在其内部已经获取到了 `CMessageWrap` 消息数组（Batch 暗示批量），然后才调用的 `-[CMessageMgr GetMsg:LocalID:]` 方法。而真正添加消息的逻辑可能在 `-[CMessageMgr GetMsg:LocalID:]` 调用之前，也可能在它调用之后。
 
-在不能反编译的情况下，只能浏览下方法的汇编代码中调用到什么其他方法。消息被封装成 `CMessageWrap` 类，所以要格外注意这个类的一些属性名，或者 `MsgWrap` 这个词。进而找到 `BatchAddMsgInfo` 这个类有一些汇编中出现的消息处理的标志位（`isInsertNew`,`isNeedChangeDisplay`,`isNotify`,`isCanAddDB`） 和 `CMessageWrap`。又在汇编里找到 `MsgHelper` 的类，其类方法中带 `BatchAddMsgInfo` 中那些标志位的有两个，虽然按理说应该 Hook 参数更多的方法，但这里我为了偷懒，选的较短的 `+ AddMessageToDB:MsgWrap:Des:DB:Lock:GetChangeDisplay:InsertNew:`。PS：这也不短啊！
-
-拿到 `CMessageWrap` 就很好判断是否需要屏蔽消息了：
+在不能反编译的情况下，只能浏览下方法的汇编代码中调用到什么其他方法。消息被封装成 `CMessageWrap` 类，所以要格外注意这个类的一些属性名，或者 `MsgWrap` 这个词。进而找到 `BatchAddMsgInfo` 这个类有一些汇编中出现的消息处理的标志位（`isInsertNew`,`isNeedChangeDisplay`,`isNotify`,`isCanAddDB`） 和 `CMessageWrap`。打开头文件，一眼就看到一个成员变量 `m_arrMsgList`，果然是我我想要的消息数组，过滤下即可：
 
 ```
-CHDeclareClassMethod7(BOOL, MsgHelper, AddMessageToDB, id, arg1, MsgWrap, id, arg2, Des, unsigned int, arg3, DB, id, arg4, Lock, id, arg5, GetChangeDisplay, BOOL *, arg6, InsertNew, BOOL *, arg7)
+CHDeclareClass(CSyncBaseEvent)
+CHDeclareMethod2(BOOL, CSyncBaseEvent, BatchAddMsg, BOOL, arg1, ShowPush, BOOL, arg2)
 {
-    Ivar nsFromUsrIvar = class_getInstanceVariable(objc_getClass("CMessageWrap"), "m_nsFromUsr");
-    NSString *m_nsFromUsr = object_getIvar(arg2, nsFromUsrIvar);
-    BOOL result = !([FishConfigurationCenter sharedInstance].chatIgnoreInfo[m_nsFromUsr].boolValue);
-    if (result) {
-        CHSuper7(MsgHelper, AddMessageToDB, arg1, MsgWrap, arg2, Des, arg3, DB, arg4, Lock, arg5, GetChangeDisplay, arg6, InsertNew, arg7);
+    NSMutableArray *msgList = [self valueForKeyPath:@"m_arrMsgList"];
+    NSMutableArray *msgListResult = filtMessageWrapArr(msgList);
+    [self setValue:msgListResult forKeyPath:@"m_arrMsgList"];
+    return CHSuper2(CSyncBaseEvent, BatchAddMsg, arg1, ShowPush, arg2);
+}
+```
+
+写过滤函数时注意 MRC 下的内存管理，不要产生内存泄露。拿到 `CMessageWrap` 对象时判断消息来源是否需要被屏蔽，删掉数组中需要被屏蔽的消息对象。
+
+```
+NSMutableArray * filtMessageWrapArr(NSMutableArray *msgList) {
+    NSMutableArray *msgListResult = [msgList mutableCopy];
+    for (id msgWrap in msgList) {
+        Ivar nsFromUsrIvar = class_getInstanceVariable(objc_getClass("CMessageWrap"), "m_nsFromUsr");
+        NSString *m_nsFromUsr = object_getIvar(msgWrap, nsFromUsrIvar);
+        if ([FishConfigurationCenter sharedInstance].chatIgnoreInfo[m_nsFromUsr].boolValue) {
+            [msgListResult removeObject:msgWrap];
+        }
     }
-    *arg6 = result;
-    *arg7 = result;
-    return result;
+    return [msgListResult autorelease];
 }
 ```
 
@@ -218,4 +228,4 @@ CHDeclareClassMethod7(BOOL, MsgHelper, AddMessageToDB, id, arg1, MsgWrap, id, ar
 
 本人是个 iOS 逆向新手，基本是现学现卖，如有疏漏，还请大牛们指正。
 
-本项目仅做学习研究用途，禁止用于黑产获利等行为。屏蔽消息功能还不稳定，应该还会有很多 bug，仅做为学习逆向工程的例子，如果对生活造成影响，后果自负哦。
+本项目仅做学习研究用途，禁止用于黑产获利等行为。
