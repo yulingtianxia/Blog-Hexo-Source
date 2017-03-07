@@ -102,6 +102,7 @@ mobiledevice install_app extracted.ipa
 5. 可以使用 `Cycript` 来完成一些调试工作，这样就不用一次次打 Log 了。同样也可以打印出视图层级，不过建议有条件的同学用 Reveal 2，已经支持 USB 调试了。`Cycript` 只支持在同网段下连接到手机 IP 的 `8888` 端口，cy 脚本还是跟 `lldb` 命令有一些差别的。如果 `Cycript` 官网的 sdk 不好用，那就用用我上传的吧：[`Cycript.framework`](https://github.com/yulingtianxia/FishChat/tree/master/Cycript.framework)
 6. 找到视图对应的类之后，就需要在 `class-dump` 得到的头文件寻找蛛丝马迹了。Dump 出的文件：[WeChat-Headers](https://github.com/yulingtianxia/FishChat/tree/master/WeChat-Headers)
 7. 查看设备 Log 最简单的方式当然是从 Xcode->Devices->你的设备。 
+8. 安装时如果遇到 `AMDeviceSecureInstallApplication` 安装失败，可以将工程 Clean 和 Clean Build Folder 后重新编译，再跑一次我的脚本。如果还不行，尝试用 iTools 等软件安装 ipa 到手机上。
 
 ## 之后就是不停地 Hook
 
