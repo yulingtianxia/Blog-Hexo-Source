@@ -1,6 +1,6 @@
 ---
 title: Implementing CNN with MPS
-date: 2017-05-27 17:20:32
+date: 2017-05-30 17:20:32
 tags:
 - Machine Leaning
 - iOS
