@@ -1,0 +1,239 @@
+---
+title: Core ML and Vision Framework on iOS 11
+date: 2017-06-19 10:15:41
+tags:
+- iOS
+---
+
+机器学习和计算机视觉在 iOS 上虽然早已有了系统级的支持，但 WWDC 17 发布的 iOS 11 将它们的使用门槛大大降低。苹果提供了设计合理且容易上手的 API，让那些对基础理论知识一窍不通的门外汉也能玩转高大上的前沿科技，这是苹果一贯的风格。
+
+<!--more-->
+
+这是一篇 WWDC 2017 Session 506，703 和 710 的学习笔记，以及分享自己尝试写的 Demo [Core-ML-Sample](https://github.com/yulingtianxia/Core-ML-Sample)。
+
+## Core ML
+
+### 简介
+
+Core ML 大大降低了开发者在苹果设备上使用机器学习技术预测模型的门槛和成本。苹果制定了自己的模型文件格式，统一的格式和全新的 API 设计使得 Core ML 支持苹果生态下多个平台。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml1.png)
+
+数据经过预处理后输入 MLMODEL 文件，输出模型的预测结果。使用 Core ML 只需要很少的代码就可以完成，只需关注代码即可，无需关注模型的定义，网络的构成。这跟以前写 MPS 代码时构成了强烈的反差：开发者需要写大量 MPS 代码用于构建和描述一个完整的网络，而加载的文件仅仅是模型的权重而已。MLMODEL 文件包含了权重和模型结构等信息，并可以自动生成相关的代码，节省开发者大量时间。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml2.png)
+
+
+### Model 转换工具
+
+苹果提供了一个 Python 工具，可以将业内一些常用的机器学习框架导出的 Model 转成 MLMODEL 文件。代码会编译成可执行二进制文件，而 MLMODEL 会编译成 Bundle 文件，在代码文件中可以直接调用 MLMODEL 生成的类，这些都是需要 Xcode 9 做支撑，也就是说，现阶段并不支持动态下发 MLMODEL 文件。Core ML 的预测过程全都在客户端进行，保证用户隐私不会泄露。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml4.png)
+
+Core ML 支持 DNN,RNN,CNN,SVM,Tree ensembles,Generalized linear models,Pipeline models 等，对应的模型转换工具 [Core ML Tools](https://pypi.python.org/pypi/coremltools) 也支持了一些常用机器学习框架模型的转换。虽然目前没有直接支持 Google 的 TensorFlow，但可以使用 Keras 曲线救国。`coremltools` 已经开源，并提供可拓展性的底层接口，可以编写适配其他机器学习框架模型的转换工具。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml3.png)
+
+MLMODEL 文件中还包含了很多元数据，比如作者，License，输入输出的描述文字。这些元数据都可以通过 `coremltools` 的接口进行设置。`coremltools` 上手很简单，可以查看完整详细的[使用文档](https://pythonhosted.org/coremltools/)。
+
+把 MLMODEL 文件拖拽到 Xcode 工程中后，记得要勾选对应的 target，这样 Xcode 才会自动生成对应的代码。生成的类名就是 MLMODEL 文件名，输入和输出的变量名和类型也可以在 Xcode 中查看：
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml5.png)
+
+### 性能
+
+Core ML 的底层是 Accelerate BNNS 和 MPS，并可以根据实际情况进行无缝切换。比如在处理图片的场景下使用 MPS，处理文字场景下使用 Accelerate，甚至可以在同一个 model 的不同层使用不同的底层技术来预测。Vision 和 NLP 可以结合 Core ML 一起使用。Core ML 对硬件做了性能优化，而且支持的模型种类更多，开发者不用关注底层的一些细节，苹果全都封装好了。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml6.png)
+
+### Demo: 数据预处理
+
+[Core-ML-Sample](https://github.com/yulingtianxia/Core-ML-Sample) 使用了 Core ML 和 Vision 技术实现对摄像头拍摄的图像实时预测物体种类。因为图像来源是摄像头，所以需要将 `CMSampleBuffer` 转成 `CVPixelBuffer`。因为 Xcode 9 已经生成好了代码，直接调用 `Inceptionv3` 类的 `prediction` 方法即可完成预测。生成的 `Inceptionv3Output` 类含有 `classLabel` 和 `classLabelProbs` 两个属性，可以获取预测的分类标签名以及每种标签的可能性。可以点击 Xcode Model View 中 Model Class 的生成源码箭头来查看这些类的信息。
+
+```
+let inceptionv3model = Inceptionv3()
+
+func handleImageBufferWithCoreML(imageBuffer: CMSampleBuffer) {
+   guard let pixelBuffer = CMSampleBufferGetImageBuffer(imageBuffer) else {
+       return
+   }
+   do {
+       let prediction = try self.inceptionv3model.prediction(image: self.resize(pixelBuffer: pixelBuffer)!)
+       DispatchQueue.main.async {
+           if let prob = prediction.classLabelProbs[prediction.classLabel] {
+               self.predictLabel.text = "\(prediction.classLabel) \(String(describing: prob))"
+           }
+       }
+   }
+   catch let error as NSError {
+       fatalError("Unexpected error ocurred: \(error.localizedDescription).")
+   }
+}
+```
+
+在 Xcode Model View 中可以看到 Inceptionv3 模型的输入图片为 `Image<RGB,299,299>`，所以需要对摄像头采集到的图像进行预处理。我的转换流程是：`CVPixelBuffer->CVPixelBuffer->CIImage->CIImage(resized)->CVPixelBuffer`。最后一步 `CIImage` 转 `CVPixelBuffer` 是通过 `CIContext` 渲染完成。
+
+```
+/// resize CVPixelBuffer
+///
+/// - Parameter pixelBuffer: CVPixelBuffer by camera output
+/// - Returns: CVPixelBuffer with size (299, 299)
+func resize(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+   let imageSide = 299
+   var ciImage = CIImage(cvPixelBuffer: pixelBuffer, options: nil)
+   let transform = CGAffineTransform(scaleX: CGFloat(imageSide) / CGFloat(CVPixelBufferGetWidth(pixelBuffer)), y: CGFloat(imageSide) / CGFloat(CVPixelBufferGetHeight(pixelBuffer)))
+   ciImage = ciImage.applying(transform).cropping(to: CGRect(x: 0, y: 0, width: imageSide, height: imageSide))
+   let ciContext = CIContext()
+   var resizeBuffer: CVPixelBuffer?
+   CVPixelBufferCreate(kCFAllocatorDefault, imageSide, imageSide, CVPixelBufferGetPixelFormatType(pixelBuffer), nil, &resizeBuffer)
+   ciContext.render(ciImage, to: resizeBuffer!)
+   return resizeBuffer
+}
+```
+
+除了图片需要预处理外，其他数据可能也需要预处理。这需要看训练的模型的输入是什么形式，比如分析一段文本所表达的情绪是开心还是沮丧，可能需要写个预处理程序统计词频，然后输入到训练好的模型中进行预测。
+
+### 总结
+
+- Model 极速集成
+- 支持多种数据类型
+- 硬件优化
+- 适配主流机器学习框架
+
+## Vision
+
+### 应用场景
+
+1. 人脸检测：支持检测笑脸、侧脸、局部遮挡脸部、戴眼镜和帽子等场景，可以标记出人脸的矩形区域
+2. 人脸特征点：可以标记出人脸和眼睛、眉毛、鼻子、嘴、牙齿的轮廓，以及人脸的中轴线
+3. 图像配准
+4. 矩形检测
+5. 二维码/条形码检测
+6. 文字检测
+7. 目标跟踪：脸部，矩形和通用模板
+
+### Vision 使用姿势
+
+将各种功能的 Request 提供给一个 RequestHandler，Handler 持有图片信息，并将处理结果分发给每个 Request 的 completion Block 中。可以从 `results` 属性中得到 Observation 数组，然后进行更新 UI 等操作。因为 completion Block 所执行的队列跟 perform request 的队列相同，所以更新 UI 时记得使用主队列。
+
+Vision 操作流水线分为两类：分析图片和跟踪队列。可以使用图片检测出的物体或矩形结果（Observation）来作为跟踪队列请求（Request）的参数。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_36.png)
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_40.png)
+
+Vision 支持的图片数据类型：
+
+- `CVPixelBufferRef`
+- `CGImageRef`
+- `CIImage`
+- `NSURL`
+- `NSData`
+
+这几乎涵盖了 iOS 中图片相关的 API，很实用很强大。
+
+Vision 有三种 resize 图片的方式，无需使用者再次裁切缩放
+
+- `VNImageCropAndScaleOptionCenterCrop`
+- `VNImageCropAndScaleOptionScaleFit`
+- `VNImageCropAndScaleOptionScaleFill`
+
+Vision 与 iOS 上其他几种带人脸检测功能框架的对比：
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_72.png)
+
+### Demo: 与 Core ML 集成
+
+Core ML 具有更好的性能，Vision 可为其提供图片处理的流程。Core ML 生成的代码中含有 `MLModel` 类型的 `model` 对象，可以用它初始化 `VNCoreMLModel` 对象，这样就将 Core ML 的 Model 集成进 Vision 框架中了：
+
+```
+private var requests = [VNRequest]()
+
+func setupVision() {
+   guard let visionModel = try? VNCoreMLModel(for: inceptionv3model.model) else {
+       fatalError("can't load Vision ML model")
+   }
+   let classificationRequest = VNCoreMLRequest(model: visionModel) { (request: VNRequest, error: Error?) in
+       guard let observations = request.results else {
+           print("no results:\(error!)")
+           return
+       }
+       
+       let classifications = observations[0...4]
+           .flatMap({ $0 as? VNClassificationObservation })
+           .filter({ $0.confidence > 0.2 })
+           .map({ "\($0.identifier) \($0.confidence)" })
+       DispatchQueue.main.async {
+           self.predictLabel.text = classifications.joined(separator: "\n")
+       }
+   }
+   classificationRequest.imageCropAndScaleOption = VNImageCropAndScaleOptionCenterCrop
+   
+   self.requests = [classificationRequest]
+}
+```
+
+上面的代码实现了 Vision 的工作流，并在 completion Block 中对预测结果进行了处理：从 top5 中筛选可能性大于 0.2 的结果，并转成文本描述。因为所有结果的可能性总和为 1，所以最终的结果不会达到 5 个，实际测试中其实结果往往只有 1-2 个。
+
+对摄像头传入的每帧图片进行预测。虽然 Vision 帮我们完成了预处理等流程上的工作，但是需要我们传入一些额外的信息。
+
+```
+func handleImageBufferWithVision(imageBuffer: CMSampleBuffer) {
+   guard let pixelBuffer = CMSampleBufferGetImageBuffer(imageBuffer) else {
+       return
+   }
+   
+   var requestOptions:[VNImageOption : Any] = [:]
+   
+   if let cameraIntrinsicData = CMGetAttachment(imageBuffer, kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, nil) {
+       requestOptions = [.cameraIntrinsics:cameraIntrinsicData]
+   }
+   
+   let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: self.exifOrientationFromDeviceOrientation, options: requestOptions)
+   do {
+       try imageRequestHandler.perform(self.requests)
+   } catch {
+       print(error)
+   }
+}
+```
+
+需要向图片传入 EXIF Orientation 信息：
+
+```
+/// only support back camera
+var exifOrientationFromDeviceOrientation: Int32 {
+   let exifOrientation: DeviceOrientation
+   enum DeviceOrientation: Int32 {
+       case top0ColLeft = 1
+       case top0ColRight = 2
+       case bottom0ColRight = 3
+       case bottom0ColLeft = 4
+       case left0ColTop = 5
+       case right0ColTop = 6
+       case right0ColBottom = 7
+       case left0ColBottom = 8
+   }
+   switch UIDevice.current.orientation {
+   case .portraitUpsideDown:
+       exifOrientation = .left0ColBottom
+   case .landscapeLeft:
+       exifOrientation = .top0ColLeft
+   case .landscapeRight:
+       exifOrientation = .bottom0ColRight
+   default:
+       exifOrientation = .right0ColTop
+   }
+   return exifOrientation.rawValue
+}
+```
+
+
+### 总结
+
+- Vision 是一个关于计算机视觉的顶层新框架。
+- 一个界面，多重跟踪检测
+- 集成 Core ML 轻松使用自己的 model
+
+
+
