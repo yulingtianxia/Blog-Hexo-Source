@@ -11,6 +11,8 @@ tags:
 
 这是一篇 WWDC 2017 Session 506，703 和 710 的学习笔记，以及分享自己尝试写的 Demo [Core-ML-Sample](https://github.com/yulingtianxia/Core-ML-Sample)。
 
+![](https://github.com/yulingtianxia/Core-ML-Sample/blob/master/coreml.gif?raw=true)
+
 ## Core ML
 
 ### 简介
@@ -19,7 +21,7 @@ Core ML 大大降低了开发者在苹果设备上使用机器学习技术预测
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml1.png)
 
-数据经过预处理后输入 MLMODEL 文件，输出模型的预测结果。使用 Core ML 只需要很少的代码就可以完成，只需关注代码即可，无需关注模型的定义，网络的构成。这跟以前写 MPS 代码时构成了强烈的反差：开发者需要写大量 MPS 代码用于构建和描述一个完整的网络，而加载的文件仅仅是模型的权重而已。MLMODEL 文件包含了权重和模型结构等信息，并可以自动生成相关的代码，节省开发者大量时间。
+将数据经过预处理后输入 MLMODEL 文件，输出为模型的预测结果。使用 Core ML 只需要很少的代码就可以构建起一个机器学习的应用。只需关注代码即可，无需关注模型的定义，网络的构成。这跟以前写 MPS 代码时构成了强烈的反差：开发者需要写大量 MPS 代码用于构建和描述一个完整的网络，而加载的文件仅仅是模型的权重而已。MLMODEL 文件包含了权重和模型结构等信息，并可以自动生成相关的代码，节省开发者大量时间。
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml2.png)
 
