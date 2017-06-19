@@ -47,7 +47,7 @@ Core ML 的底层是 Accelerate BNNS 和 MPS，并可以根据实际情况进行
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml6.png)
 
-当然，这些也都是建立在 MPS 更新的基础上，MPS 在 iOS 11 中拓展了支持向量和矩阵的数据结构 `MPSVector` 与 `MPSMatrix`，以及它们之间相乘的 API。而且提供了更多的神经网络类型，在卷积神经网络中也提供了更多种类的卷积核，用于满足更多特殊场景。
+当然，这些也都是建立在 MPS 更新的基础上，MPS 在 iOS 11 中拓展了支持向量和矩阵的数据结构 `MPSVector` 与 `MPSMatrix`，以及它们之间相乘的 API。而且提供了更多的神经网络类型（比如 RNN 等），在卷积神经网络中也提供了更多种类的卷积核，用于满足更多特殊场景。
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/608_using_metal_2_for_compute_%E9%A1%B5%E9%9D%A2_065.png)
 
