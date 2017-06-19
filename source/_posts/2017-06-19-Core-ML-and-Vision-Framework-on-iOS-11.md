@@ -1,6 +1,6 @@
 ---
 title: Core ML and Vision Framework on iOS 11
-date: 2017-06-19 10:15:41
+date: 2017-06-19 10:05:41
 tags:
 - iOS
 ---
@@ -9,7 +9,7 @@ tags:
 
 <!--more-->
 
-这是一篇 WWDC 2017 Session 506，703 和 710 的学习笔记，以及分享自己尝试写的 Demo [Core-ML-Sample](https://github.com/yulingtianxia/Core-ML-Sample)。
+这是一篇 WWDC 2017 Session 506，608，703 和 710 的学习笔记，以及分享自己尝试写的 Demo [Core-ML-Sample](https://github.com/yulingtianxia/Core-ML-Sample)。
 
 ![](https://github.com/yulingtianxia/Core-ML-Sample/blob/master/coreml.gif?raw=true)
 
@@ -24,7 +24,6 @@ Core ML 大大降低了开发者在苹果设备上使用机器学习技术预测
 将数据经过预处理后输入 MLMODEL 文件，输出为模型的预测结果。使用 Core ML 只需要很少的代码就可以构建起一个机器学习的应用。只需关注代码即可，无需关注模型的定义，网络的构成。这跟以前写 MPS 代码时构成了强烈的反差：开发者需要写大量 MPS 代码用于构建和描述一个完整的网络，而加载的文件仅仅是模型的权重而已。MLMODEL 文件包含了权重和模型结构等信息，并可以自动生成相关的代码，节省开发者大量时间。
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml2.png)
-
 
 ### Model 转换工具
 
@@ -42,11 +41,19 @@ MLMODEL 文件中还包含了很多元数据，比如作者，License，输入�
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml5.png)
 
-### 性能
+### 底层计算性能
 
 Core ML 的底层是 Accelerate BNNS 和 MPS，并可以根据实际情况进行无缝切换。比如在处理图片的场景下使用 MPS，处理文字场景下使用 Accelerate，甚至可以在同一个 model 的不同层使用不同的底层技术来预测。Vision 和 NLP 可以结合 Core ML 一起使用。Core ML 对硬件做了性能优化，而且支持的模型种类更多，开发者不用关注底层的一些细节，苹果全都封装好了。
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml6.png)
+
+当然，这些也都是建立在 MPS 更新的基础上，MPS 在 iOS 11 中拓展了支持向量和矩阵的数据结构 `MPSVector` 与 `MPSMatrix`，以及它们之间相乘的 API。而且提供了更多的神经网络类型，在卷积神经网络中也提供了更多种类的卷积核，用于满足更多特殊场景。
+
+![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/608_using_metal_2_for_compute_%E9%A1%B5%E9%9D%A2_065.png)
+
+苹果在 Metal 2 中补充 MPS 大量功能的同时，也提供了用于描述神经网络结构的语言：Neural Network Graph API。使用它可以极大简化代码逻辑，代码量缩减到以前的四分之一（以 Inception V3 为例）。并且使用 NN Graph API 可以并行使用 CPU 和 GPU。这种图语言跟主流的分布式机器学习框架的使用很像：先用简单的 Python 语言描述好网络结构，定义好输入输出格式，然后一次性提交到后端去执行。后端对底层性能做了很多细节优化，然而开发者完全不用关心这些。新增的 `MPSNNGraph` 提供了异步接口使得 CPU 不用再等待 GPU 的执行结果，性能也得到提升。
+
+Metal 2 使用 MPS 进行图像处理的性能也得到了提升，在不同的设备上大约提升了百分之二十多。
 
 ### Demo: 数据预处理
 
