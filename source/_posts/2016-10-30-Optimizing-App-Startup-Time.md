@@ -137,7 +137,7 @@ xcrun dyldinfo -rebase -bind -lazy_bind myapp.app/myapp
 
 #### Rebasing
 
-在过去，会把 dylib 加载到指定地址，所有指针和数据对于代码来说都是对的，`dyld` 就无需做任何 fix-up 了。如今用了 ASLR 后悔将 dylib 加载到新的随机地址(actual_address)，这个随机的地址跟代码和数据指向的旧地址(preferred_address)会有偏差，`dyld` 需要修正这个偏差(slide)，做法就是将 dylib 内部的指针地址都加上这个偏移量，偏移量的计算方法如下：
+在过去，会把 dylib 加载到指定地址，所有指针和数据对于代码来说都是对的，`dyld` 就无需做任何 fix-up 了。如今用了 ASLR 后会将 dylib 加载到新的随机地址(actual_address)，这个随机的地址跟代码和数据指向的旧地址(preferred_address)会有偏差，`dyld` 需要修正这个偏差(slide)，做法就是将 dylib 内部的指针地址都加上这个偏移量，偏移量的计算方法如下：
 
 Slide = actual_address - preferred_address
 
@@ -228,3 +228,5 @@ Total pre-main time: 228.41 milliseconds (100.0%)
 ## Reference
 
 https://developer.apple.com/videos/play/wwdc2016/406/
+
+
