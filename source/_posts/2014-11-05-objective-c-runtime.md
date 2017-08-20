@@ -26,7 +26,7 @@ tags:
 
 ## 引言
 
-曾经觉得Objc特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把`[receiver message]`当成简单的方法调用，而无视了**“发送消息”**这句话的深刻含义。其实`[receiver message]`会被编译器转化为： 
+曾经觉得Objc特别方便上手，面对着 Cocoa 中大量 API，只知道简单的查文档和调用。还记得初学 Objective-C 时把 `[receiver message]` 当成简单的方法调用，而无视了**“发送消息”**这句话的深刻含义。其实 `[receiver message]` 会被编译器转化为： 
  
 ```
 objc_msgSend(receiver, selector)
@@ -38,19 +38,19 @@ objc_msgSend(receiver, selector)
 objc_msgSend(receiver, selector, arg1, arg2, ...)
 ```
 
-如果消息的接收者能够找到对应的`selector`，那么就相当于直接执行了接收者这个对象的特定方法；否则，消息要么被转发，或是临时向接收者动态添加这个`selector`对应的实现内容，要么就干脆玩完崩溃掉。  
+如果消息的接收者能够找到对应的 `selector`，那么就相当于直接执行了接收者这个对象的特定方法；否则，消息要么被转发，或是临时向接收者动态添加这个 `selector` 对应的实现内容，要么就干脆玩完崩溃掉。  
 
-现在可以看出`[receiver message]`真的不是一个简简单单的方法调用。因为这只是在编译阶段确定了要向接收者发送`message`这条消息，而`receive`将要如何响应这条消息，那就要看运行时发生的情况来决定了。  
+现在可以看出 `[receiver message]` 真的不是一个简简单单的方法调用。因为这只是在编译阶段确定了要向接收者发送 `message` 这条消息，而 `receive` 将要如何响应这条消息，那就要看运行时发生的情况来决定了。  
  
 Objective-C 的 Runtime 铸就了它动态语言的特性，这些深层次的知识虽然平时写代码用的少一些，但是却是每个 Objc 程序员需要了解的。  
 
 ## 简介
 
-因为Objc是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个Objc运行框架的一块基石。  
+因为Objc是一门动态语言，所以它总是想办法把一些决定工作从编译连接推迟到运行时。也就是说只有编译器是不够的，还需要一个运行时系统 (runtime system) 来执行编译后的代码。这就是 Objective-C Runtime 系统存在的意义，它是整个 Objc 运行框架的一块基石。  
 
-Runtime其实有两个版本:“modern”和 “legacy”。我们现在用的 Objective-C 2.0 采用的是现行(Modern)版的Runtime系统，只能运行在 iOS 和 OS X 10.5 之后的64位程序中。而OS X较老的32位程序仍采用 Objective-C 1中的（早期）Legacy 版本的 Runtime 系统。这两个版本最大的区别在于当你更改一个类的实例变量的布局时，在早期版本中你需要重新编译它的子类，而现行版就不需要。  
+Runtime其实有两个版本: “modern” 和 “legacy”。我们现在用的 Objective-C 2.0 采用的是现行 (Modern) 版的 Runtime 系统，只能运行在 iOS 和 macOS 10.5 之后的 64 位程序中。而 maxOS 较老的32位程序仍采用 Objective-C 1 中的（早期）Legacy 版本的 Runtime 系统。这两个版本最大的区别在于当你更改一个类的实例变量的布局时，在早期版本中你需要重新编译它的子类，而现行版就不需要。  
 
-Runtime基本是用C和汇编写的，可见苹果为了动态系统的高效而作出的努力。你可以在[这里](http://www.opensource.apple.com/source/objc4/)下到苹果维护的开源代码。苹果和GNU各自维护一个开源的runtime版本，这两个版本之间都在努力的保持一致。   
+Runtime 基本是用 C 和汇编写的，可见苹果为了动态系统的高效而作出的努力。你可以在[这里](http://www.opensource.apple.com/source/objc4/)下到苹果维护的开源代码。苹果和GNU各自维护一个开源的 runtime 版本，这两个版本之间都在努力的保持一致。   
 
 ## 与 Runtime 交互
 
@@ -59,11 +59,11 @@ Objc 从三种不同的层级上与 Runtime 系统进行交互，分别是通过
 ### Objective-C 源代码
 
 大部分情况下你就只管写你的Objc代码就行，runtime 系统自动在幕后辛勤劳作着。  
-还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，Objc中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如`objc_msgSend`函数及其参数列表中的`id`和`SEL`都是啥）
+还记得引言中举的例子吧，消息的执行会使用到一些编译器为实现动态语言特性而创建的数据结构和函数，Objc中的类、方法和协议等在 runtime 中都由一些数据结构来定义，这些内容在后面会讲到。（比如 `objc_msgSend` 函数及其参数列表中的 `id` 和 `SEL` 都是啥）
 
 ### NSObject 的方法
 
-Cocoa 中大多数类都继承于`NSObject`类，也就自然继承了它的方法。最特殊的例外是`NSProxy`，它是个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。  
+Cocoa 中大多数类都继承于 `NSObject` 类，也就自然继承了它的方法。最特殊的例外是 `NSProxy`，它是个抽象超类，它实现了一些消息转发有关的方法，可以通过继承它来实现一个其他类的替身类或是虚拟出一个不存在的类，说白了就是领导把自己展现给大家风光无限，但是把活儿都交给幕后小弟去干。  
 
 有的`NSObject`中的方法起到了抽象接口的作用，比如`description`方法需要你重载它并为你定义的类提供描述内容。`NSObject`还有些方法能在运行时获得类的信息，并检查一些特性，比如`class`返回对象的类；`isKindOfClass:`和`isMemberOfClass:`则检查对象是否在指定的类继承体系中；`respondsToSelector:`检查对象能否响应指定的消息；`conformsToProtocol: `检查对象是否实现了指定协议类的方法；`methodForSelector:`则返回指定方法实现的地址。   
 
@@ -147,11 +147,11 @@ struct objc_class : objc_object {
 }
 ```
 
-`objc_class` 继承于 `objc_object`，也就是说一个 ObjC 类本身同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西，类对象所属类型就叫做元类，它用来表述类对象本身所具备的元数据。类方法就定义于此处，因为这些方法可以理解成类对象的实例方法。每个类仅有一个类对象，而每个类对象仅有一个与之相关的元类。当你发出一个类似`[NSObject alloc]`的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。所有的元类最终都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 `[NSObject alloc]` 这条消息发给类对象的时候，`objc_msgSend()`会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。  
+`objc_class` 继承于 `objc_object`，也就是说一个 ObjC 类本身同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西，类对象所属类型就叫做元类，它用来表述类对象本身所具备的元数据。类方法就定义于此处，因为这些方法可以理解成类对象的实例方法。每个类仅有一个类对象，而每个类对象仅有一个与之相关的元类。当你发出一个类似 `[NSObject alloc]` 的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。所有的元类最终都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 `[NSObject alloc]` 这条消息发给类对象的时候，`objc_msgSend()` 会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。  
 
 ![](http://7ni3rk.com1.z0.glb.clouddn.com/Runtime/class-diagram.jpg)  
 
-上图实线是 `superclass` 指针，虚线是`isa`指针。 有趣的是根元类的超类是`NSObject`，而`isa`指向了自己，而`NSObject`的超类为`nil`，也就是它没有超类。
+上图实线是 `superclass` 指针，虚线是`isa`指针。 有趣的是根元类的超类是 `NSObject`，而 `isa` 指向了自己，而 `NSObject` 的超类为 `nil`，也就是它没有超类。
 
 可以看到运行时一个类还关联了它的超类指针，类名，成员变量，方法，缓存，还有附属的协议。  
 
@@ -210,19 +210,25 @@ struct class_data_bits_t {
 
 可以看到 `class_data_bits_t` 里又包了一个 `bits`，这个指针跟不同的 `FAST_` 前缀的 flag 掩码做按位与操作，就可以获取不同的数据。`bits` 在内存中每个位的含义有三种排列顺序：
 
-```
-// 32 位
-|		1		|			2		  |    3 - 32      |
+32 位：
+
+| 0 | 1 | 2 - 31 |
+| :-: | :-: | :-: |
 | FAST_IS_SWIFT | FAST_HAS_DEFAULT_RR | FAST_DATA_MASK |
 
-// 64 位兼容版
-|	    1		|			2		  |			   3          |     4 - 47     | 48 - 64 |
-| FAST_IS_SWIFT | FAST_HAS_DEFAULT_RR | FAST_REQUIRES_RAW_ISA | FAST_DATA_MASK |   空闲   |
+64 位兼容版：
 
-// 64 位不兼容版
-|		1		|			2			|		  3 		|     4 - 47     |			48		 |          49         |          50         |     51     |            52           | 53 - 64 |
-| FAST_IS_SWIFT | FAST_REQUIRES_RAW_ISA | FAST_HAS_CXX_DTOR | FAST_DATA_MASK | FAST_HAS_CXX_CTOR | FAST_HAS_DEFAULT_AWZ| FAST_HAS_DEFAULT_RR | FAST_ALLOC | FAST_SHIFTED_SIZE_SHIFT |   空闲   |
-```
+
+| 0 | 1 | 2 | 3 - 46 | 47 - 63 |
+| :-: | :-: | :-: | :-: | :-: |
+| FAST_IS_SWIFT | FAST_HAS_DEFAULT_RR | FAST_REQUIRES_RAW_ISA | FAST_DATA_MASK | 空闲 |
+
+64 位不兼容版：
+
+
+| 0 | 1 | 2 | 3 - 46 | 47 | 48 | 49 | 50 | 51 | 52 - 63 |
+| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| FAST_IS_SWIFT | FAST_REQUIRES_RAW_ISA | FAST_HAS_CXX_DTOR  | FAST_DATA_MASK | FAST_HAS_CXX_CTOR | FAST_HAS_DEFAULT_AWZ | FAST_HAS_DEFAULT_RR | FAST_ALLOC | FAST_SHIFTED_SIZE_SHIFT | 空闲  |
 
 其中 64 位不兼容版每个宏对应的含义如下：
   
@@ -277,13 +283,9 @@ class_rw_t* data() {
 
 `class_data_bits_t` 甚至还包含了一些对 `class_rw_t` 中 `flags` 成员存取的封装函数。
 
-#### class_rw_t 和 class_ro_t
+#### class_ro_t
 
 `objc_class` 包含了 `class_data_bits_t`，`class_data_bits_t` 存储了 `class_rw_t` 的指针，而 `class_rw_t` 结构体又包含 `class_ro_t` 的指针。
-
-`class_rw_t` 提供了运行时对类拓展的能力，而 `class_ro_t` 存储的大多是类在编译时就已经确定的信息。二者都存有类的方法、属性（成员变量）、协议等信息，不过存储它们的列表实现方式不同。
-
-##### class_ro_t
 
 `class_ro_t` 中的 `method_list_t`, `ivar_list_t`, `property_list_t` 结构体都继承自 `entsize_list_tt<Element, List, FlagMask>`。结构为 `xxx_list_t` 的列表元素结构为 `xxx_t`，命名很工整。`protocol_list_t` 与前三个不同，它存储的是 `protocol_t *` 指针列表，实现比较简单。
 
@@ -333,8 +335,9 @@ struct class_ro_t {
 #define RO_REALIZED           (1<<31) // class is realized - must never be set by compiler
 ```
 
+#### class_rw_t
 
-##### class_rw_t
+`class_rw_t` 提供了运行时对类拓展的能力，而 `class_ro_t` 存储的大多是类在编译时就已经确定的信息。二者都存有类的方法、属性（成员变量）、协议等信息，不过存储它们的列表实现方式不同。
 
 `class_rw_t` 中使用的 `method_array_t`, `property_array_t`, `protocol_array_t` 都继承自 `list_array_tt<Element, List>`, 它可以不断扩张，因为它可以存储 list 指针，内容有三种：
 
@@ -398,7 +401,7 @@ struct class_rw_t {
 
 `demangledName` 是计算机语言用于解决实体名称唯一性的一种方法，做法是向名称中添加一些类型信息，用于从编译器中向链接器传递更多语义信息。
 
-### realizeClass
+#### realizeClass
 
 在某个类初始化之前，`objc_class->data()` 返回的指针指向的其实是个 `class_ro_t` 结构体。等到 `static Class realizeClass(Class cls)` 静态方法在类第一次初始化时被调用，它会开辟 `class_rw_t` 的空间，并将 `class_ro_t` 指针赋值给 `class_rw_t->ro`。这种偷天换日的行为是靠 `RO_FUTURE` 标志位来记录的：
 
@@ -667,12 +670,12 @@ struct protocol_t : objc_object {
 `IMP`在`objc.h`中的定义是：  
 
 ```
-typedef id (*IMP)(id, SEL, ...);
+typedef void (*IMP)(void /* id, SEL, ... */ ); 
 ```
 
 它就是一个[函数指针](http://yulingtianxia.com/blog/2014/04/17/han-shu-zhi-zhen-yu-zhi-zhen-han-shu/)，这是由编译器生成的。当你发起一个 ObjC 消息之后，最终它会执行的那段代码，就是由这个函数指针指定的。而 `IMP` 这个函数指针就指向了这个方法的实现。既然得到了执行某个实例某个方法的入口，我们就可以绕开消息传递阶段，直接执行方法，这在后面会提到。  
 
-你会发现 `IMP` 指向的方法与 `objc_msgSend` 函数类型相同，参数都包含`id`和`SEL`类型。每个方法名都对应一个`SEL`类型的方法选择器，而每个实例对象中的`SEL`对应的方法实现肯定是唯一的，通过一组`id`和`SEL`参数就能确定唯一的方法实现地址；反之亦然。
+你会发现 `IMP` 指向的方法与 `objc_msgSend` 函数类型相同，参数都包含 `id` 和 `SEL` 类型。每个方法名都对应一个 `SEL` 类型的方法选择器，而每个实例对象中的 `SEL` 对应的方法实现肯定是唯一的，通过一组 `id` 和 `SEL` 参数就能确定唯一的方法实现地址；反之亦然。
 
 ## 消息
 
@@ -1106,7 +1109,7 @@ method_setImplementation(m2, imp1);
 }
 ```
 
-上面的代码同样要添加在某个类的类别中，相比第一个种实现，只是去掉了`dispatch_once`部分。  
+上面的代码同样要添加在某个类的类别中，相比第一个种实现，只是去掉了`dispatch_once` 部分。  
 
 Method Swizzling 的确是一个值得深入研究的话题，找了几篇不错的资源推荐给大家：  
 
@@ -1123,39 +1126,39 @@ extension SKNode {
     
     class func yxy_swizzleAddChild() {
         let cls = SKNode.self
-        let originalSelector = Selector("addChild:")
-        let swizzledSelector = Selector("yxy_addChild:")
+        let originalSelector = #selector(SKNode.addChild(_:))
+        let swizzledSelector = #selector(SKNode.yxy_addChild(_:))
         let originalMethod = class_getInstanceMethod(cls, originalSelector)
         let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+        method_exchangeImplementations(originalMethod!, swizzledMethod!)
     }
     
     class func yxy_swizzleRemoveFromParent() {
         let cls = SKNode.self
-        let originalSelector = Selector("removeFromParent")
-        let swizzledSelector = Selector("yxy_removeFromParent")
+        let originalSelector = #selector(SKNode.removeFromParent)
+        let swizzledSelector = #selector(SKNode.yxy_removeFromParent)
         let originalMethod = class_getInstanceMethod(cls, originalSelector)
         let swizzledMethod = class_getInstanceMethod(cls, swizzledSelector)
-        method_exchangeImplementations(originalMethod, swizzledMethod)
+        method_exchangeImplementations(originalMethod!, swizzledMethod!)
     }
     
-    func yxy_addChild(node: SKNode) {
+    @objc func yxy_addChild(_ node: SKNode) {
         if node.parent == nil {
             self.yxy_addChild(node)
         }
         else {
-            println("This node has already a parent!\(node.name)")
+            print("This node has already a parent!\(String(describing: node.name))")
         }
     }
     
-    func yxy_removeFromParent() {
+    @objc func yxy_removeFromParent() {
         if parent != nil {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 self.yxy_removeFromParent()
             })
         }
         else {
-            println("This node has no parent!\(name)")
+            print("This node has no parent!\(String(describing: name))")
         }
     }
     
@@ -1173,7 +1176,9 @@ SKNode.yxy_swizzleRemoveFromParent()
 
 ## 总结
 
-我们之所以让自己的类继承`NSObject`不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的`[receiver message]`背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。
+我们之所以让自己的类继承 `NSObject` 不仅仅因为苹果帮我们完成了复杂的内存分配问题，更是因为这使得我们能够用上 Runtime 系统带来的便利。可能我们平时写代码时可能很少会考虑一句简单的 `[receiver message]` 背后发生了什么，而只是当做方法或函数调用。深入理解 Runtime 系统的细节更有利于我们利用消息机制写出功能更强大的代码，比如 Method Swizzling 等。
+
+Update 20170820: 使用 objc4-709 源码重写部分章节，更新至 Swift 4 代码示例。
 
 参考链接： 
  
