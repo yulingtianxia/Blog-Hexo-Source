@@ -226,9 +226,11 @@ struct class_data_bits_t {
 64 位不兼容版：
 
 
-| 0 | 1 | 2 | 3 - 46 | 47 | 48 | 49 | 50 | 51 | 52 - 63 |
-| :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
-| FAST_IS_SWIFT | FAST_REQUIRES_RAW_ISA | FAST_HAS_CXX_DTOR  | FAST_DATA_MASK | FAST_HAS_CXX_CTOR | FAST_HAS_DEFAULT_AWZ | FAST_HAS_DEFAULT_RR | FAST_ALLOC | FAST_SHIFTED_SIZE_SHIFT | 空闲  |
+| 0 | 1 | 2 | 3 - 46 | 47 |
+| :-: | :-: | :-: | :-: | :-: |
+| FAST_IS_SWIFT | FAST_REQUIRES_RAW_ISA | FAST_HAS_CXX_DTOR  | FAST_DATA_MASK | FAST_HAS_CXX_CTOR |
+| 48 | 49 | 50 | 51 | 52 - 63 |
+| FAST_HAS_DEFAULT_AWZ | FAST_HAS_DEFAULT_RR | FAST_ALLOC | FAST_SHIFTED_SIZE_SHIFT | 空闲  |
 
 其中 64 位不兼容版每个宏对应的含义如下：
   
