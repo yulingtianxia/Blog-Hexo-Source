@@ -1,6 +1,6 @@
 ---
 title: Threading Programming Guide(1)
-date: 2017-08-23 16:20:24
+date: 2017-08-28 09:20:24
 tags:
 - 翻译
 ---
@@ -76,7 +76,7 @@ run loop 对应的 API 有两种：`NSRunLoop` 和 `CFRunLoop`：
 - 直接发消息: `performSelector:onThread:withObject:waitUntilDone:modes:` 等方法。
 - 全局变量，共用内存和对象: 相比直接发消息更快更容易，但也更脆弱。需要加锁之类的同步机制来确保代码的正确性，否则可能会导致竞态条件、错乱数据和crash。
 - Conditions: 之前说过它也是一种线程同步工具，只有当符合某个条件时才让线程执行下去，相当于守门员的作用。
-- Run loop sources: run loop input sources 有两种：port-based和 custom。这里说的是使用 custom run loop source 在某个线程上接收应用特定的消息。整个事件分发机制需要自己实现，包括设置 handler 函数，为 custom run loop source 提供数据，并手动将其 signal。
+- Run loop sources: run loop input sources 有两种：port-based和 custom。这里说的是使用 custom run loop source 在某个线程上接收应用特定的消息。整个事件分发机制需要自己实现，包括设置 handler 函数，为 custom run loop source 提供数据，并手动给它发信号（signal）。
 - 端口和套接字: 基于端口的跨线程通信技术更复杂但也更可靠。更重要的是端口和套接字也可以与外部实体通信，比如其他进程和服务。为了高效，端口使用 port-based run loop sources 实现。
 - 消息队列: 古老的 Multiprocessing Services 定义了一个简单方便的 FIFO 队列来管理数据进出，但没其他跨线程通信技术效率高。
 - Cocoa distributed objects: 对端口通信进行高级封装的 Cocoa API，其开销之大更适合跨进程通信。不建议用于跨线程通信，杀鸡用牛刀。
@@ -369,4 +369,5 @@ run loop 可以使用 input source 接受其他线程发的消息，但需要为
     }
 }
 ```
+
 
