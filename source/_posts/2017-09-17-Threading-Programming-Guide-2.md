@@ -2,6 +2,7 @@
 title: Threading Programming Guide(2)
 date: 2017-09-17 14:07:13
 tags:
+- 翻译
 ---
 
 [Threading Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) 的学习笔记&翻译，第二部分。关于 Run Loop 的内容。
