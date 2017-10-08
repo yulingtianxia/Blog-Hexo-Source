@@ -7,6 +7,9 @@ tags:
 
 [Threading Programming Guide](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) 的学习笔记&翻译，第二部分。关于 Run Loop 的内容。
 
+- [Threading Programming Guide(1)](http://yulingtianxia.com/blog/2017/08/28/Threading-Programming-Guide-1/)
+- [Threading Programming Guide(3)](http://yulingtianxia.com/blog/2017/10/08/Threading-Programming-Guide-3/)
+
 <!-- more -->
 
 ## Run Loops

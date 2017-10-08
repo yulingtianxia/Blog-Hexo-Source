@@ -11,6 +11,9 @@ tags:
 
 但了解更底层一些的内容其实更有趣，难道不是么？
 
+- [Threading Programming Guide(2)](http://yulingtianxia.com/blog/2017/09/17/Threading-Programming-Guide-2/)
+- [Threading Programming Guide(3)](http://yulingtianxia.com/blog/2017/10/08/Threading-Programming-Guide-3/)
+
 <!-- more -->
 
 ## 线程相关概念
@@ -61,11 +64,11 @@ run loop 对应的 API 有两种：`NSRunLoop` 和 `CFRunLoop`：
 
 #### 同步工具
 
-多线程操作同一资源时要注意同步的问题，可以使用加锁、Conditions、原子操作等技术进行同步。
+多线程操作同一资源时要注意同步的问题，可以使用加锁、条件变量、原子操作等技术进行同步。
 
 加锁可以确保一段代码在某一时刻只能在一个线程中执行，最基本的是互斥锁(mutex, mutual exclusion)。Cocoa 提供了很多种锁来满足各种场景。
 
-当两个线程竞争同一资源时，如果对资源的访问顺序敏感，就称存在竞态条件。Conditions 通过阻塞线程的方式确保了任务按正确的顺序执行，POSIX 层和 Foundation 框架都有 Conditions 对应的 API。此外，Cocoa 提供的 operation objects 也能设置任务执行的顺序。
+当两个线程竞争同一资源时，如果对资源的访问顺序敏感，就称存在竞态条件。条件变量通过阻塞线程的方式确保了任务按正确的顺序执行，POSIX 层和 Foundation 框架都有 条件变量对应的 API。此外，Cocoa 提供的 operation objects 也能设置任务执行的顺序。
 
 原子操作适合同步多线程对标量数据类型的数学和逻辑运算，它跟锁相比，采用硬件指令优化，是一种轻量级同步工具。
 
@@ -75,7 +78,7 @@ run loop 对应的 API 有两种：`NSRunLoop` 和 `CFRunLoop`：
 
 - 直接发消息: `performSelector:onThread:withObject:waitUntilDone:modes:` 等方法。
 - 全局变量，共用内存和对象: 相比直接发消息更快更容易，但也更脆弱。需要加锁之类的同步机制来确保代码的正确性，否则可能会导致竞态条件、错乱数据和crash。
-- Conditions: 之前说过它也是一种线程同步工具，只有当符合某个条件时才让线程执行下去，相当于守门员的作用。
+- 条件变量: 之前说过它也是一种线程同步工具，只有当符合某个条件时才让线程执行下去，相当于守门员的作用。
 - Run loop sources: run loop input sources 有两种：port-based和 custom。这里说的是使用 custom run loop source 在某个线程上接收应用特定的消息。整个事件分发机制需要自己实现，包括设置 handler 函数，为 custom run loop source 提供数据，并手动给它发信号（signal）。
 - 端口和套接字: 基于端口的跨线程通信技术更复杂但也更可靠。更重要的是端口和套接字也可以与外部实体通信，比如其他进程和服务。为了高效，端口使用 port-based run loop sources 实现。
 - 消息队列: 古老的 Multiprocessing Services 定义了一个简单方便的 FIFO 队列来管理数据进出，但没其他跨线程通信技术效率高。
@@ -235,7 +238,7 @@ void LaunchThread()
 }
 ```
 
-对于 C 语言的应用，可以使用端口、conditions 或共用内存来跨线程通信。跨线程通信有便于主线程检查其他线程的状态，在应用退出时做一些操作。
+对于 C 语言的应用，可以使用端口、条件变量s 或共用内存来跨线程通信。跨线程通信有便于主线程检查其他线程的状态，在应用退出时做一些操作。
 
 关于 POSIX 线程函数可以翻阅 pthread man page。
 

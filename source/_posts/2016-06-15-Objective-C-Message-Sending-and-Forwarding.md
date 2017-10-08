@@ -493,7 +493,7 @@ int __forwarding__(void *frameStackPointer, int isStret) {
 -[NSInvocation invokeSuper]
 ```
 
-`doesNotRecognizeSelector` 方法其实在 libobj.A.dylib 中已经废弃了，而是在 CF 框架中实现，而且也不是开源的。从函数调用栈可以发现 `doesNotRecognizeSelector` 之后会抛出异常，而 Runtime 中废弃的实现知识打日志后直接杀掉进程（`__builtin_trap()`）。下面是 CF 中实现的伪代码：
+`doesNotRecognizeSelector` 方法其实在 libobj.A.dylib 中已经废弃了，而是在 CF 框架中实现，而且也不是开源的。从函数调用栈可以发现 `doesNotRecognizeSelector` 之后会抛出异常，而 Runtime 中废弃的实现只是打日志后直接杀掉进程（`__builtin_trap()`）。下面是 CF 中实现的伪代码：
 
 ```
 void -[NSObject doesNotRecognizeSelector:](void * self, void * _cmd, void * arg2) {
@@ -538,3 +538,4 @@ void +[NSObject doesNotRecognizeSelector:](void * self, void * _cmd, void * arg2
 - [Hmmm, What's that Selector?](http://arigrant.com/blog/2013/12/13/a-selector-left-unhandled)
 - [A Look Under the Hood of objc_msgSend()](http://blog.zhengdong.me/2013/07/18/a-look-under-the-hood-of-objc-msgsend/)
 - [Printing Objective-C Invocations in LLDB](http://arigrant.com/blog/2014/2/18/chisels-print-invocation-command)
+
