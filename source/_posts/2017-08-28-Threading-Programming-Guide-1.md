@@ -129,7 +129,7 @@ detached 类型的线程结束之后系统会自动回收其资源。假如在 A
 
 如果想让线程在后台做一些诸如保存数据到磁盘之类的重要工作，需要使用 joinable 类型的线程，以防止应用退出时数据丢失。但大多数的对线程高层封装的 API 不会默认创建 joinable 线程，所以需要使用 POSIX API 的 `pthread_create` 创建 joinable 线程。
 
-在使用 Cocoa API 时，`applicationShouldTerminate:` delegate 方法可以延迟一阵子退出应用或取消退出。如果需要延迟退出程序，还要在所有关键线程完成任务之后调用 `applicationShouldTerminate:` 方法告诉 `NSApplication` 对象是否可以真的退出了。
+在使用 Cocoa API 时，`applicationShouldTerminate:` delegate 方法可以延迟一阵子退出应用或取消退出。如果需要延迟退出程序，还要在所有关键线程完成任务之后调用 `replyToApplicationShouldTerminate:` 方法告诉 `NSApplication` 对象是否可以真的退出了。
 
 #### 处理异常
 
