@@ -203,7 +203,7 @@ Run Loop 对象提供了向 run loop 中添加 input source、timer 和 run-loop
 
 除了用 source 外，还可以用 run loop observer 观察 run loop 的各种运行阶段。做法是创建一个 `CFRunLoopObserverRef` 类型的对象并用 `CFRunLoopAddObserver` 函数将其添加到 run loop 中。注意的是只能用 Core Foundation 创建 run loop observer，Cocoa 框架无能为力。
 
-下面的示例代码在西安城入口函数中创建了 run loop observer 并将其添加到 run loop 中。observer 监听了 run loop 所有的活动，并省略了回调函数 `myRunLoopObserver` 的实现。
+下面的示例代码在线程入口函数中创建了 run loop observer 并将其添加到 run loop 中。observer 监听了 run loop 所有的活动，并省略了回调函数 `myRunLoopObserver` 的实现。
 
 ```
 - (void)threadMain
