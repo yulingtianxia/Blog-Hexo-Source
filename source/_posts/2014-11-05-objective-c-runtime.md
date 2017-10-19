@@ -1014,18 +1014,14 @@ PS: 对于熟练使用 Method Swizzling 的开发者，可以跳过此章节，�
     static dispatch_once_t onceToken; 
     dispatch_once(&onceToken, ^{ 
         Class aClass = [self class]; 
- 
+ 			// When swizzling a class method, use the following:
+        // Class aClass = object_getClass((id)self);
+        
         SEL originalSelector = @selector(viewWillAppear:); 
         SEL swizzledSelector = @selector(xxx_viewWillAppear:); 
  
         Method originalMethod = class_getInstanceMethod(aClass, originalSelector); 
         Method swizzledMethod = class_getInstanceMethod(aClass, swizzledSelector); 
-        
-        // When swizzling a class method, use the following:
-        // Class aClass = object_getClass((id)self);
-        // ...
-        // Method originalMethod = class_getClassMethod(aClass, originalSelector);
-        // Method swizzledMethod = class_getClassMethod(aClass, swizzledSelector);
  
         BOOL didAddMethod = 
             class_addMethod(aClass, 
