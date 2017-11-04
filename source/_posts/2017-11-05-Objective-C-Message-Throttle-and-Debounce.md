@@ -286,4 +286,12 @@ dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(rule.durationThreshold
 }
 ```
 
+## 后记
+
+其实在开发过程中遇到需要限制方法调用频率的场景并不多，只是最近恰巧连续碰到几个刷新 UI 过频繁的问题，才想到应该去造个轮子。因为时间仓促，肯定还有考虑不周和一些 bug，待投入使用后慢慢完善和修复。
+
+其实想在某个特定函数做节流很简单，但每次都需要做重复劳动，写脏代码，还不如抽象出一个工具类出来。尽量造与业务无关的轮子，锻炼技术，也受益整个业务发展。
+
+好，装逼到此为止。Github : https://github.com/yulingtianxia/MessageThrottle
+
 
