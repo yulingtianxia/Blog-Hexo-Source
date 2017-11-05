@@ -190,7 +190,7 @@ start                                                                end
 ignore                    ignore     ignore          will perform at end
 ```
 
-在 `durationThreshold` 时间内不断更新 `lastInvocation` 的值，并在达到阈值 `durationThreshold` 后执行 `[lastInvocation invoke]`。这样保证了执行的是最后一次发送的消息。需要注意的是，`NSInvocation` 对象默认不会持有参数，在异步延迟执行 `invoke` 的时候参数可能已经被释放了。所以需要调用 `retainArguments` 方法提前持有参数，防止之后被释放掉。
+在 `durationThreshold` 时间内不断更新 `lastInvocation` 的值，并在达到阈值 `durationThreshold` 后执行 `[lastInvocation invoke]`。这样保证了执行的是最后一次发送的消息。需要注意的是，`NSInvocation` 对象默认不会持有参数，在异步延迟执行 `invoke` 的时候参数可能已经被释放了，进而野指针 crash。所以需要调用 `retainArguments` 方法提前持有参数，防止之后被释放掉。如果实际传入的参数与参数类型不符，可能导致 `retainArguments` 方法 crash。我曾想过将参数列表保存到一个 `NSArray` 里，然后放到 `MTRule` 中，这样可以对参数类型做判断，避免 crash，也顺便持有了参数列表。但发现需要覆盖的类型太多，工作量和风险更多。我把这个半成品代码放在了 GitHubGist 上: [ConvertInvocationArguments.m](https://gist.github.com/yulingtianxia/1518fc7604ed65aa4ca98abdeee974e1)
 
 ```
 if (now - rule.lastTimeRequest > rule.durationThreshold) {
