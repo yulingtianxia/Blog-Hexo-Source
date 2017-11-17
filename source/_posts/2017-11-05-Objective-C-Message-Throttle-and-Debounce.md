@@ -176,6 +176,7 @@ if (now - rule.lastTimeRequest > rule.durationThreshold) {
 	rule.lastTimeRequest = now;
 	invocation.selector = fixedSelector;
 	[invocation invoke];
+	rule.lastInvocation = nil;
 }
 ```
 
@@ -197,6 +198,7 @@ if (now - rule.lastTimeRequest > rule.durationThreshold) {
 	rule.lastTimeRequest = now;
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(rule.durationThreshold * NSEC_PER_SEC)), rule.messageQueue, ^{
 		[rule.lastInvocation invoke];
+		rule.lastInvocation = nil;
 	});
 }
 else {
@@ -229,6 +231,7 @@ rule.lastInvocation = invocation;
 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(rule.durationThreshold * NSEC_PER_SEC)), rule.messageQueue, ^{
 	if (rule.lastInvocation == invocation) {
 		[rule.lastInvocation invoke];
+		rule.lastInvocation = nil;
 	}
 });
 ```
