@@ -36,6 +36,12 @@ rule.durationThreshold = 0.01;
 
 `target` 可以是一个实例对象，也可以是一个类或元类。这样可以更灵活地控制限制策略，既可以只控制某个对象的消息发送频率，也可以控制某个类的实例方法和类方法的频率。当然，规则的 `target` 为实例对象的优先级比类更高，也不会发生冲突。
 
+当然还有更简单的用法，跟上面那段代码作用相同：
+
+```
+[s limitSelector:@selector(foo:) oncePerDuration:0.01]; // returns MTRule instance
+```
+
 无论是节流还是防抖，都需要设定一个时间 `durationThreshold` 阈值来限制频率，都意味着方法在最后会延迟调用。`MTRule` 默认的模式是 `MTPerformModeDebounce`，也就是防抖模式，需要等消息不再连续频繁发送后才执行。`MTPerformModeLast` 和 `MTPerformModeFirstly` 对应着节流模式，也就是控制一定时间内只执行一次。区别在于前者执行的是这段时间内最后发送的消息，后者执行第一次发送的消息。
 
 比如我想要控制界面上某个 Label 内容的更新频率，给用户更好的体验，这时候很适合使用 `MTPerformModeLast` 模式：
