@@ -31,7 +31,7 @@ MTRule *rule = [MTRule new];
 rule.target = s; // You can also assign `Stub.class` or `mt_metaClass(Stub.class)`
 rule.selector = @selector(foo:);
 rule.durationThreshold = 0.01;
-[MTEngine.defaultEngine applyRule:rule];
+[MTEngine.defaultEngine applyRule:rule]; // or use `[rule apply]`
 ```
 
 `target` 可以是一个实例对象，也可以是一个类或元类。这样可以更灵活地控制限制策略，既可以只控制某个对象的消息发送频率，也可以控制某个类的实例方法和类方法的频率。当然，规则的 `target` 为实例对象的优先级比类更高，也不会发生冲突。
@@ -57,7 +57,7 @@ rule.mode = MTPerformModeLast;
 当想要废除某条规则时，使用一行代码即可：
 
 ```
-[MTEngine.defaultEngine discardRule:rule];
+[MTEngine.defaultEngine discardRule:rule]; // or use `[rule discard]`
 ```
 
 应用和废除规则都是线程安全的。
@@ -129,7 +129,7 @@ static BOOL mt_checkRuleValid(MTRule *rule)
 下面的函数就是处理 `NSInvocation` 对象的逻辑。先用 `target` 和 `selector` 获取 `MTRule` 对象，进而根据不同的 `mode` 采取不同的策略。如果 `durationThreshold` 非正数就立即执行方法。
 
 ```
-static void invocation.selector = fixedSelector(NSInvocation *invocation, SEL fixedSelector)
+static void mt_handleInvocation(NSInvocation *invocation, SEL fixedSelector)
 {
     NSString *methodDescriptionForInstance = mt_methodDescription(invocation.target, invocation.selector);
     NSString *methodDescriptionForClass = mt_methodDescription(object_getClass(invocation.target), invocation.selector);
