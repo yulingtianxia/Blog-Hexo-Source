@@ -22,29 +22,40 @@ API 虽然清奇，但是需要在 block 对象上用哦，在其他类型的对
                      usingBlock:(id)block
 ```
 
-三种 hook 模式任你选择，可以对同一个 block 对象 hook 多次，但是要注意自己控制好顺序问题！hook 后会返回一个 `BHToken` 对象，可以调用它的 `remove` 方法来让 hook 失效。切记 `remove` 的时候要按照 hook 时的逆序！（以后可以搞个栈优化下用户体验，暂时懒的弄）
+四种 hook 模式任你选择，可以对同一个 block 对象 hook 多次，但是要注意自己控制好顺序问题！hook 后会返回一个 `BHToken` 对象，可以调用它的 `remove` 方法来让 hook 失效。切记 `remove` 的时候要按照 hook 时的逆序！（以后可以搞个栈优化下用户体验，暂时懒的弄）
 
 ```
+[super viewDidLoad];
+// Do any additional setup after loading the view, typically from a nib.
+NSObject *z = NSObject.new;
 int (^block)(int, int) = ^(int x, int y) {
    int result = x + y;
-   NSLog(@"I'm here! result: %d", result);
+   NSLog(@"%d + %d = %d, z is a NSObject: %p", x, y, result, z);
    return result;
 };
     
+    
 BHToken *tokenInstead = [block block_hookWithMode:BlockHookModeInstead usingBlock:^(BHToken *token, int x, int y){
+   [token invokeOriginalBlock];
+   NSLog(@"let me see original result: %d", *(int *)(token.retValue));
    // change the block imp and result
    *(int *)(token.retValue) = x * y;
-   NSLog(@"hook instead");
+   NSLog(@"hook instead: '+' -> '*'");
 }];
-    
+
 BHToken *tokenAfter = [block block_hookWithMode:BlockHookModeAfter usingBlock:^(BHToken *token, int x, int y){
    // print args and result
-   NSLog(@"hook after block! x:%d y:%d ret:%d", x, y, *(int *)(token.retValue));
+   NSLog(@"hook after block! %d * %d = %d", x, y, *(int *)(token.retValue));
 }];
 
 BHToken *tokenBefore = [block block_hookWithMode:BlockHookModeBefore usingBlock:^(id token){
    // BHToken has to be the first arg.
    NSLog(@"hook before block! token:%@", token);
+}];
+    
+BHToken *tokenDead = [block block_hookWithMode:BlockHookModeDead usingBlock:^(id token){
+   // BHToken is the only arg.
+   NSLog(@"block dead! token:%@", token);
 }];
     
 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -56,9 +67,10 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
    [tokenBefore remove];
    [tokenAfter remove];
    [tokenInstead remove];
-   NSLog(@"original block");
+   NSLog(@"remove tokens, original block");
    ret = block(3, 5);
    NSLog(@"original result:%d", ret);
+//        [tokenDead remove];
 });
 ```
 
@@ -68,13 +80,16 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 
 ```
 hooked block
-hook before block! token:<BHToken: 0x1d00e0f80>
-hook instead
-hook after block! x:3 y:5 ret:15
+hook before block! token:<BHToken: 0x1d00f0d80>
+3 + 5 = 8, z is a NSObject: 0x1d00172b0
+let me see original result: 8
+hook instead: '+' -> '*'
+hook after block! 3 * 5 = 15
 hooked result:15
-original block
-I'm here! result: 8
+remove tokens, original block
+3 + 5 = 8, z is a NSObject: 0x1d00172b0
 original result:8
+block dead! token:<BHToken: 0x1d00f9900>
 ```
 
 老铁稳。
