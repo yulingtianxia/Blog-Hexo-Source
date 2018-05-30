@@ -1,15 +1,17 @@
 ---
 title: MessageThrottle Performance Benchmark and Optimization
-date: 2018-05-29 23:01:50
+date: 2018-05-31 02:01:50
 tags:
 ---
 
 
-[MessageThrottle](https://github.com/yulingtianxia/MessageThrottle) 是我开发的Objective-C 节流限频组件，其原理基于 Hook 消息转发流程，所以相比直接调用方法，会有一些性能上的损耗。本篇文章记录了对其性能进行测试的结果，并对性能和安全进行了一定的优化。
+[MessageThrottle](https://github.com/yulingtianxia/MessageThrottle) 是我开发的Objective-C 节流限频组件，其原理基于 Hook 消息转发流程，所以相比直接调用方法，会有一些性能上的损耗。本篇文章记录了对其性能进行测试的结果，并通过使用 `NSMapTable` 改进存储结构和缓存来对性能进行大幅度的优化。
 
 这是你从未体验过的船新版本。
 
 <!-- more -->
+
+关于 [MessageThrottle](https://github.com/yulingtianxia/MessageThrottle) 最初的实现原理可以参考 [Objective-C Message Throttle and Debounce](http://yulingtianxia.com/blog/2017/11/05/Objective-C-Message-Throttle-and-Debounce/)。
 
 ## Benchmark
 
@@ -73,7 +75,7 @@ Xcode 自带的单元测试框架可以很方便的测量一个方法的执行�
 | --- | --- | --- |
 | 不使用 MT  | 0.118(baseline) | 1.17(baseline) |
 | MT 立即执行 | 0.135(14.4%worse) | 1.33(13.8%worse) |
-| 性能优化后 | 0.127(7.64%worse) | 1.26(7.65%worse) |
+| 性能优化后 | 0.126(6.88%worse) | 1.25(6.93%worse) |
 
 为了方便管理和查看所有的 `MTRule`，使用了 `MTEngine` 单例进行中心化的管理。获取一个 `MTRule` 之前，需要先用 `target` 和 `selector` 生成一个描述字符串，然后用这个字符串作为 Key 在 `MTEngine` 的字典里查询对应的 `MTRule` 对象。每次应用和废除规则、消息发送时都要频繁从 `MTEngine` 获取 `MTRule` 对象，由此也产生了大量开销。这里的性能瓶颈主要有两点：
 
@@ -82,7 +84,7 @@ Xcode 自带的单元测试框架可以很方便的测量一个方法的执行�
 
 应用和废除规则的时候，这两点开销并不明显。但当所有应用规则的消息发送都要经过这两步的时候，这俨然成了拥堵的重灾区。当然治理方案也是相对的：
 
-1. 优化 `MTEngine` 中字典的存储结构，使用 `NSMapTable` 替换 `NSMutableDictionary`。因为 `NSMapTable` 支持将任意指针作为 Key 且无需持有，可以将 `target` 作为 Key，Value 为这个 `target` 对应的 `selector` 集合。`MTEngine` 不再持有 `MTRule` 对象，而只是存储了所有应用规则的 `target` 及其 `selector`。而 `MTRule` 对象改为由其 `target` 通过 AssociatedObject 的方式持有，可以很方便通过 `selector` 存取。当 `target` 销毁后，它关联的 `MTRule` 对象也会被销毁，`NSMapTable` 也会自动移除那些键或值为 `nil` 的数据。下面是 `MTEngine` 封装了 `NSMapTable` 字典对应的便捷方法。
+1. 改进 `MTEngine` 中字典的存储结构，使用 `NSMapTable` 替换 `NSMutableDictionary`。因为 `NSMapTable` 支持将任意指针作为 Key 且无需持有，可以将 `target` 作为 Key，Value 为这个 `target` 对应的 `selector` 集合。`MTEngine` 不再持有 `MTRule` 对象，而只是存储了所有应用规则的 `target` 及其 `selector`。而 `MTRule` 对象改为由其 `target` 通过 AssociatedObject 的方式持有，可以很方便通过 `selector` 存取。当 `target` 销毁后，它关联的 `MTRule` 对象也会被销毁，`NSMapTable` 也会自动移除那些键或值为 `nil` 的数据。下面是 `MTEngine` 封装了 `NSMapTable` 字典对应的便捷方法。
 
 	```
 	// 初始化
@@ -165,6 +167,45 @@ Xcode 自带的单元测试框架可以很方便的测量一个方法的执行�
 	}
 	```
 
-这些优化已经对性能提升有一定的效果了。在 Hook 某个方法的时候，会给它生成一个新的方法名，这就又涉及到字符串拼接的开销。这里只好做一个缓存，但性能提升不大。
+`MTEngine` 中字典的存储结构的改进不仅提高了性能，还让设计思路更清晰。在添加或废除规则的时候，旧方案需要遍历所有的 `MTRule` 对象，然后通过检查 `target` 和 `selector` 来判断规则是否相互干扰；新方案直接存储了 `target` 和对应的 `selector` 数组，声明如下：
+
+```
+NSMapTable<id, NSMutableSet<NSString *> *> *targetSELs;
+```
+
+这样的存储方式可以更高效地找到某个对象或类的某个方法是否被限频了，增删规则也更快。
+
+在 Hook 某个方法的时候，会给它生成一个新的方法名，这就又涉及到字符串拼接的开销。解决方案是使用缓存来映射两个 `SEL` 指针，又要用到 `NSMapTable` 大显神威了。这又将节省 6% 左右的 CPU 耗时！需要注意的是创建 `NSMapTable` 时的选项，以及存取时的类型强转：
+
+```
+// 初始化 NSMapTable 缓存
+_aliasSelectorCache = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsOpaqueMemory | NSMapTableObjectPointerPersonality valueOptions:NSPointerFunctionsOpaqueMemory | NSMapTableObjectPointerPersonality];
+
+...
+
+// 在方法内部使用缓存优化性能
+static SEL mt_aliasForSelector(SEL selector)
+{
+    pthread_mutex_lock(&alias_selector_mutex);
+    SEL aliasSelector = (__bridge void *)[MTEngine.defaultEngine.aliasSelectorCache objectForKey:(__bridge id)(void *)selector];
+    if (!aliasSelector) {
+        NSString *selectorName = NSStringFromSelector(selector);
+        aliasSelector = NSSelectorFromString([NSString stringWithFormat:@"__mt_%@", selectorName]);
+        [MTEngine.defaultEngine.aliasSelectorCache setObject:(__bridge id)(void *)aliasSelector forKey:(__bridge id)(void *)selector];
+    }
+    pthread_mutex_unlock(&alias_selector_mutex);
+    return aliasSelector;
+}
+```
+
+可能有人会担心直接缓存 `SEL` 指针会不会命中率很低。因为所有名字相同的方法都拥有同一个唯一的 `SEL`，所以可以很快速地用直接指针地址判等。可以参考[这里](https://stackoverflow.com/questions/11051528/understanding-uniqueness-of-selectors-in-objective-c?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa)。
+
+## 总结
+
+更新 [MessageThrottle](https://github.com/yulingtianxia/MessageThrottle) 到最新版即可获取到更快更强更安全的 Objective 消息节流限频功能，一行代码搞定频繁调用的问题。
+
+新版本在废除消息的时候，也增强了对合法性和安全性的检查。（说白了就是改 bug）
+
+理论上我的另一个组件 [BlockTracker](https://github.com/yulingtianxia/BlockTracker) 也可以按照本文的方案优化性能了，嘿嘿，有时间搞下。
 
 
