@@ -141,31 +141,31 @@ Xcode 自带的单元测试框架可以很方便的测量一个方法的执行�
 2. 每个 `MTRule` 有自己独立的递归锁，这样避免了在 `forwardInvocation` 里千军万马过独木桥的拥堵，且不妨碍递归调用的场景。存取 `MTEngine` 的字典依然使用普通的互斥锁。这两个锁都使用性能较好的 `pthread_mutex_t` 实现。
 
 	```
-	// 初始化递归锁
-	pthread_mutexattr_t attr;
-        pthread_mutexattr_init(&attr);
-        pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-        pthread_mutex_t mutex = mtDealloc.invokeLock;
-        pthread_mutex_init(&mutex, &attr);
-        objc_setAssociatedObject(rule.target, rule.selector, mtDealloc, OBJC_ASSOCIATION_RETAIN);
+    // 初始化递归锁
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_t mutex = mtDealloc.invokeLock;
+    pthread_mutex_init(&mutex, &attr);
+    objc_setAssociatedObject(rule.target, rule.selector, mtDealloc, OBJC_ASSOCIATION_RETAIN);
         
    ...
    
-   // 消息转发时保证线程安全
-   static void mt_forwardInvocation(__unsafe_unretained id assignSlf, SEL selector, NSInvocation *invocation)
-	{
-	    SEL originalSelector = invocation.selector;
-	    SEL fixedOriginalSelector = mt_aliasForSelector(originalSelector);
-	    if (![assignSlf respondsToSelector:fixedOriginalSelector]) {
-	        mt_executeOrigForwardInvocation(assignSlf, selector, invocation);
-	        return;
-	    }
-	    MTDealloc *mtDealloc = objc_getAssociatedObject(invocation.target, selector);
-	    pthread_mutex_t mutex = mtDealloc.invokeLock;
-	    pthread_mutex_lock(&mutex);
-	    mt_handleInvocation(invocation, fixedOriginalSelector);
-	    pthread_mutex_unlock(&mutex);
-	}
+    // 消息转发时保证线程安全
+    static void mt_forwardInvocation(__unsafe_unretained id assignSlf, SEL selector, NSInvocation *invocation)
+    {
+        SEL originalSelector = invocation.selector;
+        SEL fixedOriginalSelector = mt_aliasForSelector(originalSelector);
+        if (![assignSlf respondsToSelector:fixedOriginalSelector]) {
+            mt_executeOrigForwardInvocation(assignSlf, selector, invocation);
+            return;
+        }
+        MTDealloc *mtDealloc = objc_getAssociatedObject(invocation.target, selector);
+        pthread_mutex_t mutex = mtDealloc.invokeLock;
+        pthread_mutex_lock(&mutex);
+        mt_handleInvocation(invocation, fixedOriginalSelector);
+        pthread_mutex_unlock(&mutex);
+    }
 	```
 
 `MTEngine` 中字典的存储结构的改进不仅提高了性能，还让设计思路更清晰。在添加或废除规则的时候，旧方案需要遍历所有的 `MTRule` 对象，然后通过检查 `target` 和 `selector` 来判断规则是否相互干扰；新方案直接存储了 `target` 和对应的 `selector` 数组，声明如下：
