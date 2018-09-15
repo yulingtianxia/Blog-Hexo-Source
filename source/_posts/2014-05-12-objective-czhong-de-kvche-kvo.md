@@ -67,20 +67,20 @@ KVO是Cocoa框架使用**观察者模式**的一种途径。
 设置一个属性的观察者需要三步，理解这些步骤可以更清楚的知道KVO的工作框图  
 1. 首先看看你当前的场景如果使用KVO是否更妥当，比如，当一个实例的某个具体属性有任何变更的时候，另一个实例需要被通知。  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389577.jpg)  
+![](http://yulingtianxia.com/resources/140353389577.jpg)  
 
 比如，BankObject中的`accountBalance`属性有任何变更时，某个PersonObject对象都要觉察到。  
 2. 这个PersonObject对象必须注册成为BankObject的`accountBalance`属性的观察者，可以通过发送`addObserver:forKeyPath:options:context:`消息来实现。  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389319.jpg)  
+![](http://yulingtianxia.com/resources/140353389319.jpg)  
 
 注意：`addObserver:forKeyPath:options:context:`方法在你指定的两个实例间建立联系，而不是在两个类之间。  
 3. 为了回应变更通知，观察者必须实现`observeValueForKeyPath:ofObject:change:context:`方法。这个方法的实现决定了观察者如何回应变更通知。你可以在这个方法里自定义如何回应被观察属性的变更。  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353388989.jpg)    
+![](http://yulingtianxia.com/resources/140353388989.jpg)    
 4. 当一个被观察属性的值以符合KVO方式变更或者当它依赖的键变更时，` observeValueForKeyPath:ofObject:change:context:`方法会被自动执行。  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389524.jpg)  
+![](http://yulingtianxia.com/resources/140353389524.jpg)  
 
 ### Registering for Key-Value Observing
 

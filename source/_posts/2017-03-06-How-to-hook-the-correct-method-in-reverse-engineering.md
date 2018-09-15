@@ -119,11 +119,11 @@ Mar  2 00:37:36 yangxiaoyude-iPhone WeChat(FishChat.dylib)[22880] <Notice>: (
 
 `-[CMessageMgr GetMsg:LocalID:]` 在 Hopper 中的地址 `0x000000010280e1d4`：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/reverse%20engineering/original_method_address@2x.png)
+![](http://yulingtianxia.com/resources/reverse%20engineering/original_method_address@2x.png)
 
 WeChat Mach-O 在 Hopper 中的基地址 `0x0000000100000000`：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/reverse%20engineering/wechat_base_address@2x.png)
+![](http://yulingtianxia.com/resources/reverse%20engineering/wechat_base_address@2x.png)
 
 得出 `-[CMessageMgr GetMsg:LocalID:]` 在 WeChat 中的相对地址为 `0x280E1D4`：
 

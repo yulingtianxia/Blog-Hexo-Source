@@ -66,7 +66,7 @@ tags:
 
 `TBAlertController` 也是采取装箱策略，模仿 `UIAlertController` 的接口，并添加了一个 `adaptiveAlert` 替身和 `actions` 数组。
 
-![TBAlertController 属性](http://7ni3rk.com1.z0.glb.clouddn.com/TBAlertController.png)
+![TBAlertController 属性](http://yulingtianxia.com/resources/TBAlertController.png)
 
 ```
 - (instancetype)init

@@ -101,7 +101,7 @@ Keras 基于 TensorFlow 或 Theano，集成了大量功能，是一种方便快�
 
 为了模拟真实场景，我使用 Web 程序调用 iMac 前置摄像头采集 320x240 尺寸的照片。为了更高效采集图片数据，我采用连拍的方式拍摄并保存图片到本地：
 
-![帅是我的无奈](http://7ni3rk.com1.z0.glb.clouddn.com/MachineLearning/training_data.png)
+![帅是我的无奈](http://yulingtianxia.com/resources/MachineLearning/training_data.png)
 
 需要去除少量过于模糊和手指不小心跑出屏幕外的图片，尽可能提高数据的质量。
 
@@ -124,7 +124,7 @@ VGG 系列网络虽然结构简单易理解，但无论是加载权重的耗时�
 
 下图展示了 Inception V3 网络的结构，其中的 top 部分就是 Final part 所指的部分，我们可以将其替换成我们自己的全连接层，利用前面 Input 预测的结果来作为输入数据，训练我们自己的分类器。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/MachineLearning/Inception V3.png)
+![](http://yulingtianxia.com/resources/MachineLearning/Inception V3.png)
 
 > 上图中的 Inception mudules 使用的是[论文](https://arxiv.org/pdf/1512.00567v3.pdf)中提到的图 6 的结构，实际代码中则使用的图 5。
 
@@ -136,7 +136,7 @@ model = applications.InceptionV3(include_top=False, weights='imagenet')
 
 在 TensorFlow 中读取文件数据需要通过 `QueueRunner` 和 `Coordinator` 构造队列来实现 data flow，比较麻烦：
 
-![图片来源 TensorFlow](http://7ni3rk.com1.z0.glb.clouddn.com/MachineLearning/AnimatedFileQueues.gif)
+![图片来源 TensorFlow](http://yulingtianxia.com/resources/MachineLearning/AnimatedFileQueues.gif)
 
 Keras 真是太方便了，用生成器把图片数据标准化，使用加载好的 `model` 预测出结果，并保存到 npy 文件中。
 
@@ -248,7 +248,7 @@ Keras 可以根据数据的文件夹自动分类打标签，所以我将图片�
 	
 [HDF Group](https://www.hdfgroup.org) 提供了可视化查看 HDF 文件的工具：[HDFView](https://support.hdfgroup.org/products/java/release/download.html)，因为是用 java 写的，所以是跨平台的。Mac 版本有个已知的 bug：双击一个 `.h5` 文件后 HDFView 界面是空的，需要把 `.h5` 文件拖动到 HDFView 左边栏才能打开。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/MachineLearning/HDFView.jpg)
+![](http://yulingtianxia.com/resources/MachineLearning/HDFView.jpg)
 
 Keras 可以将训练处的权重结果高存成 HDF5 格式，但苹果提供的 Demo 使用的权重文件是 memory-mapped 二进制文件，每层网络都对应一个 `.dat` 文件。
 

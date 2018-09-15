@@ -19,37 +19,37 @@ tags:
 
 Core ML 大大降低了开发者在苹果设备上使用机器学习技术预测模型的门槛和成本。苹果制定了自己的模型文件格式，统一的格式和全新的 API 设计使得 Core ML 支持苹果生态下多个平台。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml1.png)
+![](http://yulingtianxia.com/resources/iOS11/coreml1.png)
 
 将数据经过预处理后输入 MLMODEL 文件，输出为模型的预测结果。使用 Core ML 只需要很少的代码就可以构建起一个机器学习的应用。只需关注代码即可，无需关注模型的定义，网络的构成。这跟以前写 MPS 代码时构成了强烈的反差：开发者需要写大量 MPS 代码用于构建和描述一个完整的网络，而加载的文件仅仅是模型的权重而已。MLMODEL 文件包含了权重和模型结构等信息，并可以自动生成相关的代码，节省开发者大量时间。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml2.png)
+![](http://yulingtianxia.com/resources/iOS11/coreml2.png)
 
 ### Model 转换工具
 
 苹果提供了一个 Python 工具，可以将业内一些常用的机器学习框架导出的 Model 转成 MLMODEL 文件。代码会编译成可执行二进制文件，而 MLMODEL 会编译成 Bundle 文件，在代码文件中可以直接调用 MLMODEL 生成的类，这些都是需要 Xcode 9 做支撑，也就是说，现阶段并不支持动态下发 MLMODEL 文件。Core ML 的预测过程全都在客户端进行，保证用户隐私不会泄露。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml4.png)
+![](http://yulingtianxia.com/resources/iOS11/coreml4.png)
 
 Core ML 支持 DNN,RNN,CNN,SVM,Tree ensembles,Generalized linear models,Pipeline models 等，对应的模型转换工具 [Core ML Tools](https://pypi.python.org/pypi/coremltools) 也支持了一些常用机器学习框架模型的转换。虽然目前没有直接支持 Google 的 TensorFlow，但可以使用 Keras 曲线救国。`coremltools` 已经开源，并提供可拓展性的底层接口，可以编写适配其他机器学习框架模型的转换工具。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml3.png)
+![](http://yulingtianxia.com/resources/iOS11/coreml3.png)
 
 MLMODEL 文件中还包含了很多元数据，比如作者，License，输入输出的描述文字。这些元数据都可以通过 `coremltools` 的接口进行设置。`coremltools` 上手很简单，可以查看完整详细的[使用文档](https://pythonhosted.org/coremltools/)。
 
 把 MLMODEL 文件拖拽到 Xcode 工程中后，记得要勾选对应的 target，这样 Xcode 才会自动生成对应的代码。生成的类名就是 MLMODEL 文件名，输入和输出的变量名和类型也可以在 Xcode 中查看：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml5.png)
+![](http://yulingtianxia.com/resources/iOS11/coreml5.png)
 
 ### 底层计算性能
 
 Core ML 的底层是 Accelerate BNNS 和 MPS，并可以根据实际情况进行无缝切换。比如在处理图片的场景下使用 MPS，处理文字场景下使用 Accelerate，甚至可以在同一个 model 的不同层使用不同的底层技术来预测。Vision 和 NLP 可以结合 Core ML 一起使用。Core ML 对硬件做了性能优化，而且支持的模型种类更多，开发者不用关注底层的一些细节，苹果全都封装好了。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/coreml6.png)
+![](http://yulingtianxia.com/resources/iOS11/coreml6.png)
 
 当然，这些也都是建立在 MPS 更新的基础上，MPS 在 iOS 11 中拓展了支持向量和矩阵的数据结构 `MPSVector` 与 `MPSMatrix`，以及它们之间相乘的 API。而且提供了更多的神经网络类型（比如 RNN 等），在卷积神经网络中也提供了更多种类的卷积核，用于满足更多特殊场景。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/608_using_metal_2_for_compute_%E9%A1%B5%E9%9D%A2_065.png)
+![](http://yulingtianxia.com/resources/iOS11/608_using_metal_2_for_compute_%E9%A1%B5%E9%9D%A2_065.png)
 
 苹果在 Metal 2 中补充 MPS 大量功能的同时，也提供了用于描述神经网络结构的语言：Neural Network Graph API。使用它可以极大简化代码逻辑，代码量缩减到以前的四分之一（以 Inception V3 为例）。并且使用 NN Graph API 可以并行使用 CPU 和 GPU。这种图语言跟主流的分布式机器学习框架的使用很像：先用简单的 Python 语言描述好网络结构，定义好输入输出格式，然后一次性提交到后端去执行。后端对底层性能做了很多细节优化，然而开发者完全不用关心这些。新增的 `MPSNNGraph` 提供了异步接口使得 CPU 不用再等待 GPU 的执行结果，性能也得到提升。
 
@@ -127,9 +127,9 @@ func resize(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
 
 Vision 操作流水线分为两类：分析图片和跟踪队列。可以使用图片检测出的物体或矩形结果（Observation）来作为跟踪队列请求（Request）的参数。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_36.png)
+![](http://yulingtianxia.com/resources/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_36.png)
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_40.png)
+![](http://yulingtianxia.com/resources/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_40.png)
 
 Vision 支持的图片数据类型：
 
@@ -149,7 +149,7 @@ Vision 有三种 resize 图片的方式，无需使用者再次裁切缩放
 
 Vision 与 iOS 上其他几种带人脸检测功能框架的对比：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_72.png)
+![](http://yulingtianxia.com/resources/iOS11/506_vision_framework_building_on_core_ml_%E9%A1%B5%E9%9D%A2_72.png)
 
 ### Demo: 与 Core ML 集成
 

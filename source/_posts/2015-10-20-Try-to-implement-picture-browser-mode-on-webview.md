@@ -129,7 +129,7 @@ function imageClick(i){
 
 其实有些网站只是在手机站上加了百度推广之类的，而在 PC 端可能并没有。至于符合查看手机上 web 的布局，可以在调试时打开 Mac 上的 Safari，点击“开发”菜单（我相信你肯定早已开启开发模式），选择你调试的那台设备，然后会看到你正在调试的程序和 `webview` 当前打开的域名。点击后可以展开 Web 检查器，使用方法跟 Mac 上 Safari 的 Web 检查器一样：  
 
-![Web 检查器](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20151022-0@2x.png)
+![Web 检查器](http://yulingtianxia.com/resources/QQ20151022-0@2x.png)
 
 这样就可以查看手机上的 Web 元素，方便我们 js 代码的编写。
 

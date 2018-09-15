@@ -30,7 +30,7 @@ date: 2015-02-07 19:19:08
 - [Uber(获得一次优惠乘车机会)](https://get.uber.com.cn/invite/ld7io)
 
 ####或者更直接些，捐助我一杯咖啡
-![向我付款](http://7ni3rk.com1.z0.glb.clouddn.com/zhifubao.png)  
+![向我付款](http://yulingtianxia.com/resources/zhifubao.png)  
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ad -->

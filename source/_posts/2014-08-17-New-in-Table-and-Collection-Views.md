@@ -29,11 +29,11 @@ iOS会根据样式的用途来合理调整字体。
 
 问题来了，诸如字体大小这种“动态类型”，我们需要对其进行动态的UI调整，否则总是觉得我们的界面怪怪的：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/image-DCBF_53F0DDDB.jpg)  
+![](http://yulingtianxia.com/resources/image-DCBF_53F0DDDB.jpg)  
 
 我们想要让Cell的高度随着字体大小而作出调整：  
  
-![](http://7ni3rk.com1.z0.glb.clouddn.com/image-0D8C_53F0DDDB.jpg)  
+![](http://yulingtianxia.com/resources/image-0D8C_53F0DDDB.jpg)  
 
 总之，还会有其他动态因素导致我们需要修改布局。  
 
@@ -118,17 +118,17 @@ self.tableView.estimatedRowHeight = 44
 
 自适应效果如下：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140833033058.gif)  
+![](http://yulingtianxia.com/resources/140833033058.gif)  
 
 ### UICollectionView
 
 `UITableView` 和 `UICollectionView` 都是 data-source 和 delegate 驱动的。`UICollectionView`在此之上进行了进一步抽象。它将其子视图的位置，大小和外观的控制权委托给一个单独的布局对象。通过提供一个自定义布局对象，你几乎可以实现任何你能想象到的布局。布局继承自 `UICollectionViewLayout` 抽象基类。iOS6 中以 `UICollectionViewFlowLayout` 类的形式提出了一个具体的布局实现。在`UICollectionViewFlowLayout`中，self-sizing同样适用：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/image-05D4_53F0E00F.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/image-05D4_53F0E00F.jpg)  
 
 采用self-sizing后：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/image-B1E8_53F0DDDB.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)    
+![](http://yulingtianxia.com/resources/image-B1E8_53F0DDDB.jpg)    
 
 Demo下载地址：https://github.com/yulingtianxia/Self-Sizing-CollectionView-Demo  
 
@@ -138,7 +138,7 @@ PS：`preferredLayoutAttributesFittingAttributes:`方法默认调整Size属性�
 
 由此我们从最经典的`UICollectionViewLayout`强制计算属性（还记得`UICollectionViewLayoutAttributes`的一系列工厂方法么？）到使用self-sizing来根据我们需求调整属性中的Size，再到重写`UICollectionReusableView`（`UICollectionViewCell`也是继承于它）的`preferredLayoutAttributesFittingAttributes:`方法来从Cell层面对所有属性进行修改：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/image-95BA_53F0DDDB.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)      
+![](http://yulingtianxia.com/resources/image-95BA_53F0DDDB.jpg)      
 
 下面来说说如何在`UICollectionViewFlowLayout`实现self-sizing：  
 

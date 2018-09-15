@@ -9,7 +9,7 @@ tags:
 [凸包(Convex hull)](https://en.wikipedia.org/wiki/Convex_hull) 是一个数学上的概念，在二维平面上可以想象成用一个橡皮筋套住一堆钉在平面上的钉子。本文讲述如何使用 Swift 实现 [Graham scan](https://en.wikipedia.org/wiki/Graham_scan) 算法来寻找二维平面点集上的凸包。工程源码 Github：https://github.com/yulingtianxia/Algorithm-Experiment
 
 ![By Maksim (original); en:User:Pbroks3 (redraw), via Wikimedia Commons](https://upload.wikimedia.org/wikipedia/commons/d/de/ConvexHull.svg)
-![](http://7ni3rk.com1.z0.glb.clouddn.com/convexhull/convexhull.gif)
+![](http://yulingtianxia.com/resources/convexhull/convexhull.gif)
 
 <!--more-->
 
@@ -58,7 +58,7 @@ PS：这里注意我们想要的结果仅仅是**凸包顶点**，有些点可�
 
 我们最终输出的结果希望是逆时针顺序输出的，比如下图中的凸包顶点输出顺序应为：`A,B,C,D,E,F,G,H`，其中 `A` 点和 `D` 点分别为 X 最小的点和 X 最大的点。
 
-![随机生成50个点集的凸包](http://7ni3rk.com1.z0.glb.clouddn.com/convexhullQQ20160428-0@2x.png)
+![随机生成50个点集的凸包](http://yulingtianxia.com/resources/convexhullQQ20160428-0@2x.png)
 
 有两种方案可以按照逆时针顺序输出结果：
 1. 以 `A` 点为中心，向量 `DA` 方向做射线逆时针扫描，按照扫描到点的顺序输出即可，直至 360° 扫描完毕。
@@ -68,7 +68,7 @@ PS：这里注意我们想要的结果仅仅是**凸包顶点**，有些点可�
 
 但受到方案 1 的启发，我们可以将暴力遍历的时间复杂度减少一层。将 `A` 点与其他凸包顶点连上虚线：
 
-![以 A 点将凸包划分成几个三角形](http://7ni3rk.com1.z0.glb.clouddn.com/convexhull/divideintotriangles@2x.png)
+![以 A 点将凸包划分成几个三角形](http://yulingtianxia.com/resources/convexhull/divideintotriangles@2x.png)
 
 也就是说可以把 `A` 点作为公共点来遍历三角形。因为 `A` 点肯定不会被剔除，并且上图中以 `A` 点为公共点的三角形已经覆盖了所有的点，不用担心会有遗漏。于是三角形的一个顶点已经确定下来了，只需遍历生成另两个顶点和一个需要判定是否在三角形内的点，四层循环嵌套降为三层！
 

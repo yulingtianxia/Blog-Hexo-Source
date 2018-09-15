@@ -149,7 +149,7 @@ struct objc_class : objc_object {
 
 `objc_class` 继承于 `objc_object`，也就是说一个 ObjC 类本身同时也是一个对象，为了处理类和对象的关系，runtime 库创建了一种叫做元类 (Meta Class) 的东西，类对象所属类型就叫做元类，它用来表述类对象本身所具备的元数据。类方法就定义于此处，因为这些方法可以理解成类对象的实例方法。每个类仅有一个类对象，而每个类对象仅有一个与之相关的元类。当你发出一个类似 `[NSObject alloc]` 的消息时，你事实上是把这个消息发给了一个类对象 (Class Object) ，这个类对象必须是一个元类的实例，而这个元类同时也是一个根元类 (root meta class) 的实例。所有的元类最终都指向根元类为其超类。所有的元类的方法列表都有能够响应消息的类方法。所以当 `[NSObject alloc]` 这条消息发给类对象的时候，`objc_msgSend()` 会去它的元类里面去查找能够响应消息的方法，如果找到了，然后对这个类对象执行方法调用。  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/Runtime/class-diagram.jpg)  
+![](http://yulingtianxia.com/resources/Runtime/class-diagram.jpg)  
 
 上图实线是 `superclass` 指针，虚线是`isa`指针。 有趣的是根元类的超类是 `NSObject`，而 `isa` 指向了自己，而 `NSObject` 的超类为 `nil`，也就是它没有超类。
 
@@ -844,7 +844,7 @@ m 文件：
 
 ## 消息转发
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20141113-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/QQ20141113-1@2x.png)  
 
 ### 重定向
 
@@ -957,15 +957,15 @@ if ( [aWarrior respondsToSelector:@selector(negotiate)] )
 
 在 Runtime 的现行版本中，最大的特点就是健壮的实例变量。当一个类被编译时，实例变量的布局也就形成了，它表明访问类的实例变量的位置。从对象头部开始，实例变量依次根据自己所占空间而产生位移：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/nf1.png)  
+![](http://yulingtianxia.com/resources/nf1.png)  
 
 上图左边是`NSObject`类的实例变量布局，右边是我们写的类的布局，也就是在超类后面加上我们自己类的实例变量，看起来不错。但试想如果哪天苹果更新了`NSObject`类，发布新版本的系统的话，那就悲剧了：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/nf2.png)  
+![](http://yulingtianxia.com/resources/nf2.png)  
 
 我们自定义的类被划了两道线，那是因为那块区域跟超类重叠了。唯有苹果将超类改为以前的布局才能拯救我们，但这样也导致它们不能再拓展它们的框架了，因为成员变量布局被死死地固定了。在脆弱的实例变量(Fragile ivars) 环境下我们需要重新编译继承自 Apple 的类来恢复兼容性。那么在健壮的实例变量下会发生什么呢？  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/nf3.png)  
+![](http://yulingtianxia.com/resources/nf3.png)  
 
 在健壮的实例变量下编译器生成的实例变量布局跟以前一样，但是当 runtime 系统检测到与超类有部分重叠时它会调整你新添加的实例变量的位移，那样你在子类中新添加的成员就被保护起来了。  
 

@@ -125,7 +125,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 6. 本文会按 Hook 顺序、类是否实现方法、Hook 方案(A/B) 来细分不同情况下的结果。一共细分为 18 种情况。
 7. 本文会使用图例表示每种情况下的方法调用和映射关系，分为三个维度（Super/Child;Original/Swizzle;`Selector`/`Method`/`IMP`）
 
-![模板](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/模板.png)
+![模板](http://yulingtianxia.com/resources/MethodSwizzling/模板.png)
 
 **下文中的图例均为 Hook 后的结果(Hook 前的太简单了懒得画)。如果不理解 `Selector`,`Method` 与 `IMP` 三者的关系，甚至不理解 Method Swizzling 原理，请先阅读 [Objective-C Runtime](http://yulingtianxia.com/blog/2014/11/05/objective-c-runtime/)！如果还是看不懂，那就再看一遍吧！**
 
@@ -137,7 +137,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan A,Child:Plan A
 
-![CS_SuperAChildA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_SuperAChildA.png)
+![CS_SuperAChildA](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperAChildA.png)
 
 
 方法执行结果：
@@ -147,7 +147,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan B,Child:Plan A
 
-![CS_SuperBChildA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_SuperBChildA.png)
+![CS_SuperBChildA](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperBChildA.png)
 
 
 方法执行结果：
@@ -158,7 +158,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan A,Child Plan B
 
-![CS_SuperAChildB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_SuperAChildB.png)
+![CS_SuperAChildB](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperAChildB.png)
 
 
 方法执行结果：
@@ -169,7 +169,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan B,Child Plan B
 
-![CS_SuperBChildB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_SuperBChildB.png)
+![CS_SuperBChildB](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperBChildB.png)
 
 
 方法执行结果：
@@ -184,7 +184,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Child:Plan A
 
-![CS_ChildA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_ChildA.png)
+![CS_ChildA](http://yulingtianxia.com/resources/MethodSwizzling/CS_ChildA.png)
 
 
 方法执行结果：
@@ -194,7 +194,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Child:Plan B
 
-![CS_ChildB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_ChildB.png)
+![CS_ChildB](http://yulingtianxia.com/resources/MethodSwizzling/CS_ChildB.png)
 
 
 方法执行结果：
@@ -209,7 +209,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan A
 
-![CS_SuperA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_SuperA.png)
+![CS_SuperA](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperA.png)
 
 
 方法执行结果（一切正常）：
@@ -219,7 +219,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan B
 
-![CS_SuperB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_SuperB.png)
+![CS_SuperB](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperB.png)
 
 
 方法执行结果：
@@ -232,7 +232,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 相当于 Super 和 Child 都使用方案 B 进行 Hook，所以只有一种情况。
 
-![CS_Perfect](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/CS_Perfect.png)
+![CS_Perfect](http://yulingtianxia.com/resources/MethodSwizzling/CS_Perfect.png)
 
 
 方法执行结果（一切正常）：
@@ -248,7 +248,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan A,Child:Plan A
 
-![SC_SuperAChildA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_SuperAChildA.png)
+![SC_SuperAChildA](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperAChildA.png)
 
 
 方法执行结果（一切正常）：
@@ -258,7 +258,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan B,Child:Plan A
 
-![SC_SuperBChildA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_SuperBChildA.png)
+![SC_SuperBChildA](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperBChildA.png)
 
 
 方法执行结果：
@@ -269,7 +269,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan A,Child Plan B
 
-![SC_SuperAChildB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_SuperAChildB.png)
+![SC_SuperAChildB](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperAChildB.png)
 
 
 方法执行结果：
@@ -280,7 +280,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan B,Child Plan B
 
-![SC_SuperBChildB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_SuperBChildB.png)
+![SC_SuperBChildB](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperBChildB.png)
 
 
 1. Child 对象正常：Child->Super->Base
@@ -293,7 +293,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Child:Plan A
 
-![SC_ChildA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_ChildA.png)
+![SC_ChildA](http://yulingtianxia.com/resources/MethodSwizzling/SC_ChildA.png)
 
 
 方法执行结果（一切正常）：
@@ -303,7 +303,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Child:Plan B
 
-![SC_ChildB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_ChildB.png)
+![SC_ChildB](http://yulingtianxia.com/resources/MethodSwizzling/SC_ChildB.png)
 
 
 方法执行结果：
@@ -318,7 +318,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan A
 
-![SC_SuperA](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_SuperA.png)
+![SC_SuperA](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperA.png)
 
 
 方法执行结果（一切正常）：
@@ -328,7 +328,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 #### Super:Plan B
 
-![SC_SuperB](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_SuperB.png)
+![SC_SuperB](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperB.png)
 
 
 方法执行结果：
@@ -341,7 +341,7 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 相当于 Super 和 Child 都使用方案 B 进行 Hook，所以只有一种情况。
 
-![SC_Perfect](http://7ni3rk.com1.z0.glb.clouddn.com/MethodSwizzling/SC_Perfect.png)
+![SC_Perfect](http://yulingtianxia.com/resources/MethodSwizzling/SC_Perfect.png)
 
 
 方法执行结果（一切正常）：

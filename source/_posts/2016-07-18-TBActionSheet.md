@@ -47,7 +47,7 @@ Github：https://github.com/yulingtianxia/TBActionSheet
 4. `customView` 属性是个普通的 `UIView`，供使用者传入自定义视图
 5. `TBActionButton` 是对应着每个 Action 的按钮
 
-![视图层级](http://7ni3rk.com1.z0.glb.clouddn.com/TBActionSheet/overview.jpg)
+![视图层级](http://yulingtianxia.com/resources/TBActionSheet/overview.jpg)
 
 所有的坐标和尺寸都是代码计算出来的，没有用自动布局，容器的大小是根据其子视图的 frame 决定的，这其中包含很多计算。
 
@@ -516,7 +516,7 @@ typedef struct {
 
 回归正题！如何将环境色加入到容器中呢？毕竟有多种情况，但其思想跟毛玻璃模糊的思路差不多：
 
-![环境色设置策略](http://7ni3rk.com1.z0.glb.clouddn.com/TBActionSheet/ambientColor.png)
+![环境色设置策略](http://yulingtianxia.com/resources/TBActionSheet/ambientColor.png)
 
 值得一提的是在倒数第二个分支『在 `UIVisualEffectView` 后插入环境色视图』。是在控件的后面插入 
 `UIVisualEffectView` 后再插入一层背景颜色为 `ambientColor` 的 `UIView`。如果控件类型为 `TBActionButton`，那么需要将其 `behindColorView` 属性设为背景色为 `ambientColor` 的 `UIView` 对象。原因是按钮此时无背景色，高亮状态需要调节 `behindColorView` 的 `alpha`。

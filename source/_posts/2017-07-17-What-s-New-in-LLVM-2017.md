@@ -330,7 +330,7 @@ int foo(void) // OK
 
 对于一个带有 C++ 或 Objective-C++ 代码的工程来说，想重命名某个类名真的是艰难，Xcode 会提示不支持 C++！现在，各种操作也支持 C++ 咯：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/LLVM/C++%20Refactoring.png)
+![](http://yulingtianxia.com/resources/LLVM/C++%20Refactoring.png)
 
 LLVM 的重构代码功能极大节省了开发者的时间。
  
@@ -380,15 +380,15 @@ a = 5; // error! a 只在上面的 if 作用域中有效。
 
 举个栗子：`advance` 函数可以向前或向后迭代指定步数，但对于字符串和数组来说有更快的方式：无需一步步迭代，可以直接访问。但 `advance` 的参数是通用的，编译不通过：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/LLVM/constexpr%20if%200.png)
+![](http://yulingtianxia.com/resources/LLVM/constexpr%20if%200.png)
 
 传统解决方法是 Compile Time Dispatch：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/LLVM/constexpr%20if%201.png)
+![](http://yulingtianxia.com/resources/LLVM/constexpr%20if%201.png)
 
 C++17 的 `constexpr if` 可以一行搞定：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/LLVM/constexpr%20if%202.png)
+![](http://yulingtianxia.com/resources/LLVM/constexpr%20if%202.png)
 
 详见 [constexpr if](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0292r2.html)。
 

@@ -26,15 +26,15 @@ PS：后来有人说 Web 版微信本来就不会撤回消息。。。可惜我�
 
 想要凭 dump 出的头文件里面的一堆函数名类名来猜出想要动手脚的地方，的确是个技术活儿。不仅考验脑洞，有时候还得运气好。把应用程序中的微信拖到 Hopper 中，搜下 "revoke"。这不，我一下子就猜出在哪个方法里面处理撤回消息逻辑的了：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/WeChatReverseEngineeringwechat-findfuntion@2x.png)
+![](http://yulingtianxia.com/resources/WeChatReverseEngineeringwechat-findfuntion@2x.png)
 
 我凭借直觉，认为 `-[MessageService onRevokeMsg:]` 就是我们要找的方法。事实也证明我是对的，一次成功！先看看这个方法的伪代码：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/WeChatReverseEngineeringwechat-pseudocode@2x.png)
+![](http://yulingtianxia.com/resources/WeChatReverseEngineeringwechat-pseudocode@2x.png)
 
 伪代码里面包含着好多层复杂的 `if` 判断逻辑，想必是这里复杂的业务逻辑让微信的同事无比抓狂，不要怕，我们不想让后面的事情发生，直接来个 `return` 就万事大吉！按快捷键 『option+A』 或者选择 Hopper 菜单栏的 『Modify -> Assemble Instruction...』来修改第一行汇编语句：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/WeChatReverseEngineeringwechat-revokemsg@2x.png)
+![](http://yulingtianxia.com/resources/WeChatReverseEngineeringwechat-revokemsg@2x.png)
 
 可能觉得这里直接 `return` 掉是不是胆子也太大了，其实我还是看了函数里这坨代码的。那么多的 `if` 判断伴随着的是各种出错场景下的数据上报，真正核心业务逻辑也就是下面这坨：
 
@@ -72,7 +72,7 @@ r15 = *objc_release;
 
 现在需要将修改后的汇编重新生成新的可执行文件。选择 Hopper 菜单里的 『File -> Produce New Executable...』 后点 Yes：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/WeChatReverseEngineeringwechat-NewExecutable@2x.png)
+![](http://yulingtianxia.com/resources/WeChatReverseEngineeringwechat-NewExecutable@2x.png)
 
 最后将生成的可执行文件替换到 `/Applications/WeChat.app/Contents/MacOS/WeChat`
 
@@ -88,7 +88,7 @@ r15 = *objc_release;
 
 **第二步**，改汇编代码。这里需要改的是 Thumb 指令集。其实它是较新的 ARM 处理器的一种模式。我们比较关心的是各种指令的含义，尤其是如何从 Thumb 切换回 ARM，没错，就是用 `bx`：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/WeChatReverseEngineering/wechat-ios.png)
+![](http://yulingtianxia.com/resources/WeChatReverseEngineering/wechat-ios.png)
 
 这有一个[Thumb® 16 位指令集快速参考卡](http://infocenter.arm.com/help/topic/com.arm.doc.qrc0006ec/QRC0006_UAL16.pdf)
 

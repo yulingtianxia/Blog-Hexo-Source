@@ -20,13 +20,13 @@ tags:
 
 ## 引子
 在一个太空大战游戏中，导弹可以撞向飞船，也可能撞向行星，所以在碰撞检测的时候就需要判断碰撞的结果。假设游戏有四种物体：飞船，陨石，行星，导弹，那么就产生了`4*3/2+4`种情形（一枚导弹撞上另一枚导弹）。这种排列组合计算出的结果会随着物体种类N的增多爆炸性增长，如果这个时候还用一堆if－else来检测碰撞，那真是`Naive`了。这时我们可以利用面向对象语言的多态性质来在程序运行时动态绑定，因为碰撞检测是一种“双向选择”，所以我们需要`double dispatch`（双分派），`Visitor`模式就是`double dispatch`的一种应用。  
-![Visitor模式](http://7ni3rk.com1.z0.glb.clouddn.com/14035338896.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)   
+![Visitor模式](http://yulingtianxia.com/resources/14035338896.jpg)   
 
 DD模式适合于处理多个对象之间的相互作用。假如不用DD模式的话，那么每个对象跟别的对象发生关系时，就必须辛辛苦苦的进行if...else...枚举，因为它并不知道对方是何神圣。DD模式的引入解决了这个问题，其实说白了就是利用语言内置的虚函数机制来替你干活，把工作移交给编译器去做了。  
 
 
 ## C++中的Double Dispatch实例
-本节内容摘自[这里](http://www.cnblogs.com/west-link/archive/2011/07/26/2116887.html?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+本节内容摘自[这里](http://www.cnblogs.com/west-link/archive/2011/07/26/2116887.html)  
 我们先从字面上去理解它吧，直观地说，它指的是两次dispatch。这里的dispatch指的是什么呢？举个例子：  
 
 
@@ -205,7 +205,7 @@ evt.injectHandler(new EventHandler());
 
 虽然OC不支持函数重载，但是我们可以老老实实的用方法名来区分类似`visitXXX`的访问方法，并利用OC其独有的SEL类型可以很好的在运行时判断该调用哪个方法  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353389425.jpg?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)   
+![](http://yulingtianxia.com/resources/140353389425.jpg)   
 
 感谢kouky提供的iOS上碰撞检测的[Demo](https://github.com/kouky/iOS-SpriteKit-Pong)，这里他用到了Visitor模式  
 由于判断物体类型是用一个32位掩码来标记，所以这里不可避免的要用到if语句，这不代表它不是动态绑定，因为if语句是在初始化方法`+ (id)contactVisitorWithBody:(SKPhysicsBody *)body forContact:(SKPhysicsContact *)contact`中其作用的，只是为了判断物体类型，而不是判断碰撞两者的组合类型  

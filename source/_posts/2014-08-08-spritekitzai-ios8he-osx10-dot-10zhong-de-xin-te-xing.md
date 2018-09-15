@@ -22,7 +22,7 @@ tags:
 
 放一张官方演示的效果图：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140738700571.png)  
+![](http://yulingtianxia.com/resources/140738700571.png)  
 
 `SKShader`内建了一些`uniforms`，用`SKUniform`来描述，当你创建一个`SKShader`时，需要通过一个`fsh`文件或者一个字符串代码来创建，也可选择性的传入`uniforms`来定义游戏中一些额外的参数。下面是创建Shader方法的集合：  
 
@@ -43,7 +43,7 @@ tags:
 
 下面列举一下Shader中的预定义符号：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140738949518.png)
+![](http://yulingtianxia.com/resources/140738949518.png)
 
 ## Lighting and Shadows
 
@@ -62,11 +62,11 @@ tags:
 
 为了在`SKSpriteNode`上实现更加逼真的光照效果（如阴影和反射光），`SKSpriteNode`新增了`normalTexture`属性来储存原帖图的法线贴图（Normal Map）：   
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140739494085.png)  
+![](http://yulingtianxia.com/resources/140739494085.png)  
 
 上图中左侧的是原贴图，加上中间的法线贴图就合成出最右侧带有质感的光照纹理。当然提供这样一张发现纹理图片会增加开发者的工作量，苹果还提供了另一种更加简单的方案-“automatic normal map”：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140739540301.png)  
+![](http://yulingtianxia.com/resources/140739540301.png)  
 
 SpriteKit能够根据给出的纹理图片，用一系列算法分析原贴图，然后生成一个最佳的法线贴图，又是苹果的黑魔法！
 
@@ -86,11 +86,11 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 在定义一些复杂轮廓的物理体时，我们经常用简单图形代替，否则就用`CGPath`一点点描绘多边形或者把多个物理体组合在一起（这也是新加入的API，后面会提到），比如下面这把斧头，大多数程序员直接用矩形当做它的物理体：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140740041011.png)  
+![](http://yulingtianxia.com/resources/140740041011.png)  
 
 而Per-Pixel Physics根据纹理图片的alpha通道遮罩来生成一个粗略的形状，然后再用粗略的形状生成精确的形状，它让以前复杂的`CGPath`创建工作转变成一行代码：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140740040721.png)  
+![](http://yulingtianxia.com/resources/140740040721.png)  
 
 毕竟众口难调，所以SpriteKit给出了一个可以自由调节alpha阈值的物理体生成方法，所有alpha值大于`alphaThreshold`的像素点都将被认为是不透明的，并纳入物理体范围内：（伪代码）  
 
@@ -106,7 +106,7 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 约束的计算工作发生在模拟物理之后，SpriteKit提供了一个回调函数`didApplyConstraints`，我们可以在约束完成后在里面做一些善后工作：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140740456021.png)  
+![](http://yulingtianxia.com/resources/140740456021.png)  
 
 在SpriteKit中我们可以向SKNode添加三种约束：（工厂方法的伪代码）   
 
@@ -151,7 +151,7 @@ PS：法线贴图将具有高细节的模型通过映射烘焙出法线贴图，
 
 反向运动学，没有机械工程学位或没写过动画引擎的人干脆不知道这是个啥。它其实是解决连接体运动的，比如现在有一个机器人的手臂，我们想让它动起来去用手抓某个东西。我们会想到每个关节转多少度才能准确让机器手抓到物体，计算的时候还应该考虑连接体的层级关系：肩膀连接上臂，上臂连接小臂，小臂连接手。哦天啊这真蛋疼，不过SpriteKit的反向动力学解决了这一点，我们只需要指定每个`SKNode`的活动约束还有需要抓取物体的位置，那么这一切只需要几行代码就能搞定。  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140741648388.gif)  
+![](http://yulingtianxia.com/resources/140741648388.gif)  
 
 机器人手臂转动约束是靠`SKReachConstraints`类来定义的，它只有一个初始化方法：（伪代码）  
 
@@ -214,7 +214,7 @@ Xcode能编辑fsh文件，与SpriteKit场景编辑器对照编辑，并做语法
 
 SpriteKit每一帧场景的执行过程：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/update_loop_2x.png)  
+![](http://yulingtianxia.com/resources/update_loop_2x.png)  
 
 除了之前提到新加的Constrains，SpriteKit这次还加入了一个回调函数`didFinishUpdate`。这绝对是SpriteKit将每帧所有东西打包好交给GPU渲染之前调用的最后一个函数。  
 
@@ -224,7 +224,7 @@ SpriteKit每一帧场景的执行过程：
 modifyPixelDataWithBlock:`方法动态地修改。  
 - `SKTexture`现在可以生成“noise textures”，参见`textureVectorNoiseWithSmoothness:size:`和`
 textureNoiseWithSmoothness:size:grayscale:`  
-![](http://7ni3rk.com1.z0.glb.clouddn.com/14074923846.png)  
+![](http://yulingtianxia.com/resources/14074923846.png)  
 
 ### SKShapeNode
 
@@ -235,7 +235,7 @@ textureNoiseWithSmoothness:size:grayscale:`
 
 - `SKPhysicsBody`新加了`pinned`属性来标志此物理体对应的节点是否被钉在它的父节点上。如果父节点也有物理体，那么这两个物理体被认为被一个pin连接。如果将`allowsRotation`设为NO并且`pinned`设为YES，那么它相当于被焊在父节点上了，因为它不能转动了。  
 - `SKPhysicsBody`允许用`bodyWithBodies:`把多个物理体组合在一起来创建一个新的物理体，还记得前面提到过的斧头么：  
-	![](http://7ni3rk.com1.z0.glb.clouddn.com/140749497219.png)   
+	![](http://yulingtianxia.com/resources/140749497219.png)   
 	
 ### SKTexture Atlas
 

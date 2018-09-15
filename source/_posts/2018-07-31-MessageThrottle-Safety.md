@@ -17,7 +17,7 @@ tags:
 
 主要类的关系如下图，虚线为 `weak` 属性。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/MessageThrottle1.png)
+![](http://yulingtianxia.com/resources/MessageThrottle1.png)
 
 ## 继承链消息转发缺陷
 
@@ -27,7 +27,7 @@ tags:
 
 在消息转发流程将所有消息通过统一的路由函数处理并转发这件事的缺陷就是丢失了类的信息，因为全都『统一』到同一个函数处理了，而不是在各自类的内部处理。诸如 Aspects 等业界知名开源库也有此问题。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/MessageThrottle2.png)
+![](http://yulingtianxia.com/resources/MessageThrottle2.png)
 
 ## 兼容 KVO、其他 Hook 框架
 
@@ -37,7 +37,7 @@ tags:
 
 使用 `class` 方法获取到的类型可能是被『篡改过』的类，使用 `objc_getClass()` 函数获取到的才是真正的类。KVO 的做法是在用 `objc_getClass()` 获取到真正的类之后，直接创建带 `NSKVONotifying_` 前缀的子类。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/MessageThrottle3.png)
+![](http://yulingtianxia.com/resources/MessageThrottle3.png)
 
 如图所示，MessageThrottle 在 hook 一个对象的时候也会动态创建带前缀 `MTSubclassPrefix` 的子类，但是不会像 KVO 那样无脑创建，而是先判断通过 `class` 与 `objc_getClass()` 获取到的类是否相同。如果不同，则说明已经有现成的子类了，直接在 `objc_getClass()` 获取的类中 hook 就行了。这里是借鉴了 Aspects 的做法。
 

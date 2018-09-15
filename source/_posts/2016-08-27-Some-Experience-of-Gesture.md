@@ -58,7 +58,7 @@ tags:
 
 可以通过 `locationInView:` 获取手势的坐标，但这里决不能简单地计算手势坐标到视图 `center` 的距离并选取最近的视图。这里需要检测手势坐标处于哪个视图的**范围**内，包括『在视图区域内』（红色）和『在视图周围区域』（橙色）：
 
-![选择响应手势的视图](http://7ni3rk.com1.z0.glb.clouddn.com/SomeExperienceofGesture/WhichViewShouldResponseToGesture.png)
+![选择响应手势的视图](http://yulingtianxia.com/resources/SomeExperienceofGesture/WhichViewShouldResponseToGesture.png)
 
 策略是先看手势坐标处于哪些视图的『视图区域』中，如果没找到，就再扩大查找范围至『周围区域』。最后如果有多个视图满足要求，就选择最顶层的视图。如果没有任何视图满足要求，可以不做任何处理；也可以根据产品策略对界面上唯一的视图进行操作。这里就看业务怎么规定的了。
 
@@ -105,7 +105,7 @@ tags:
 
 总之，`transform` 属性改变的是视图的 `frame`，而 `bounds` 和子视图的 `frame` 都不会变。也就是**视图内部的坐标系不会改变**。记住这点，很有用。
 
-![改变 transform 后的坐标系](http://7ni3rk.com1.z0.glb.clouddn.com/SomeExperienceofGesture/transform%E5%AF%B9%E6%AF%94%E5%9D%90%E6%A0%87.png)
+![改变 transform 后的坐标系](http://yulingtianxia.com/resources/SomeExperienceofGesture/transform%E5%AF%B9%E6%AF%94%E5%9D%90%E6%A0%87.png)
 
 上图展示的是缩放后的坐标变换，也同样适用于旋转。都是相对坐标系的知识罢了。
 
@@ -113,7 +113,7 @@ tags:
 
 之前一直用『视图区域』而不直接用 `frame` 来描述手势判断依据，是因为当视图旋转（90°倍数除外）之后 `frame` 并不等于『视图区域』：
 
-![旋转后的视图](http://7ni3rk.com1.z0.glb.clouddn.com/SomeExperienceofGesture/Rotation%E5%8C%BA%E5%9F%9F%E5%88%A4%E6%96%AD.png)
+![旋转后的视图](http://yulingtianxia.com/resources/SomeExperienceofGesture/Rotation%E5%8C%BA%E5%9F%9F%E5%88%A4%E6%96%AD.png)
 
 也就是说如果按照 `frame` 来判断『视图区域』是偏大的，会遮挡住其他视图。所以我专门写了个方法用于判断某个点是否在『视图区域』内，还提供了 `UIEdgeInsets` 参数用于满足判断『周围区域』的要求：
 

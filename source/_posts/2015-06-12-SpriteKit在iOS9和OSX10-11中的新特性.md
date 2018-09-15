@@ -8,30 +8,30 @@ tags:
 <!--more-->
 ## Viewport 和 SKCameraNode
 
-![viewport](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-1@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![viewport](http://yulingtianxia.com/resources/QQ20150612-1@2x.png)  
 
 Viewport(视口) 指的是当前场景中哪些部分是可见的.也就是说场景很大时,我们要计算哪块区域是要呈现给玩家的,这块区域是可以移动的.就像是摄像头跟着玩家在一张大地图中跑一样,这些工作现在可以交给 SpriteKit 了, `SKCameraNode` 就是干这个的.有了它就能确定哪些部分是可见的.它相当于viewport的中心,所以我们可以移动场景的摄像头,而不用像以前那样移动整个场景. SpriteKit 终于也能像其他游戏框架一样移动摄像头啦!`SKScene` 中有个 `camera` 属性,类型就是 `SKCameraNode`.所以我们可以给场景任意一个选择合适的摄像头.更令人欣喜的是 `SKCameraNode` 也是个 `SKNode`,所以我们可以给摄像头加上动作,约束,旋转和缩放.(这里自行脑补长镜头,视角跟踪,天旋地转,鼠标滚轮)  
 
-![SKCameraNode](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-2@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![SKCameraNode](http://yulingtianxia.com/resources/QQ20150612-2@2x.png)  
 
 其实现原理大致是将`SKCameraNode`的 `xScale`, `yScale`, 和 `zRotation` 对场景所有节点做逆运算.并且只渲染 viewport 的那部分场景.  
 
 其实摄像头早就该加了,这是专业的游戏框架不可或缺的元素.  
 
 ## SKAudioNode
-![SKAudioNode](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-3@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![SKAudioNode](http://yulingtianxia.com/resources/QQ20150612-3@2x.png)  
 
 `SKAudioNode` 的加入更是令人激动.我们可以在游戏场景中的某个位置加入声源,让玩家身临其境.此前无论你的音效再怎么狂拽屌炸天,都只能是背景音乐的效果.这次终于能发挥下我们的双耳效应了.想象下在游戏中一辆 F1 赛车从你身边飚过的声音.然而这本身就是游戏框架的标配, SpriteKit 这次只是努力追赶而已.  
 
 ## 引用与实例化
 
-![引用与实例化](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-6@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![引用与实例化](http://yulingtianxia.com/resources/QQ20150612-6@2x.png)  
 
 简单来说就是将动作和节点封装成实例,这样可以在其他地方引用它们,以达到组件重用的效果.  
 
 ### SKReferenceNode
 
-![SKReferenceNode](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-4@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![SKReferenceNode](http://yulingtianxia.com/resources/QQ20150612-4@2x.png)  
 
 `SKReferenceNode` 使我们能重复利用`SKNode`.在 Xcode7 场景编辑器中直接将想要重用的 sks文件拖拽到场景中, Xcode7 会自动为我们创建 `SKReferenceNode`.我们也可以在代码中使用 URL 或文件名手动创建一个 `SKReferenceNode` 对象.因为这里是引用, Xcode7 会从 Bundle 中加载最新版本的文件.  
 
@@ -41,11 +41,11 @@ Viewport(视口) 指的是当前场景中哪些部分是可见的.也就是说�
 
 ### Named SKActions
 
-![Named SKActions](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-5@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![Named SKActions](http://yulingtianxia.com/resources/QQ20150612-5@2x.png)  
 
 嗯动作(Action)也能以文件的方式共享了.我们可以创建一个sks 文件用于保存自定义动作. Xcode7 为我们提供了一些基本动作对象,可以拖拽到编辑器中:  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-7@2x.png)  
+![](http://yulingtianxia.com/resources/QQ20150612-7@2x.png)  
 
 我们可以用下面这些 `SKAction` 新加入的 API 来从 sks 文件中加载自定义动作:  
 
@@ -70,7 +70,7 @@ animateWithNormalTextures: //使 `SKSpriteNode` 的法线贴图按照给定贴�
 
 ## 优化
 
-![Metal](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-8@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![Metal](http://yulingtianxia.com/resources/QQ20150612-8@2x.png)  
 
 苹果总不会忘记夸赞自己在底层优化所作出的努力. SpriteKit 会自动使用 Metal 技术,将其 CPU 使用率降低,性能更赞之类的. 最关键的是这些事苹果已经帮你做好了,程序员们微笑接受.因为这种优化不需要我们重新编译项目,就能在支持 Metal 的设备上自动使用它.  
 
@@ -86,7 +86,7 @@ SpriteKit 和 SceneKit 这对儿难兄难弟虽然一直不受游戏开发者的
 
 ## GameplayKit
 
-![GameplayKit](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-9@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![GameplayKit](http://yulingtianxia.com/resources/QQ20150612-9@2x.png)  
 
 GameplayKit 是个新推出的框架,它能帮我们构建一些游戏中的逻辑,比如状态机, AI 和路径查找.我本已经迫不及待地想使用它了,可惜在 iOS9 beta 中我用 SpriteKit 写的游戏卡顿严重,我想还是再等等吧.
 
@@ -102,7 +102,7 @@ GameplayKit 是个新推出的框架,它能帮我们构建一些游戏中的逻�
 
 ### Texture atlas in Asset Catalog
 
-![Texture atlas in Asset Catalog](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-10@2x.png)  
+![Texture atlas in Asset Catalog](http://yulingtianxia.com/resources/QQ20150612-10@2x.png)  
 
 好处都有啥:
 - 可以直接在界面上操作来区分不同设备不同分辨率的图片.
@@ -110,7 +110,7 @@ GameplayKit 是个新推出的框架,它能帮我们构建一些游戏中的逻�
 
 ### Texture atlas with On Demand Resources
 
-![Texture atlas with On Demand Resources](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-11@2x.png)  
+![Texture atlas with On Demand Resources](http://yulingtianxia.com/resources/QQ20150612-11@2x.png)  
 
 On Demand Resources 之前的 Session 提到过,它是属于 App thinning 中的一部分.通过给图片打上 On Demand Resources 标签,并可以通过网络在后台下载对应标签的图片.比如在游戏中快要进入到第一关,可以在后台使用"Level1"标签获取对应的那些图片.这样游戏的体积也会大大缩小,因为很多图片只是在即将用到的时候被下载下来.一个图片有多个标签时,只需要使用其中任一个标签就可以将其下载.  
 
@@ -122,7 +122,7 @@ On Demand Resources 之前的 Session 提到过,它是属于 App thinning 中的
 
 继续扯老把戏,比如在 Playground 里面能显示 SpriteKit 程序的效果图.这早就可以了好么?去年还拿这个做例子呢!气球那个!还有在 debug 时显示节点当前的缩略图,我记得这个去年也早就有了:  
 
-![Quicklook](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-12@2x.png)  
+![Quicklook](http://yulingtianxia.com/resources/QQ20150612-12@2x.png)  
 
 ### 2D 编辑器
 
@@ -132,7 +132,7 @@ On Demand Resources 之前的 Session 提到过,它是属于 App thinning 中的
 
 之前提到的 SKCameraNode, SKAudioNode 和 SKReferenceNode,Xcode7 都是给予激情支持的:
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-14@2x.png)  
+![](http://yulingtianxia.com/resources/QQ20150612-14@2x.png)  
 
 这样我们就可以在 Xcode7 中预览时感受摄像头的移动缩放,感受声音由远及近身临其境,当然这在 Unity 中早就有了, SpriteKit 一直在努力追赶.  
 
@@ -142,7 +142,7 @@ On Demand Resources 之前的 Session 提到过,它是属于 App thinning 中的
 
 最让人激动的是我们可以在动作编辑器中像做视频一样基于时间线构建出复杂的交互动画!支持 2D 和 3D, 并能实时预览:  
 
-![Action](http://7ni3rk.com1.z0.glb.clouddn.com/QQ20150612-15@2x.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![Action](http://yulingtianxia.com/resources/QQ20150612-15@2x.png)  
 
 ## 总结
 

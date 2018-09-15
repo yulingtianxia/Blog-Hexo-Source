@@ -114,7 +114,7 @@ profile：检测硬件使用情况。
 
 物理体的外形复杂程度也决定着能耗。圆形是最简单的，耗能最少，再往上依次是矩形、多边形、复合图形、alpha像素图形：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140844930564.png?imageView2/2/w/800/q/75)  
+![](http://yulingtianxia.com/resources/140844930564.png)  
 
 所以你需要权衡利弊来设计你游戏中物理体的外形。上图的后两种外形是iOS8新加入的，你可以在[SpriteKit在iOS8和OSX10.10中的新特性](http://yulingtianxia.com/blog/2014/08/08/spritekitzai-ios8he-osx10-dot-10zhong-de-xin-te-xing/)中的New Physics->Per-Pixel Physics和Improvements->Physics Updates这两个小节中学到有关它们的更多知识。  
 
@@ -124,15 +124,15 @@ profile：检测硬件使用情况。
 
 将`SKView`的`showsFields`属性设为YES可以将`SKFieldNode`的debug信息显示出来：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140845151467.png)
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140845150994.png)  
+![](http://yulingtianxia.com/resources/140845151467.png)
+![](http://yulingtianxia.com/resources/140845150994.png)  
 
 上面两个场景是我的一个SpriteKit游戏[ColorAtom](http://coloratom.yulingtianxia.com)中的秘密模式和黑洞模式截图，欢迎Star和Follow。  
 ### Shapes
 
 `SKShapeNode`的耗能层级图如下：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/14084531435.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/14084531435.png)  
 
 上图中的分界线区分了低功耗和高功耗的Shape。绘制分段的linear strok所需的功耗也很少。  
 

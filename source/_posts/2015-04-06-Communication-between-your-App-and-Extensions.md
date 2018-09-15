@@ -153,6 +153,6 @@ CFNotificationCenterAddObserver(center, unsafeAddressOf(self), helpMethod.callba
 
 来个效果图：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/hardchoice.gif)  
+![](http://yulingtianxia.com/resources/hardchoice.gif)  
 
 这是我第一次写Watch的App(废话谁不是第一次)，经验并不是很多，也因为Swift1.2还未正式发布，遇到了一些坑。好歹最后克服了，但也丢了贞操(毕竟不是纯Swift的App了)。有不对的地方还请多多指教。随着Swift的不断完善，希望以后能够支持创建`CFunctionPointer`对象，这样它好我也好😄

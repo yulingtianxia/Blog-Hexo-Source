@@ -121,7 +121,7 @@ managedObjectContext?.performBlock({ () -> Void in
 
 最后看看效果,点击红色的重置权重按钮,所有选项右侧都变成1:  
 
-![重置权重](http://7ni3rk.com1.z0.glb.clouddn.com/IMG_1439.jpg)  
+![重置权重](http://yulingtianxia.com/resources/IMG_1439.jpg)  
 
 Batch Updates的优势在于其效率，在处理上万条数据的时候，它执行的时间跟SQL语句执行时间相当。毕竟它绕开了`NSManagedObjectContext`直接修改底层数据库,节省内存,但千万别忘了手动更新 UI.  
 

@@ -14,7 +14,7 @@ UI 上的主要内容就是一个 `UITableView`，其中一些 cell 内会嵌套
 
 去掉一些跟本文内容无关的细枝末节，可以将原型抽象如下图：
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/QQStoryMemory/原型.png)
+![](http://yulingtianxia.com/resources/QQStoryMemory/原型.png)
 
 蓝色的为 ItemView，白色为 `ListView`，灰色为 TableView。
 
@@ -140,7 +140,7 @@ const static CGFloat itemFirstToLeft = 0; // 最左边的 ItemView 的 leftMargi
 
 需要自己实现一个类似 `UICollectionView` 的 item 重用机制。
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/QQStoryMemory/reusableitem.png)
+![](http://yulingtianxia.com/resources/QQStoryMemory/reusableitem.png)
 
 在用户横向滑动列表时，需要更新此时某个区间的 UI 和数据。这个任务是在 `loadItems:` 中实现的，原理是计算出需要被加载的 itemID 数组，并与已有的数据进行比较。将不再需要显示在屏幕上的 `ItemView` 进行回收（enqueue），并从根据 itemID 添加 `ItemView` 对象（dequeue）。因为一开始只加载了首屏的 `ItemModel` 数组，所以还需要对本地缓存中缺失的数据进行请求。
 

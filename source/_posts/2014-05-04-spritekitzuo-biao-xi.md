@@ -57,7 +57,7 @@ SKNode的原点在正中央，也就是(0.5,0.5)
 我构建了一个App，分别将被测试的Node放置在场景中央，并用一个黑色的小圆圈代表Node的坐标系的原点  
 因为SKNode比较抽象，没填充内容，所以只显示了一个原点：  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353411185.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/140353411185.png)  
 
 如果想填充些东西来证明SKNode的坐标系原点的确在其中央，将下面代码注释部分取消注释即可：  
 
@@ -82,7 +82,7 @@ SKNode的原点在正中央，也就是(0.5,0.5)
 ## SKEmitterNode  
 粒子系统比较有趣，它从原点发射大量粒子，不同的粒子系统也会构筑不同的效果，因为它没有边界，还可调节发射粒子的数量方向速度等，这也使得原点在整个粒子系统中的位置有了错觉，但其本质还是(0.5,0.5)，也就是在中心  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353410978.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/140353410978.png)  
 
 这个火苗看起来中心在哪呢？当然在圆圈处！因为粒子是从圆圈处的区域产生的，然后向上发射  
 
@@ -91,7 +91,7 @@ label比较特殊，可能是因为需要现实文字的关系吧，其坐标原
 
 知道其原点精确位置对于编程来说意义不大，以后有时间会深究下    
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353410886.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/140353410886.png)  
 
 ## SKShapeNode  
 这个类也很特殊，因为其frame是根据path填充内容来确定的，而原点又是其在父坐标的position处，那么`SKShapeNode`的原点具体位置在哪也就没意义了，只要按照其position的位置当作原点建立坐标系就好  
@@ -112,12 +112,12 @@ label比较特殊，可能是因为需要现实文字的关系吧，其坐标原
 
 下图是我故意画了个正方形使其居中：    
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353411872.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/140353411872.png)  
 
 ## SKSpriteNode  
 坐标原点在其frame中心，也就是(0.5,0.5)  
 
-![](http://7ni3rk.com1.z0.glb.clouddn.com/140353412174.png?imageView2/2/w/800/q/75|watermark/2/text/eXVsaW5ndGlhbnhpYQ==/font/Y29taWMgc2FucyBtcw==/fontsize/500/fill/I0VGRUZFRg==/dissolve/100/gravity/SouthEast/dx/10/dy/10)  
+![](http://yulingtianxia.com/resources/140353412174.png)  
 
 ## 总结
 

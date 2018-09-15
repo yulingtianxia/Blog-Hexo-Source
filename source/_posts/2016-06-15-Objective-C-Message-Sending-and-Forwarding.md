@@ -305,11 +305,11 @@ void objc_setForwardHandler(void *fwd, void *fwd_stret)
 
 汇编语言还是比较好理解的，红色标出的那三个指令就是把 `__CF_forwarding_prep_0` 和 `___forwarding_prep_1___` 作为参数调用 `objc_setForwardHandler` 方法（那么之前那两个 DefaultHandler 卵用都没有咯，反正不出意外会被 CF 替换掉）：
 
-![反编译后的 __CFInitialize() 汇编代码](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/QQ20160614-1@2x.png)
+![反编译后的 __CFInitialize() 汇编代码](http://yulingtianxia.com/resources/MessageForward/QQ20160614-1@2x.png)
 
 然而在源码中对应的代码却被删掉啦：
 
-![苹果提供的 __CFInitialize() 函数源码](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/QQ20160614-2@2x.png)
+![苹果提供的 __CFInitialize() 函数源码](http://yulingtianxia.com/resources/MessageForward/QQ20160614-2@2x.png)
 
 在早期版本的 CF 源码中，还是可以看到 `__CF_forwarding_prep_0` 和 `___forwarding_prep_1___` 的声明的，但是不会有实现源码，也没有对 `objc_setForwardHandler` 的调用。这些细节从函数调用栈中无法看出，只能逆向工程看汇编指令。但从函数调用栈可以看出 `__CF_forwarding_prep_0` 和 `___forwarding_prep_1___` 这两个 Forward Handler 做了啥：
 
@@ -528,7 +528,7 @@ void +[NSObject doesNotRecognizeSelector:](void * self, void * _cmd, void * arg2
 
 我将整个实现流程绘制出来，过滤了一些不会进入的分支路径和跟主题无关的细节：
 
-![消息发送与转发路径流程图](http://7ni3rk.com1.z0.glb.clouddn.com/MessageForward/消息发送与转发路径流程图.jpg) 
+![消息发送与转发路径流程图](http://yulingtianxia.com/resources/MessageForward/消息发送与转发路径流程图.jpg) 
 
 介于国内关于这块知识的好多文章描述不够准确和详细，或是对消息转发的原理描述理解不够深刻，或是侧重贴源码而欠思考，所以我做了一个比较全面详细的讲解。
 
