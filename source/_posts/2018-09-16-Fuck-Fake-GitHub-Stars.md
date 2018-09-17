@@ -37,7 +37,7 @@ tags:
 
 1. 从 CocoaDebug 入手挖掘出的疑似黑产账号达到了900左右。
 2. CocoaDebug 有 30% 左右的 Star 可能是买的。
-3. 在 [《石锤 github 买 star 行为》](https://juejin.im/post/5b8c9310f265da4361530560) 文章中跟 CocoaPods 一起被揭露的『难兄难弟』所购买的 Star 更为夸张，超过了半数：
+3. 在 [《石锤 github 买 star 行为》](https://juejin.im/post/5b8c9310f265da4361530560) 文章中跟 CocoaDebug 一起被揭露的『难兄难弟』所购买的 Star 更为夸张，超过了半数：
 
     ```
     repo owner/name: baoleiji/QilinBaoleiji stargazer num: 1447 black percent:0.5770559778852798
@@ -60,13 +60,11 @@ tags:
     repo owner/name: jianhaod/Kaggle stargazer num: 37 black percent:0.5945945945945946
     repo owner/name: whsgzcy/DEMOS_TO_MySelf_Android stargazer num: 63 black percent:0.4603174603174603
     ```
-    
 7. 搞区块链的？7月7日那天涨了 246 个 star，一算比例还真差不多：
 
     ```
     repo owner/name: DeuroIO/erc20-ico-onchain-technical-analysis stargazer num: 512 black percent:0.427734375
     ```
-    
 8. 仿豆瓣的、仿知乎的。MelonRice 还有个放虎扑的，我脚本还没扫到它，手动点进去一看 star 的人，还是那尿性，也都 star 了前面那位 Jinxiansen。
 
     ```
@@ -103,4 +101,7 @@ tags:
 愿以后 GitHub 能够清静些，虽然我大清自有国情在，但也别让一些别有用心之人一条臭鱼坏了一坨粥。
 
 写这篇文章的时候，强台风『山竹』还在蹂躏着深圳。
+
+就做了一点微小的工作，谢谢大家。
+
 
