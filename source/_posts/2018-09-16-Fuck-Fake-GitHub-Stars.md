@@ -14,6 +14,8 @@ tags:
 
 项目源码：[FuckFakeGitHubStars](https://github.com/yulingtianxia/FuckFakeGitHubStars)
 
+<!--more-->
+
 ## 思路
 
 1. 用 GitHub 的 API 获取 repo 有哪些用户 star 了，然后再看看这些用户都 star 了哪些 repo。
