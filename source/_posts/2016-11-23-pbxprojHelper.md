@@ -18,6 +18,8 @@ tags:
 
 ### 为什么造这个工具？
 
+![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/usage@2x.png?raw=true)
+
 在开发公司的项目时，check out 代码到本地后需要修改工程文件。比如更改证书和 Bundle Identifier、删除一些编译不过的 Target，修改 Build Settings 等配置。重复手动修改这些配置的场景很多：
 
 1. 第一次 check out 新的分支，需要使用自己的配置。
@@ -32,17 +34,20 @@ tags:
 可以说开发这个工具一开始完全就是为了解决我个人的痛点的，基本没考虑做成功能强大的通用工具。虽然做的事情比较小众，但也能满足一批苹果开发者的需求了。我把需求分为以下几点：
 
 1. 将程序员对工程文件做出的配置修改记录下来，并保存成 JSON 文件
-2. 下次使用时直接导入 JSON 文件，将配置修改应用到当前的工程文件上
-3. 支持回滚操作
-4. 支持工程文件内容的预览、过滤
-5. 快速切换最近使用的工程
-6. 提供命令行工具
+    ![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/compare.png?raw=true)
+2. 下次使用时直接导入 JSON 文件，将配置修改应用到当前的工程文件上，并支持回滚操作。
+    ![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/apply_revert.png?raw=true) 
+3. 支持工程文件内容的预览、过滤
+4. 快速切换最近使用的工程
+5. 提供命令行工具
 
-可以说 1 和 2 是刚需，也是常用功能。3、4 和 5 是辅助功能，6 是附加需求。我平时最常碰到的需求点就是 2 和 5 了。
+可以说 1 和 2 是刚需，也是常用功能。3 和 4 是辅助功能，5 是附加需求。我平时最常碰到的需求点就是 2 和 4 了。
 
 ## 技术实现
 
 关于 Xcode 工程文件的介绍，请参考我之前写的 [Let's Talk About project.pbxproj](http://yulingtianxia.com/blog/2016/09/28/Let-s-Talk-About-project-pbxproj/)。本篇文章可以算作是它的续集。
+
+![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/flowpath.png?raw=true)
 
 我把工程文件相关的底层方法都封装在 `PropertyListHandler` 类中，它们跟界面无关。还有一些工具类和方法写到 `Utils` 文件中。
 
@@ -51,6 +56,8 @@ tags:
 想要记录工程文件的修改是很难的，所以只能是比较下两个工程文件的差异。这里不是对比文件那种简单的 `diff` 操作，而是要记录具体针对哪个配置项做了『增删改』。
 
 **工程文件的内容可以比作一颗多叉树，的根节点是字典，其余中间节点都是字典的键。数组的元素肯定是字符串（叶子节点），字典的键值对则可能继续拓展出子树，也可能是叶子节点。**在拿到两个工程文件的数据后，就需要对两棵树的每个层级进行对比。对比两颗树的差异算法不难实现，核心思想是：**在对比中间节点时，如果内容相同那就递归比较下一层，否则就记为『增』或『删』**。
+
+![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/treedescription.png?raw=true)
 
 而比较同一层级中间节点的差异，直接用 `Set` 是最方便的了。我将两棵树的差异保存在字典 `difference` 中，在内嵌方法中又实现了个尾递归。递归过程中需要记录中间节点作为路径，因为生成的路径需要保存到对比结果中。
 
@@ -138,6 +145,8 @@ class func compare(project project1: [String: Any], withOtherProject project2: [
 这段看似很长的代码其实逻辑超级简单，就是分别针对字典和数组两种情况进行比较而已，弱智的一逼。需要注意的是数组内容作为叶子节点，只存在『增』和『删』两种情况。
 
 每次递归都将 `parentKeyPath` 与当前节点的值 `key` 用 `.` 拼接在一起。也就是说最后得到的路径是 `A.B.C` 这种格式。
+
+![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/comparetreejson.png?raw=true)
 
 可以看出生成的对比结果是个字典，包含三个键值对，键分别是 `insert`、`remove` 和 `modify`，值为字典。
 
@@ -280,6 +289,8 @@ try data.write(to: url, options: .atomic)
 #### 编码问题
 
 直接把工程文件数据写入文件后，中文会有乱码。需要做的是把中文内容的 Unicode 的标量值提取出并转成 numeric character reference（NCR）。"&#dddd" 的一串字符是 HTML、XML 等 SGML 类语言的转义序列（escape sequence），它们不是『编码』。
+
+![](https://github.com/yulingtianxia/pbxprojHelper/blob/master/images/process_chn.png?raw=true)
 
 下面的方法可以将生成的工程文件中文内容替换成 NCR：
 
