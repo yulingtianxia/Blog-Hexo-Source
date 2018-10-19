@@ -62,7 +62,7 @@ find $1 -name '*.jpg' -or -name '*.png'
 
 -(UInt32)areaOfComponent:(UInt32)component
 {
-    return component/8;
+    return component/32;
 }
 ```
 
