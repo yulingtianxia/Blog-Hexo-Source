@@ -14,8 +14,7 @@ tags:
 
 [Demo](https://github.com/yulingtianxia/PhotoAssessment) 中展示了图片在 NIMA 模型预测结合人脸识别的主观评分、图片的 HSB 色彩空间、以及边缘检测结果的平均值和方差。代码兼容 iOS、macOS 和 tvOS。下面示例图片拍摄自胡里山炮王和西塘。
 
-![PhotoAssessment](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult1.png?raw=true)
-![PhotoAssessment](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult2.png?raw=true)
+![PhotoAssessment](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult1.png?raw=true)![PhotoAssessment](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult2.png?raw=true)
 
 <!--more-->
 
