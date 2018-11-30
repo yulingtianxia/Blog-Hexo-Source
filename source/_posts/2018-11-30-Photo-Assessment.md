@@ -12,9 +12,11 @@ tags:
 
 我用 Swift 写了个 [Demo](https://github.com/yulingtianxia/PhotoAssessment)。用苹果的 Metal 跑一些算法得出客观评分，再用 Core ML 预测主观评分。得到照片评分后，就可以检测相似照片，并从中挑选最优的照片推荐给用户。
 
+下面示例图片拍摄自胡里山炮王。[Demo](https://github.com/yulingtianxia/PhotoAssessment) 中展示了图片在 NIMA 模型预测结合人脸识别的主观评分、图片的 HSB 色彩空间、以及边缘检测结果的平均值和方差。代码兼容 iOS、macOS 和 tvOS。
+
 ![PhotoAssessment](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult.png?raw=true)
 
-示例图片来自胡里山炮王。
+<!--more-->
 
 ## 常规算法
 
@@ -182,6 +184,10 @@ Google AI Blog 在 2017 年底发表过一篇博客：[Introducing NIMA: Neural 
 ```
 
 因为输入都是像素数组，降采样使用 `MPSImageBilinearScale`，实现细节类似于上面讲的边缘检测。代码在 [PhotoMPSProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-iOSSample/PhotoAssessment/PhotoMPSProcessor.swift) 里。
+
+## 总结
+
+算法可以通过调整阈值来平衡准确度与性能。比如降采样的尺寸和相似度阈值都是可以影响到最终结果和性能开销的。这里不再展开讨论。使用 Vision + Core ML 预测图片和人脸识别依然耗时较久，处理 500 张图片可能要几十秒，在生产环境下批量处理图片时需要注意。
 
 ## Reference
 
