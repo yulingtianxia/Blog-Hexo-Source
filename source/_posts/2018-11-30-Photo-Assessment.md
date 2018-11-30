@@ -1,5 +1,5 @@
 ---
-title: Photo Assessment
+title: 使用 Metal 和 Core ML 评价照片质量
 date: 2018-11-30 22:53:14
 tags:
 - Machine Leaning
