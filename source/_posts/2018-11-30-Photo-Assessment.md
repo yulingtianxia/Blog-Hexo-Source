@@ -132,6 +132,8 @@ Google AI Blog 在 2017 年底发表过一篇博客：[Introducing NIMA: Neural 
 
 在得到 mlmodel 后，可以使用苹果的 Vision 框架加载模型，用 `VNImageRequestHandler` 请求处理静态图片。串联上 Vision 框架的 `VNDetectFaceRectanglesRequest` 可以顺便检测出人脸，为照片评分提供更多的参考。比如有人脸的照片可能是个加分项。
 
+PS: 这里原本还加入了神经网络识别面部表情，但是由于准确率不高且不同表情的评分难以主观衡量，所以最后去掉了。
+
 这部分的代码实现在这里： [PhotoMLProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-iOSSample/PhotoAssessment/PhotoMLProcessor.swift)
 
 ## 照片相似度
