@@ -12,7 +12,7 @@ tags:
 
 我用 Swift 写了个 [Demo](https://github.com/yulingtianxia/PhotoAssessment)。用苹果的 Metal 跑一些算法得出客观评分，再用 Core ML 预测主观评分。得到照片评分后，就可以检测相似照片，并从中挑选最优的照片推荐给用户。
 
-[Demo](https://github.com/yulingtianxia/PhotoAssessment) 中展示了图片在 NIMA 模型预测结合人脸识别的主观评分、图片的 HSB 色彩空间、以及边缘检测结果的平均值和方差。代码兼容 iOS、macOS 和 tvOS。下面示例图片拍摄自胡里山炮王和西塘。
+[Demo](https://github.com/yulingtianxia/PhotoAssessment) 中展示了图片在 NIMA 模型预测结合人脸识别的主观评分、图片的 HSB 色彩空间、以及边缘检测结果的平均值和方差。代码兼容 iOS 和 macOS。下面示例图片拍摄自胡里山炮王和西塘。
 
 ![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult1.png?raw=true)![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult2.png?raw=true)
 
