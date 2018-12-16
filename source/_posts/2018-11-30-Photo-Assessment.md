@@ -115,20 +115,21 @@ Google AI Blog 在 2017 年底发表过一篇博客：[Introducing NIMA: Neural 
 
 虽然论文没有给出源码或者训练好的模型，但是网上可以搜到一些第三方的实现。最后使用苹果提供的 coremltools 将其他机器学习框架的模型转成苹果的 Core ML 模型。
 
-在网上搜索到了两个还算不错的开源实现：
+在网上搜索到了几个还算不错的开源实现：
 
-- [titu1994/neural-image-assessment](https://github.com/titu1994/neural-image-assessment)：使用 Keras 实现，完成度较高，并提供了训练好的几种模型。效果最好的为 NASNet Mobile，loss = 0.067。Keras 模型可以直接转成 mlmodel。
+- [idealo/image-quality-assessment](https://github.com/idealo/image-quality-assessment)：使用 Keras + Docker + AWS 实现，MobileNet 的完成度较高，提供了 aesthetic 和 technical 两种训练好的评分模型。Keras 模型可以直接转成 mlmodel。
+- [titu1994/neural-image-assessment](https://github.com/titu1994/neural-image-assessment)：使用 Keras 实现，提供了训练好的几种模型。效果最好的为 NASNet Mobile，loss = 0.067。Keras 模型可以直接转成 mlmodel。
 - [truskovskiyk/nima.pytorch](https://github.com/truskovskiyk/nima.pytorch)：使用 pytorch 实现，完成度一般，只提供了 MobileNetV2 模型（loss = 0.08）。pytorch  模型需要先转为 ONNX，然后再转成 mlmodel 格式。
 
-经过反复试验与对比结果，最终使用了第一个开源实现的 NASNet Mobile，loss = 0.067。在这个过程中踩了不少坑：
+经过反复试验与对比结果，最终使用了第一个开源实现的 MobileNet。在这个过程中踩了不少坑：
 
 1. 机器学习涉及到的 python 库更新幅度较大，甚至连官方文档更新都严重滞后，更别提网上找的 demo 了。想跑通网上找的代码？不存在的。
-2. 既然官方文档不可信，只能看代码中的注释，在摸索中写。依然会有各种各样的报错，大部分都是版本兼容问题。虽然 coremltools 官网有说兼容的最低版本，但也千万不要直接用最高版本的 Keras 和 TensorFlow。我用的 Keras 2.1.6 和 TensorFlow 1.5.1，亲测 OK。
+2. 既然官方文档不可信，只能看代码中的注释，在摸索中写。依然会有各种各样的报错，大部分都是版本兼容问题。虽然 coremltools 官网有说兼容的最低版本，但也千万不要直接用最高版本的 Keras 和 TensorFlow。我用的 Keras 2.1.3 和 TensorFlow 1.10，亲测 OK。
 3. pytorch 转 ONNX 再转 mlmodel 更是麻烦，不得不吐槽机器学习相关的 python 库版本兼容性是真的差，API 说改就改，以为自己是 Swift 么？对于新手来说很不友好，过程几乎就是：改->报错->Google->改->继续报错。。。官网 demo 从来没跑通过，跟没有一样，不存在的。
 
 转换模型和权重使用的 python 代码放在这里：[nima.py](https://github.com/yulingtianxia/PhotoAssessment/blob/master/ConvertMLModel/NIMA/nima.py)
 
-最后转化的 mlmodel 包含在 PhotoAssessment-iOSSample 工程中：[NIMANasnet.mlmodel](https://github.com/yulingtianxia/PhotoAssessment/tree/master/PhotoAssessment-iOSSample/PhotoAssessment/Model)
+最后转化的 mlmodel 包含在 PhotoAssessment-iOSSample 工程中：[MobileNet.mlmodel](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MobileNet.mlmodel)
 
 在得到 mlmodel 后，可以使用苹果的 Vision 框架加载模型，用 `VNImageRequestHandler` 请求处理静态图片。串联上 Vision 框架的 `VNDetectFaceRectanglesRequest` 可以顺便检测出人脸，为照片评分提供更多的参考。比如有人脸的照片可能是个加分项。
 
