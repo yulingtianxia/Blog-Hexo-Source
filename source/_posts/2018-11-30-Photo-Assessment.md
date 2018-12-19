@@ -29,7 +29,7 @@ tags:
 
 得出的结果可能还需要设定阈值来过滤掉一些质量比较差的照片，然后做归一化和调整加权系数，最终得到照片的评分。具体权重值没有统一的参考标准，需根据业务的需求不断调试和摸索。以上列的这些标准都可以找到一些通用的算法实现，甚至用 OpenCV 分分钟的事儿。但是对于移动客户端来说，OpenCV 可能并不是个好的选择。苹果的 `Metal` 技术更适合发挥其软硬件结合的优势，在性能和安装包上均有优势。
 
-iOS 无法直接创建 HSB 色彩空间，需要借助 `UIColor` 等 API 将其他色彩空间颜色转换成 HSB 对应的值。于是我尝试使用 `Metal` 实现边缘检测算法，相关代码可以在 [PhotoMPSProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-iOSSample/PhotoAssessment/PhotoMPSProcessor.swift) 上找到。
+iOS 无法直接创建 HSB 色彩空间，需要借助 `UIColor` 等 API 将其他色彩空间颜色转换成 HSB 对应的值。于是我尝试使用 `Metal` 实现边缘检测算法，相关代码可以在 [PhotoMPSProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/PhotoMPSProcessor.swift) 上找到。
 
 边缘检测有很多种实现，这里我使用的是 Sobel 算子。MPS 提供了很多 对图片做卷积运算的 Filter，其中就包含 `MPSImageSobel`。MPS 也提供了 `MPSImageLaplacian`，不过 Laplacian 算子对噪声处理较差，实际效果不好。各种算子的原理和介绍可以参考这篇简介：[数字图像 - 边缘检测原理 - Sobel, Laplace, Canny算子](https://www.jianshu.com/p/2334bee37de5)
 
@@ -129,13 +129,13 @@ Google AI Blog 在 2017 年底发表过一篇博客：[Introducing NIMA: Neural 
 
 转换模型和权重使用的 python 代码放在这里：[nima.py](https://github.com/yulingtianxia/PhotoAssessment/blob/master/ConvertMLModel/NIMA/nima.py)
 
-最后转化的 mlmodel 包含在 PhotoAssessment-iOSSample 工程中：[MobileNet.mlmodel](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MobileNet.mlmodel)
+最后转化的 mlmodel 包含在 PhotoAssessment-Sample 工程中：[MobileNet.mlmodel](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MobileNet.mlmodel)
 
 在得到 mlmodel 后，可以使用苹果的 Vision 框架加载模型，用 `VNImageRequestHandler` 请求处理静态图片。串联上 Vision 框架的 `VNDetectFaceRectanglesRequest` 可以顺便检测出人脸，为照片评分提供更多的参考。比如有人脸的照片可能是个加分项。
 
 PS: 这里原本还加入了神经网络识别面部表情，但是由于准确率不高且不同表情的评分难以主观衡量，所以最后去掉了。
 
-这部分的代码实现在这里： [PhotoMLProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-iOSSample/PhotoAssessment/PhotoMLProcessor.swift)
+这部分的代码实现在这里： [PhotoMLProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/PhotoMLProcessor.swift)
 
 ## 照片相似度
 
@@ -186,7 +186,7 @@ PS: 这里原本还加入了神经网络识别面部表情，但是由于准确�
 }
 ```
 
-因为输入都是像素数组，降采样使用 `MPSImageBilinearScale`，实现细节类似于上面讲的边缘检测。代码在 [PhotoMPSProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-iOSSample/PhotoAssessment/PhotoMPSProcessor.swift) 里。
+因为输入都是像素数组，降采样使用 `MPSImageBilinearScale`，实现细节类似于上面讲的边缘检测。代码在 [PhotoMPSProcessor.swift](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/PhotoMPSProcessor.swift) 里。
 
 ## 总结
 
