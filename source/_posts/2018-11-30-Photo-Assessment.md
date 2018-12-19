@@ -196,6 +196,7 @@ PS: 这里原本还加入了神经网络识别面部表情，但是由于准确�
 
 - [yulingtianxia/PhotoAssessment](https://github.com/yulingtianxia/PhotoAssessment)
 - [数字图像 - 边缘检测原理 - Sobel, Laplace, Canny算子](https://www.jianshu.com/p/2334bee37de5)
+- [idealo/image-quality-assessment](https://github.com/idealo/image-quality-assessment)
 - [titu1994/neural-image-assessment](https://github.com/titu1994/neural-image-assessment)
 - [truskovskiyk/nima.pytorch](https://github.com/truskovskiyk/nima.pytorch)
 - [NIMA: Neural Image Assessment](https://arxiv.org/abs/1709.05424)
