@@ -1,6 +1,6 @@
 ---
 title: DirtyWords for Xcode - 做个文明的程序员
-date: 2018-12-23 15:36:27
+date: 2018-12-30 11:26:27
 tags:
 ---
 
@@ -18,7 +18,7 @@ tags:
 
 ### AppStore
 
-圣诞节苹果暂停审核。。。日
+[DirtyWords for Xcode](https://itunes.apple.com/cn/app/dirtywords-for-xcode/id1447526628?mt=12)
 
 ### GitHub Release
 
