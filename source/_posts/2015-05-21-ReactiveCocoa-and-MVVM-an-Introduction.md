@@ -226,8 +226,7 @@ MYTwitterUserProfileViewController *profileViewController =
 有时你无法在初始化时将 view-model 传入, 比如在 storyboard segue 或 cell dequeuing 的情况下. 这时你应该在讨论中的视图(控制器)中暴露一个公有可写的 view-model 属性.   
 
 ```
-MYTwitterUserCell *cell =
-    [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
+MYTwitterUserCell *cell = [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
 // grab the cell view-model from the vc view-model and assign it
 cell.viewModel = self.viewModel.tweets[indexPath.row];
 ```
@@ -477,16 +476,14 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
 -(UITableViewCell*)tableView: (UITableView *)tableView cellForRowAtIndexPath: (NSIndexPath *)indexPath {
     // if table section is the tweets section
     if (indexPath.section == 0) {
-        MYTwitterUserCell *cell =
-        [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
+        MYTwitterUserCell *cell = [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
         
         // grab the cell view model from the vc view model and assign it
         cell.viewModel = self.viewModel.tweets[indexPath.row];
         return cell;
     } else {
         // else if the section is our loading cell
-        MYLoadingCell *cell =
-        [self.tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
+        MYLoadingCell *cell = [self.tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
         [self.viewModel loadMoreTweets];
         return cell;
     }
@@ -566,8 +563,7 @@ RAC(self.userNameLabel,  text) = RACObserve(self.viewModel,  userFullName);
 我们已经搞定了 `cellForRowAtIndexPath` 的第一部分, 那么我在这将只说下 loading cell: 
 
 ```
-MYLoadingCell *cell =
-    [self.tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
+MYLoadingCell *cell = [self.tableView dequeueReusableCellWithIdentifier: @"MYLoadingCell" forIndexPath: indexPath];
 [self.viewModel loadMoreTweets];
 return cell;
 ```
