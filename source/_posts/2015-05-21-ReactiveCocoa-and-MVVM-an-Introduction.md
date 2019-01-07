@@ -110,7 +110,7 @@ view-model 会在视图控制器上以一个属性的方式存在. 视图控制�
 #### 视图控制器从 view-model 获取的数据将用来: 
 
 - 当 `usernameValid` 的值发生变化时触发 "Go" 按钮的 `enabled` 属性
-- 当 `usernameValid` 等于 `NO` 时调整按钮的 `alpha` 值为0. 5(等于 `YES` 时设为1. 0)
+- 当 `usernameValid` 等于 `NO` 时调整按钮的 `alpha` 值为0. 5(等于 `YES` 时设为 1.0)
 - 更新 `UILable` 的 `text` 属性为字符串 `userFullName` 的值
 - 更新 `UIImageView` 的 `image` 属性为 `userAvatarImage` 的值
 - 用 `tweets` 数组中的对象设置表格视图中的 cell (后面会提到)
@@ -229,7 +229,7 @@ MYTwitterUserProfileViewController *profileViewController =
 MYTwitterUserCell *cell =
     [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
 // grab the cell view-model from the vc view-model and assign it
-cell.viewModel = self.viewModel. tweets[indexPath. row];
+cell.viewModel = self.viewModel.tweets[indexPath.row];
 ```
 
 有时我们可以在钩子程序调用前传入 view-model,  比如 `init` 和 `viewDidLoad`,  我们可以从view-model 的属性初始化所有 UI 元素的状态.   
@@ -374,7 +374,7 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
   RACSignal *usernameValidSignal = RACObserve(self.viewModel,  isUsernameValid);
   // update the local property when this value changes
   [usernameValidSignal subscribeNext: ^(NSNumber *isValidNumber) {
-          self.usernameIsValid = isValidNumber. boolValue
+          self.usernameIsValid = isValidNumber.boolValue
       }];
 }
 ```
@@ -449,7 +449,7 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
  
     RAC(self.goButton,  alpha) = [usernameIsValidSignal
         map:  ^(NSNumber *valid) {
-            return valid. boolValue ? @1 :  @0. 5;
+            return valid.boolValue ? @1 :  @0.5;
         }];
  
     RAC(self.goButton,  enabled) = usernameIsValidSignal;
@@ -476,12 +476,12 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
  
 -(UITableViewCell*)tableView: (UITableView *)tableView cellForRowAtIndexPath: (NSIndexPath *)indexPath {
     // if table section is the tweets section
-    if (indexPath. section == 0) {
+    if (indexPath.section == 0) {
         MYTwitterUserCell *cell =
         [self.tableView dequeueReusableCellWithIdentifier: @"MYTwitterUserCell" forIndexPath: indexPath];
         
         // grab the cell view model from the vc view model and assign it
-        cell.viewModel = self.viewModel. tweets[indexPath. row];
+        cell.viewModel = self.viewModel.tweets[indexPath.row];
         return cell;
     } else {
         // else if the section is our loading cell
@@ -501,9 +501,9 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
 - (void) awakeFromNib {
     [super awakeFromNib];
     
-    RAC(self.avatarImageView,  image) = RACObserve(self,  viewModel. tweetAuthorAvatarImage);
-    RAC(self.userNameLabel,  text) = RACObserve(self,  viewModel. tweetAuthorFullName);
-    RAC(self.tweetTextLabel,  text) = RACObserve(self,  viewModel. tweetContent);
+    RAC(self.avatarImageView, image) = RACObserve(self,  viewModel.tweetAuthorAvatarImage);
+    RAC(self.userNameLabel, text) = RACObserve(self,  viewModel.tweetAuthorFullName);
+    RAC(self.tweetTextLabel, text) = RACObserve(self,  viewModel.tweetContent);
 }
 ```
 
@@ -520,13 +520,13 @@ RACSignal *usernameIsValidSignal = RACObserve(self.viewModel,  usernameValid);
 
 RAC(self.goButton,  alpha) = [usernameIsValidSignal
     map:  ^(NSNumber *valid) {
-        return valid. boolValue ? @1 :  @0. 5;
+        return valid.boolValue ? @1 :  @0. 5;
     }];
 
 RAC(self.goButton,  enabled) = usernameIsValidSignal;
 ```
 
-在这我们用 `RACObserve` 方法在 view-model 的 `usernameValid` 属性上创建了一个信号 `usernameIsValidSignal`.  无论何时属性发生变化, 它将会沿着管道发送一个新的 `@YES` 或 `@NO`. 我们拿到那个值并将其绑定到 `goButton` 的两个属性上. 首先我们将 `alpha` 分别对应 YES 或 NO 更新到1或0. 5(记着在这必须返回 `NSNumber`). 然后我们直接将信号绑定到 `enabled` 属性, 因为 YES 和 NO 在这无需转换就能完美地运作.   
+在这我们用 `RACObserve` 方法在 view-model 的 `usernameValid` 属性上创建了一个信号 `usernameIsValidSignal`.  无论何时属性发生变化, 它将会沿着管道发送一个新的 `@YES` 或 `@NO`. 我们拿到那个值并将其绑定到 `goButton` 的两个属性上. 首先我们将 `alpha` 分别对应 YES 或 NO 更新到1或0.5(记着在这必须返回 `NSNumber`). 然后我们直接将信号绑定到 `enabled` 属性, 因为 YES 和 NO 在这无需转换就能完美地运作.   
 
 ```
 RAC(self.avatarImageView,  image) = RACObserve(self.viewModel,  userAvatarImage);
@@ -578,9 +578,9 @@ return cell;
 - (void) awakeFromNib {
     [super awakeFromNib];
 
-    RAC(self.avatarImageView,  image) = RACObserve(self,  viewModel. tweetAuthorAvatarImage);
-    RAC(self.userNameLabel,  text) = RACObserve(self,  viewModel. tweetAuthorFullName);
-    RAC(self.tweetTextLabel,  text) = RACObserve(self,  viewModel. tweetContent);
+    RAC(self.avatarImageView, image) = RACObserve(self, viewModel.tweetAuthorAvatarImage);
+    RAC(self.userNameLabel, text) = RACObserve(self,  viewModel.tweetAuthorFullName);
+    RAC(self.tweetTextLabel, text) = RACObserve(self,  viewModel.tweetContent);
 }
 ```
 
