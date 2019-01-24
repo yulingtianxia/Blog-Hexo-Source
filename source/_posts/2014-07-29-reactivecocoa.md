@@ -331,13 +331,14 @@ RACDisposable *subscription =
 [ReactiveCocoa Tutorial – The Definitive Introduction: Part 2/2](http://www.raywenderlich.com/62796/reactivecocoa-tutorial-pt2)  
 [MVVM Tutorial with ReactiveCocoa: Part 1/2](http://www.raywenderlich.com/74106/mvvm-tutorial-with-reactivecocoa-part-1)  
 [MVVM Tutorial with ReactiveCocoa: Part 2/2](http://www.raywenderlich.com/74131/mvvm-tutorial-with-reactivecocoa-part-2)  
+[futures and promises](http://en.wikipedia.org/wiki/Futures_and_promises)  
+[C-41](https://github.com/AshFurrow/C-41)  
+[GroceryList](https://github.com/jspahrsummers/GroceryList)  
+[Documentation](https://github.com/ReactiveCocoa/ReactiveCocoa/tree/master/Documentation)
 
 ## 视频
 
 <iframe height=498 width=510 src="http://player.youku.com/embed/XNzQ3OTAxNzYw" frameborder=0 allowfullscreen></iframe>
 
-[futures and promises]: http://en.wikipedia.org/wiki/Futures_and_promises
-[C-41]: https://github.com/AshFurrow/C-41
-[GroceryList]:  https://github.com/jspahrsummers/GroceryList
-[Documentation]: https://github.com/ReactiveCocoa/ReactiveCocoa/tree/master/Documentation
+
 
