@@ -401,8 +401,7 @@ RACSignal *viewAppeared = [self rac_signalForSelector:@selector(viewDidAppear:)]
     //...
     RACSignal *usernameIsValidSignal = RACObserve(self.viewModel, isUsernameValid);
     RAC(self.goButton, enabled) = usernameIsValidSignal;
-    RAC(self.goButton, alpha) = [usernameIsValidSignal
-        map:^id(NSNumber *usernameIsValid) {
+    RAC(self.goButton, alpha) = [usernameIsValidSignal map:^id(NSNumber *usernameIsValid) {
             return usernameIsValid.boolValue ? @1.0 : @0.5;
         }];
 }
