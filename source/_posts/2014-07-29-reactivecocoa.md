@@ -220,7 +220,7 @@ RACSignal是RACStream的子类，RACStream是一个抽象类，描述了值的�
 
 PS：instancetype是程序运行时对象的类型，有可能为RACStream，也可以为其子类RACSignal。正是因为这些操作事件的方法都会返回事件源对象相同的类型，事件可以被一连串的被这些方法修改，过滤等，这就形成了管道，管道中传递着事件，包含着value。  
 建议管道的语法格式是每个操作新起一行，并在垂直方向上对齐：  
-![](http://cdn4.raywenderlich.com/wp-content/uploads/2014/01/PipelineFormatting.png)  
+![](https://koenig-media.raywenderlich.com/uploads/2014/01/PipelineFormatting.png)  
 可惜Xcode的自动缩进并不会按照这样的格式对齐，是时候与它斗智斗勇啦！  
 
 RACSignal还有一些方法是对Signal做操作的，在RACSignal (Operations)类别中有详细的描述，比较常用的如下：  
