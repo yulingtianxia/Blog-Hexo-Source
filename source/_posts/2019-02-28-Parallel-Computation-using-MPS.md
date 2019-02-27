@@ -5,7 +5,7 @@ tags:
 - Metal
 ---
 
-在照片质量评分组件 [PhotoAssessment](https://github.com/yulingtianxia/PhotoAssessment) 项目上，有些算法的实现是使用 CPU 运行的。通过使用 MPS(Metal Performance Shader) 在 GPU 上并行计算，显著提升了性能，算法执行耗时降低了 99.9% 以上。震惊，呵呵。
+在照片质量评分组件 [PhotoAssessment](https://github.com/yulingtianxia/PhotoAssessment) 项目上，有些算法的实现是使用 CPU 运行的。通过使用 MPS(Metal Performance Shader) 在 GPU 上并行计算，显著提升了性能，算法执行耗时降低了 99.9% 以上。震惊，呵呵。随着性能上成百上千倍的提升，可以在相等时间内处理更大尺寸的图片，进而提升组件的准确度和用户体验。
 
 至此，几乎所有图像处理与计算任务都交由 GPU 完成。之前利用 Sobel 算子边缘检测是使用了苹果封装好的 MPS 类，剩余的色彩分布指纹向量和饱和度均值当然都是需要自己写 Shader 的，现在终于补齐了。Metal Shading Language 与 GLSL 使用习惯和理念很相似，只不过 Metal Shader 的语法是基于 C++ 14 的。
 
