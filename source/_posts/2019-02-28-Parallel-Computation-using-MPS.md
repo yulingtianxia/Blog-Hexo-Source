@@ -9,7 +9,7 @@ tags:
 
 至此，几乎所有图像处理与计算任务都交由 GPU 完成。之前利用 Sobel 算子边缘检测是使用了苹果封装好的 MPS 类，剩余的色彩分布指纹向量和饱和度均值当然都是需要自己写 Shader 的，现在终于补齐了。Metal Shading Language 与 GLSL 使用习惯和理念很相似，只不过 Metal Shader 的语法是基于 C++ 14 的。
 
-关于整个组件的实现思路，可以查阅[『使用 Metal 和 Core ML 评价照片质量』](http://yulingtianxia.com/blog/2018/11/30/Photo-Assessment/)。
+关于整个组件的实现思路，可以查阅[『使用 Metal 和 Core ML 评价照片质量』](http://yulingtianxia.com/blog/2018/11/30/Photo-Assessment/)。本篇文章所涉及到的 [Shader 代码](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/PhotoAssessmentShaders.metal) 也在其中。
 
 <!--more-->
 
@@ -28,6 +28,8 @@ CPU fingerprint cost: 8.9078871011734
 GPU fingerprint cost: 0.06412196159362793
 
 优化后的耗时降低幅度也跟图片本身有关，色彩分布更广的图片优化效果会更好。图片尺寸越大，优化效果越好。
+
+实现这两个功能的 Shader kernel 函数分别封装成了 `MPSKernel` 的子类： [`MPSSaturationKernel`](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MPSSaturationKernel.swift) 和 [`MSPFingerprintImageKernel`](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MSPFingerprintImageKernel.swift)。
 
 ## Shader 的实现
 
