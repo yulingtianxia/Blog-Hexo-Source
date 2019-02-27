@@ -33,15 +33,15 @@ GPU fingerprint cost: 0.06412196159362793
 
 Command Encoder 会使用 Texture、Buffer、Sampler、Pipeline 等内容构建出 Command，并装载到 Command Buffer 上。
 
-![](../resources/MPS/command structure0.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/command structure0.png)
 
 从 CPU 各个线程创建的 Command Buffer 都将会传入 Command Queue。运行在 GPU 上的 Shader 代码会处理这些 Command。
 
-![](../resources/MPS/command structure1.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/command structure1.png)
 
 Command Encoder 有三种：Render、Compute 和 Blit。区别在于用途和用法，但创建的 Command 都可以放入同一个 Command Buffer 中。
 
-![](../resources/MPS/Cmd-Model-threads.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/Cmd-Model-threads.png)
 
 为了在 GPU 上并行计算图片的饱和度和指纹向量，需要用到 Compute Command Encoder，并传入以下几个参数构建 Command：
 
@@ -53,11 +53,11 @@ Command Encoder 有三种：Render、Compute 和 Blit。区别在于用途和用
 
 GPU 并行计算时，每条线程处理一个像素。整个 Texture 看做一个 Grid，可以进一步划分成多个 threadgroup。
 
-![](../resources/MPS/threadgroups.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/threadgroups.png)
 
 threadgroup 还会按照 GPU 能同时执行的线程数 `threadExecutionWidth` 被划分为 SIMD group。
 
-![](../resources/MPS/SIMD group.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/SIMD group.png)
 
 为了达到更好的性能，需要将 threadgroup 包含的线程数量设定为 `threadExecutionWidth` 的整数倍。
 
@@ -83,7 +83,7 @@ rgb2hsvKernelNonuniform(texture2d<float, access::read> inTexture [[texture(0)]],
 
 比如传入的 `gid` 为 (9, 10)，那么就可以从 `inTexture` 中读取到此位置像素的数据。因为 Grid 坐标系是基于这个 Texture 的。
 
-![](../resources/MPS/grid coordinates.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/grid coordinates.png)
 
 ### Non-uniform Threadgroup Size
 
@@ -115,11 +115,11 @@ rgb2hsvKernel(texture2d<float, access::read> inTexture [[texture(0)]],
 
 也就是超范围的调用都被 `return` 掉了，GPU 的一些线程没利用上，造成了浪费:
 
-![](../resources/MPS/underutilization of threads.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/underutilization of threads.png)
 
 为了提升性能，Metal 在部分 GPU 特性集上支持了 "Non-uniform Threadgroup Size"。可以允许存在不同 size 的 threadgroup：
 
-![](../resources/MPS/nonuniform threadgroups.png)
+![from Apple Doc](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/MPS/nonuniform threadgroups.png)
 
 这样只需要传入 Grid 的 size，以及 threadgroup 的 size，Metal 就会自动划分边缘部分的 threadgroup size，充分利用好 GPU 的运算效率。
 
