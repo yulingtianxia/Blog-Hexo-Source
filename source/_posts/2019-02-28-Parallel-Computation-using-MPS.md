@@ -29,7 +29,18 @@ GPU fingerprint cost: 0.06412196159362793
 
 优化后的耗时降低幅度也跟图片本身有关，色彩分布更广的图片优化效果会更好。图片尺寸越大，优化效果越好。
 
-实现这两个功能的 Shader kernel 函数分别封装成了 `MPSKernel` 的子类： [`MPSSaturationKernel`](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MPSSaturationKernel.swift) 和 [`MSPFingerprintImageKernel`](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MSPFingerprintImageKernel.swift)。
+再来看看 500x500 尺寸下的数据：
+
+500x500 降采样到 50x50（包含降采样耗时）
+cpu total cost: 0.3883340358734131
+gpu total cost: 0.0030889511108398438
+
+直接处理 500x500 尺寸图片
+gpu total cost: 0.008553862571716
+
+可以看出，降采样有一定耗时。即便是降采样到 50x50 这种很小的尺寸，在 CPU 上运行算法也会有较多的耗时。**相比之下，直接 GPU 处理 500x500 尺寸图片具有更大的优势：耗时远小于降采样后跑 CPU，略高于降采样后跑 GPU，但能够处理更大尺寸更多信息，相当于有更高的准确率。**
+
+实现这两个功能的 Shader kernel 函数分别封装成 Swift 类： [`MPSSaturationKernel`](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MPSSaturationKernel.swift) 和 [`MSPFingerprintImageKernel`](https://github.com/yulingtianxia/PhotoAssessment/blob/master/PhotoAssessment-Sample/Sources/MSPFingerprintImageKernel.swift)。
 
 ## Shader 的实现
 
