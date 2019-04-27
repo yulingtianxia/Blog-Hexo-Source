@@ -5,7 +5,7 @@ tags:
 - Objective-C
 ---
 
-一年前，我开发了 [BlockHook](https://github.com/yulingtianxia/BlockHook)，（貌似）填补了 Objective-C 在 Hook Block 的空白。但是对于 Block 的参数和返回值有限制，仅定制了 `CGRect`, `CGSize`, `CGPoint` 等结构体，不支持自定义 struct。这次就把这个坑给填上。
+一年前，我开发了 [BlockHook](https://github.com/yulingtianxia/BlockHook)，（应该是）填补了 Objective-C 业界在 Hook Block 技术领域的空白。但是对于 Block 的参数和返回值有限制，仅定制了 `CGRect`, `CGSize`, `CGPoint` 等结构体，不支持自定义 struct。这次就把这个坑给填上。
 
 至此，[BlockHook](https://github.com/yulingtianxia/BlockHook) 已支持 macOS 和 iOS 平台全架构、tvOS 和 watchOS 模拟器，`BlockHook.m` 测试覆盖率达到 92% 以上。
 
