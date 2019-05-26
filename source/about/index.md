@@ -30,8 +30,9 @@ date: 2015-02-07 19:19:08
 - [Uber(获得一次优惠乘车机会)](https://get.uber.com.cn/invite/ld7io)
 
 #### 或者更直接些，捐助我一杯咖啡
-![支付宝](http://yulingtianxia.com/resources/payme/alipay.png)  
-![微信支付](http://yulingtianxia.com/resources/payme/wechatpay.png)
+
+![支付宝](http://yulingtianxia.com/resources/payme/alipay.jpg)  
+![微信支付](http://yulingtianxia.com/resources/payme/wechatpay.jpg)
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ad -->
