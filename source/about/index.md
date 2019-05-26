@@ -18,8 +18,8 @@ date: 2015-02-07 19:19:08
 	- [HardChoice](http://hardchoice.yulingtianxia.com)
 	- [畅游导航](http://changyou.yulingtianxia.com)  
 
-###Donate to me
-####用我的链接注册以下应用，你和我都能得到一些优惠  
+### Donate to me
+#### 用我的链接注册以下应用，你和我都能得到一些优惠  
 
 - [Dropbox(获取额外500M空间)](https://db.tt/qpgWW1VU)
 - [V2EX(获取2银币)](http://www.v2ex.com/?r=yulingtianxia)
@@ -29,8 +29,9 @@ date: 2015-02-07 19:19:08
 - [枫叶主机](https://www.fyzhuji.com/aff.php?aff=1139)
 - [Uber(获得一次优惠乘车机会)](https://get.uber.com.cn/invite/ld7io)
 
-####或者更直接些，捐助我一杯咖啡
-![向我付款](http://yulingtianxia.com/resources/zhifubao.png)  
+#### 或者更直接些，捐助我一杯咖啡
+![支付宝](http://yulingtianxia.com/resources/payme/alipay.png)  
+![微信支付](http://yulingtianxia.com/resources/payme/wechatpay.png)
 
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <!-- ad -->
