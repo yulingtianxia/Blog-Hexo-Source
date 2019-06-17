@@ -147,5 +147,6 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block)
 
 ## 总结
 
+一图以蔽之。
 
-
+![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/BlockHook%20PrivateData.png?raw=true)
