@@ -1,6 +1,6 @@
 ---
 title: BlockHook with Private Data
-date: 2019-06-18 17:00:39
+date: 2019-06-19 10:00:39
 tags:
 ---
 
@@ -8,7 +8,7 @@ tags:
 
 <!--more-->
 
-其实我完全可以当回标题党，把这篇文章的标题叫做『你真的了解 Block 么？』或者『这才是 Hook Block 的正确姿势』之类的。想想还是算了吧，怕被大佬们嘲笑称又『改变业界』了啊。
+由于关于 Block Private Data 的资料几乎没有，所以我完全可以当回标题党，把这篇文章的标题叫做『你真的了解 Block 么？』或者『这才是 Hook Block 的正确姿势』之类的。但想想还是算了吧，怕被大佬们嘲笑称又『改变业界』了啊。
 
 ## Block 为何会有 Private Data
 
@@ -101,7 +101,9 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block)
 
 ## 适配 BlockHook
 
-### Hook 真正的 Block
+虽然说 Private Data 本身并不是 Block 实现中必要的一环，它只是 GCD 对 Block 数据结构的一种『魔改』扩充。但由于 GCD 内部的一些保护机制，会在修改了 Block 的 `invoke` 指针后触发 crash（`__builtin_trap`），所以不能直接对含有 Private Data 的 Block 进行 Hook。这就需要 BlockHook 组件做一些适配工作。
+
+### Hook 真正要执行的 Block
 
 既然 `dbpd_block` 才是真正要执行的 Block，那么 Hook 的时候需要先获取 Private Data，然后对其 `dbpd_block` 进行 Hook:
 
@@ -126,7 +128,7 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block)
 }
 ```
 
-### 获取当前 Hook Token
+### 获取 Block 当前 Hook Token
 
 因为 Hook 的是 `dbpd_block`，所以获取 Token 的时候也需要额外处理下。要在 `dbpd_block` 上通过 AssociatedObject 来获取 Token，而不是 `dispatch_block_t` 上。
 
