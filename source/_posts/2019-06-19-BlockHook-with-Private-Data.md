@@ -75,7 +75,7 @@ struct dispatch_block_private_data_s {
 typedef struct dispatch_block_private_data_s *dispatch_block_private_data_t;
 ```
 
-既然无法用 `_dispatch_block_special_invoke` 来判断 Block 是否含有 Private Data，可以使用 `dbpd_magic` 魔数来判断。当其值为 `0xD159B10C` 时（DisBloc 的意思），则表明含有 Private Data。
+既然无法用 `_dispatch_block_special_invoke` 来判断 Block 是否含有 Private Data，可以使用 `dbpd_magic` 魔数来判断。当其值为 `0xD159B10C` 时（DisBloc 的意思），则表明含有 Private Data。**当然这种溢出的方式同样是有风险的，但触及到 PAGEZERO 概率很低**。
 
 ```
 #define DISPATCH_BLOCK_PRIVATE_DATA_MAGIC 0xD159B10C // 0xDISPatch_BLOCk
