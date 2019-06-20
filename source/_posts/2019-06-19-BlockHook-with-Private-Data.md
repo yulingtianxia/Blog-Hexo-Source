@@ -55,7 +55,7 @@ _dispatch_block_has_private_data(const dispatch_block_t block)
 
 ### 获取 Private Data
 
-使用 `dispatch_block_create` 创建的 `dispatch_block_t` 只是个『壳』，真正执行的是其内部包含的 Block。再加上 GCD 所需的一些数据（queue，group，thread，priority 等），这些数据都需要作为 Private Data 追加在 Block 上。对实现 BlockHook 来说最需要关注的就是 `dbpd_magic` 和 `dbpd_block`。
+使用 `dispatch_block_create` 创建的 `dispatch_block_t` 只是个『壳』，真正执行的是其内部包含的 Block。再加上 GCD 所需的一些数据（queue，group，thread，priority 等），这些数据都需要作为 Private Data 追加在 Block 上。对实现 [BlockHook](https://github.com/yulingtianxia/BlockHook) 来说最需要关注的就是 `dbpd_magic` 和 `dbpd_block`。
 
 ```
 OS_OBJECT_DECL_CLASS(voucher);
@@ -101,7 +101,7 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block)
 
 ## 适配 BlockHook
 
-虽然说 Private Data 本身并不是 Block 实现中必要的一环，它只是 GCD 对 Block 数据结构的一种『魔改』扩充。但由于 GCD 内部的一些保护机制，会在修改了 Block 的 `invoke` 指针后触发 crash（`__builtin_trap`），所以不能直接对含有 Private Data 的 Block 进行 Hook。这就需要 BlockHook 组件做一些适配工作。
+虽然说 Private Data 本身并不是 Block 实现中必要的一环，它只是 GCD 对 Block 数据结构的一种『魔改』扩充。但由于 GCD 内部的一些保护机制，会在修改了 Block 的 `invoke` 指针后触发 crash（`__builtin_trap`），所以不能直接对含有 Private Data 的 Block 进行 Hook。这就需要 [BlockHook](https://github.com/yulingtianxia/BlockHook) 组件做一些适配工作。
 
 ### Hook 真正要执行的 Block
 
@@ -148,6 +148,8 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block)
 ```
 
 ## 总结
+
+代码地址: https://github.com/yulingtianxia/BlockHook
 
 一图以蔽之。
 
