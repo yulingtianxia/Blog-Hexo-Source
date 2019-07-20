@@ -26,7 +26,7 @@ tags:
 
 为此我构造了一个虚拟的链表来记录 Hook 的先后关系，而不是单独创建一个链表显式的记录。首先介绍下 Block 与 token 之间的引用关系：
 
-![](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/BlockHook/BlockHook Token List.png)
+![](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/BlockHook/BlockHook_Token_List.png)
 
 可以看出每个 `BHToken` 记录了原始和替换后的 `invoke` 函数指针，那么先后两次 Hook 就靠 `invoke` 函数指针来关联了：**每个 tokne 的 `originalInvoke` 就是上一次 Hook 的 token 的 `replacementInvoke`**。而拿到 token 又是靠 Block 对象上的 `AssociatedObject`，且 key 为 `replacementInvoke`。这样就构造了一条虚拟的链表：想要获得上次 Hook 的 token，只需在 Hook 的 Block 对象上使用 `originalInvoke` 作为 key 即可。
 
@@ -81,7 +81,7 @@ tags:
 
 在搭建了 Hook 链表的基础上，多次 Hook 的链表可以简化成 `invoke` 函数指针之间的关系：
 
-![](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/BlockHook/BlockHook invoke call.png)
+![](https://raw.githubusercontent.com/yulingtianxia/Blog-Hexo-Source/master/source/resources/BlockHook/BlockHook_invoke_call.png)
 
 那么撤销 Hook 就可以从链表头部开始遍历，找到当前要 `remove` 的 token。接着链表上删除这个 token，而这又可以分为两个子问题：
 
