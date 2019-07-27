@@ -87,6 +87,8 @@ BLOCK_HAS_STRET =         (1 << 29)
 
 那么在使用 libffi 定义 Hook 函数的返回值和参数列表的时候就需要注意了，虽然 signature 还是正常的，但是参数列表顺序调整了啊！当 `BLOCK_HAS_STRET` 生效时，得特殊处理下。`_typesWithEncodeString` 方法负责解析 signature 字符串中的 Type Encoding 列表，支持加偏移量。而 `_argsWithEncodeString` 是调用了前者，`startIndex` 传入 `1`，略过了第一个返回值。
 
+![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/realArgs.png?raw=true)
+
 ```
 int argCount;
 ffi_type **argTypes;
