@@ -6,8 +6,10 @@
     "version": "3.9.0"
   },
   "dependencies": {
+    "braces": "^3.0.2",
     "dtrace": "0.0.0",
     "dtrace-provider": "^0.8.7",
+    "eslint": "^6.1.0",
     "hexo": "^3.9.0",
     "hexo-deployer-git": "^1.0.0",
     "hexo-deployer-heroku": "^0.1.2",
