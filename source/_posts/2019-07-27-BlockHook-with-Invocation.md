@@ -1,5 +1,5 @@
 ---
-title: BlockHook with Invocation
+title: BlockHook with Invocation(1)
 date: 2019-07-27 17:14:27
 tags:
 ---
@@ -75,7 +75,7 @@ testblock(testArg);
 
 ![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/BHInvocation.png?raw=true)
 
-PS：`BHInvocation` 与 `NSInvocation` 的场景和用法有些不同，所以实现上也会有差异。`NSInvocation` 没有公开源码，想了解原理的可以看看 mikeash 的实现： [MAInvocation](https://github.com/mikeash/MAInvocation)。但我并没有参考过 mikeash 的源码。
+PS：`BHInvocation` 与 `NSInvocation` 的场景和用法有些不同，所以实现上也会有差异。`NSInvocation` 没有公开源码，想了解原理的可以看看 mikeash 的实现： [MAInvocation](https://github.com/mikeash/MAInvocation)。但我并没有参考过 mikeash 的源码，因为等我写完了才发现它。。。
 
 ### `retainArguments` 实现
 
@@ -113,3 +113,5 @@ PS：`BHInvocation` 与 `NSInvocation` 的场景和用法有些不同，所以�
 写了这么多关于 [BlockHook](https://github.com/yulingtianxia/BlockHook) 的文章，我越来越发现自己在苹果爸爸面前所表现出的无知。几乎每一步都要去踩很多坑，看很多源码。而这次是看着苹果爸爸的文档脑补如何实现，业界也没有能参考的先例。
 
 这种感觉犹如自己在黑暗中不断探索，并享受着这种孤独。
+
+标题暗示着，这篇文章可能会有后续的。
