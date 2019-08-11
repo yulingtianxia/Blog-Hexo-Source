@@ -2,6 +2,9 @@
 title: BlockHook with Invocation(1)
 date: 2019-07-27 17:14:27
 tags:
+- Objective-C
+- Runtime
+- BlockHook
 ---
 
 [BlockHook](https://github.com/yulingtianxia/BlockHook) 在业界已经率先解决了在**同步**调用场景下对 Objective-C Block 的 AOP 问题。但也有很多场景是需要先调用一段自己的逻辑，然后再**异步延时**执行 Block。

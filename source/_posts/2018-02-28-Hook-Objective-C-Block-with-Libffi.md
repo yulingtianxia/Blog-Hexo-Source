@@ -3,6 +3,7 @@ title: Hook Objective-C Block with Libffi
 date: 2018-02-28 19:05:24
 tags:
 - Objective-C
+- BlockHook
 ---
 
 本文通过参照 `MABlockClosure` 的实现和 `Aspects` 的 API 设计，基于 libffi 实现了对 Objective-C Block 的 hook。GitHub 地址：https://github.com/yulingtianxia/BlockHook

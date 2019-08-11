@@ -3,6 +3,8 @@ title: 追踪 Objective-C 方法中的 Block 参数对象
 date: 2018-03-31 23:44:39
 tags:
 - Objective-C
+- Runtime
+- BlockHook
 ---
 
 很多方法最后一个参数是类似于 `completionBlock` 这种回调，然而有些 API 实现一些异常逻辑时会忘记调用传入的 Block 参数（当然这肯定是 bug 啦），或者存在多次调用。在调试的时候可能会碰到这种大坑，需要追踪下 Block 参数何时调用了，甚至是否调用过。如果不方便直接在 Block 实现中加代码，或者没有源码的情况下，就需要无侵入式地追踪 Block 参数对象。

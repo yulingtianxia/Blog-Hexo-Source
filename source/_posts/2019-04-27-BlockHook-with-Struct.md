@@ -3,6 +3,7 @@ title: BlockHook with Struct
 date: 2019-04-27 21:26:55
 tags:
 - Objective-C
+- BlockHook
 ---
 
 一年前，我开发了 [BlockHook](https://github.com/yulingtianxia/BlockHook)，（应该是）填补了 Objective-C 业界在 Hook Block 技术领域的空白。但是对于 Block 的参数和返回值有限制，仅定制了 `CGRect`, `CGSize`, `CGPoint` 等结构体，不支持自定义 struct。这次就把这个坑给填上。

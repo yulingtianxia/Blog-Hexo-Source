@@ -2,6 +2,9 @@
 title: BlockHook with Private Data
 date: 2019-06-19 22:50:39
 tags:
+- Objective-C
+- Runtime
+- BlockHook
 ---
 
 在使用 [BlockHook](https://github.com/yulingtianxia/BlockHook) Hook 所有 Block 对象时，发现有些 Block 被 Hook 后会 Crash。究其原因发现是它们骨骼惊奇，夹带了很多『私货』，不能直接 Hook！本文讲述 [BlockHook](https://github.com/yulingtianxia/BlockHook) 在处理这种 Block 时的技术原理，解开含有 Private Data 的 Block 的神秘面纱。

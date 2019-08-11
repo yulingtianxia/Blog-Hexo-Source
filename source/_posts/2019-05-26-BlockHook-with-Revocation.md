@@ -3,6 +3,7 @@ title: BlockHook with Revocation
 date: 2019-05-26 17:20:10
 tags:
 - Objective-C
+- BlockHook
 ---
 
 [BlockHook](https://github.com/yulingtianxia/BlockHook) 开创性地解决了 Objective-C 语言界 Hook Block 的问题，但也迎来了新的问题：
