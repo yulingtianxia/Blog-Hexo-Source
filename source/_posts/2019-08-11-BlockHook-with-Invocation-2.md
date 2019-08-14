@@ -152,6 +152,27 @@ NSObject * __unsafe_unretained arg;
 
 `BHInvocation` 由于高仿了 `NSInvocation` 的接口和实现，所以也需要注意此问题。究其原因在于 `memcpy` 只是内存拷贝，不是直接向 `strong` 类型变量赋值，并不会参与到 ARC 的引用计数中。而出了作用域后 ARC 会自动对 `strong` 类型 `release` 一次，导致读取到的对象过度释放，导致 crash。（PS：ARC 真实的实现机制会更复杂些，为了描述方便这里对原理进行了简化）
 
+其实还有一种更好的方式读参数，那就是直接在 `aspectBlock` 中取参数。`aspectBlock` 中的参数是可以随意写的，但需要跟 Block 的参数列表对应上。写法可以参照下面这个测试用例，直接获取参数，然后修改参数：
+
+```
+- (void)testObjectArg {
+    NSObject *argOrig = [NSObject new];
+    NSObject *argFixed = [NSObject new];
+    void (^ObjectArgBlock)(NSObject *) = ^(NSObject *test)
+    {
+        NSAssert(test == argFixed, @"Modify struct member failed!");
+    };
+    
+    [ObjectArgBlock block_hookWithMode:BlockHookModeBefore usingBlock:^(BHInvocation *invocation, NSObject *test){
+        NSAssert(test == argOrig, @"Wrong arg!");
+        // Hook 改参数
+        [invocation setArgument:(void *)&argFixed atIndex:1];
+    }];
+    
+    ObjectArgBlock(argOrig);
+}
+```
+
 ## 总结
 
 最初 `BHInvocation` 还不够完善时，读写 Block 的参数/返回值只能用二级指针之类的晦涩语法直接操作 `args` 和 `retValue`，门槛较高而且还不够安全。`BHInvocation` 接口设计和实现上尽量参考已有的成熟案例，降低开发者学习成本，快速上手。
