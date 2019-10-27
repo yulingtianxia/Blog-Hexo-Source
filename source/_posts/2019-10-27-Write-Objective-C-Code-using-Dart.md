@@ -11,6 +11,8 @@ tags:
 
 Flutter 提升了客户端开发的效率，但在跟 Native 代码配合开发时也带来了不好的体验。于是我写了个 Flutter 插件 [dart_objc](https://pub.dev/packages/dart_objc)，使开发者可以用 Dart 的语法来写 Objective-C 代码。借助于 Flutter 的热重载，也可以更高效的动态调试 Native 代码，从此告别在两个工程和 IDE 中切来切去。
 
+尚在开发中，开源地址：https://github.com/yulingtianxia/dart_objc
+
 <!--more-->
 
 ## 问题背景
