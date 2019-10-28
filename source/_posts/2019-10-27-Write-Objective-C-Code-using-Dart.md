@@ -9,7 +9,7 @@ tags:
 
 这篇文章不是讲 Flutter Channel 入门的，可能让你失望了。不过继续往下读可能也会有点收获。
 
-Flutter 提升了客户端开发的效率，但在跟 Native 代码配合开发时也带来了不好的体验。于是我写了个 Flutter 插件 [dart_objc](https://pub.dev/packages/dart_objc)，使开发者可以用 Dart 的语法来写 Objective-C 代码。借助于 Flutter 的热重载，也可以更高效的动态调试 Native 代码，从此告别在两个工程和 IDE 中切来切去。
+Flutter 提升了客户端开发的效率，但在跟 Native 代码配合开发时也带来了不好的体验。于是我写了个 Flutter 插件 [dart_objc](https://pub.dev/packages/dart_objc)，使开发者可以用 Dart 的语法来写 Objective-C 代码。借助于 Flutter 的热重载，也可以更高效的动态调试 Native 代码，从此告别在两个工程和 IDE 中切来切去。方法调用性能相比 Channel 也提升很多。
 
 尚在开发中，开源地址：https://github.com/yulingtianxia/dart_objc
 
@@ -40,6 +40,14 @@ Flutter 提升了客户端开发的效率，但在跟 Native 代码配合开发�
 
 1. 将 Native API 封装成对应的 Dart 语言，解决一系列语言之间的类型转换和语法兼容问题
 2. 通过一个更高效的方式来调用 Native API，这里使用 dart:ffi 调用 C 函数，再通过 Runtime 机制调用 Native
+
+## 解决问题
+
+提供一个 Flutter 库来提供 Dart 语言的 API，通过 dart:ffi 作为 Flutter 与 Native 之间的桥。对比 Dart 与 Native 的语法特性，对一些类型进行内存级别的底层转换。
+
+[dart_objc](https://pub.dev/packages/dart_objc) 由于采用指针地址直接传递的方式，方法调用性能相比 channel 提升了**几倍甚至一个数量级**。（测试接口为获取系统版本，如涉及复杂参数的序列化可能差异更大）
+
+由于 [dart_objc](https://pub.dev/packages/dart_objc) 组件还在基于 dev 版本的 Dart 开发，可能后续还会有比较大的变动，甚至是 API 的变化。所以没有过多展开讲实现细节，感兴趣可以去自己看代码：https://github.com/yulingtianxia/dart_objc
 
 ## 使用方法
 
@@ -93,8 +101,6 @@ class RuntimeStub extends NSObject {
 ```
 
 ## 后续
-
-由于 [dart_objc](https://pub.dev/packages/dart_objc) 组件还在基于 dev 版本的 Dart 开发，可能后续还会有比较大的变动，甚至是 API 的变化。所以没有过多展开讲实现细节，感兴趣可以去自己看代码：https://github.com/yulingtianxia/dart_objc
 
 目前的 Cocoa API 封装打算参考 Swift 版本的文档，毕竟 Dart 有些语法跟 Swift 还有点像。
 
