@@ -53,7 +53,7 @@ Flutter 提升了客户端开发的效率，但在跟 Native 代码配合开发�
 
 假如你写了个 Objective-C 的类叫 `RuntimeStub`，并实现了个 `fooBlock:` 方法，参数和返回值都是个 block 对象。
 
-```
+```objc
 @interface RuntimeStub ()
 @end
 @implementation RuntimeStub
@@ -68,14 +68,14 @@ typedef int(^BarBlock)(NSObject *a);
 
 初始化一个 `NSObject` 对象，传入类名就可以 `new` 任意类型的对象。`perform()` 方法可以调用任意对象的任何方法，跟 Objective-C 的用法基本一致。
 
-```
+```dart
 NSObject stub = NSObject('RuntimeStub');
 Block block = stub.perform(Selector('fooBlock:'), args: [barFunc]);
 ```
 
 Objective-C 中 Block 这种匿名函数或闭包的概念在 Dart 中其实就是 Function，所以当参数是 Block 对象的时候，可以直接传入一个与之函数签名一样的 Dart Function 对象。[dart_objc](https://pub.dev/packages/dart_objc) 会自动完成参数类型转换和调用等一系列底层细节。所以用 Dart 实现的 `barFunc` 与 Objective-C 接口 `BarBlock` 的签名需要一致：
 
-```
+```dart
 Function barFunc = (NSObject a) {
     print('hello block! ${a.toString()}');
     return 101;
@@ -84,13 +84,13 @@ Function barFunc = (NSObject a) {
 
 Dart 调用 Block 也很简单，调用 `invoke` 方法就行：
 
-```
+```dart
 int result = block.invoke([stub]);
 ```
 
 最后也可以用 Dart 封装下 `RuntimeStub` 类，这样调用代码更简洁。这种模板代码后续会做成自动生成的，而不用手写。
 
-```
+```dart
 class RuntimeStub extends NSObject {
   RuntimeStub() : super('RuntimeStub');
 
