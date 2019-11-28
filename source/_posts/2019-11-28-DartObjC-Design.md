@@ -8,6 +8,8 @@ tags:
 
 我之前在 『[用 Dart 来写 Objective-C 代码](http://yulingtianxia.com/blog/2019/10/27/Write-Objective-C-Code-using-Dart/)』 这篇文章讲了下我在解决 Flutter 三端开发问题的一个思路和方案，并给出了 Demo 和简单的对比。这次讲下 [dart_objc](https://github.com/yulingtianxia/dart_objc) 的设计，这包含了上层使用方式和底层技术方案的设计。由于涉及到的技术点很多，这次不会深入太多技术实现细节，不过后续可能会分篇讲下。
 
+<!--more-->
+
 ## 设计思路
 
 ### 宇宙真理①：Native 平台接口随版本变化，差异随时间增长。
