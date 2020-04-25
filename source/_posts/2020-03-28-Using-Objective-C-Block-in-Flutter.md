@@ -26,7 +26,7 @@ stub.fooBlock((NSObject a) {
 
 而对应的 Objective-C 接口如下：
 
-```
+```objc
 typedef NSObject *(^BarBlock)(NSObject *a);
 - (void)fooBlock:(BarBlock)block;
 ```
