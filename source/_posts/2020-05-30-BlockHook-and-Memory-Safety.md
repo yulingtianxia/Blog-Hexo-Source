@@ -19,7 +19,7 @@ tags:
 
 ARC 下将 StackBlock 赋值时，会自动 copy 成 MallocBlock。不过这个编译器帮我们做的隐式行为的前提是代码里显示声明为 Block 类型。而 [BlockHook](https://github.com/yulingtianxia/BlockHook) 为了能够传入各种签名的 `aspectBlock`，恰恰用的是 `id`：
 
-```
+```objc
 - (nullable BHToken *)block_hookWithMode:(BlockHookMode)mode
                               usingBlock:(id)aspectBlock;
 ```
@@ -30,7 +30,7 @@ ARC 下将 StackBlock 赋值时，会自动 copy 成 MallocBlock。不过这个�
 
 微信巨佬果然是巨佬，还给了我解决方案。我照着巨佬给的思路，`copy` 了传入的 `aspectBlock`：
 
-```
+```objc
 // If aspectBlock is a NSStackBlock and invoked asynchronously, it will cause a wild pointer. We copy it.
 _aspectBlock = [aspectBlock copy];
 ```
@@ -41,7 +41,7 @@ _aspectBlock = [aspectBlock copy];
 
 首先需要判断下 `invoke` 指针对应的地址有没有写权限，如果没有写权限则需要提权。这涉及到 VM Region 和 Protection 的一些操作，在获取内存地址的基本信息时也要注意区分下 64 位和 32 位：
 
-```
+```objc
 static vm_prot_t ProtectInvokeVMIfNeed(void *address) {
     vm_address_t addr = (vm_address_t)address;
     vm_size_t vmsize = 0;
@@ -73,7 +73,7 @@ static vm_prot_t ProtectInvokeVMIfNeed(void *address) {
 
 在修改 `invoke` 指针后，还需要恢复原来的权限。相当于我只是在需要替换 `invoke` 指针的时候临时开了写权限：
 
-```
+```objc
 static BOOL ReplaceBlockInvoke(struct _BHBlock *block, void *replacement) {
     void *address = &(block->invoke);
     vm_prot_t origProtection = ProtectInvokeVMIfNeed(address);
@@ -99,7 +99,7 @@ static BOOL ReplaceBlockInvoke(struct _BHBlock *block, void *replacement) {
 
 在 [BlockHook with Private Data](http://yulingtianxia.com/blog/2019/06/19/BlockHook-with-Private-Data/) 这篇文章里我曾经介绍过一种『骨骼惊奇』的 Block，不能直接替换 `invoke` 函数指针来 Hook。当时判断这类带有 Private Data 的 Block 的依据是直接用 Private Data 中的 `dbpd_magic` 字段与 `DISPATCH_BLOCK_PRIVATE_DATA_MAGIC` 判等：
 
-```
+```objc
 DISPATCH_ALWAYS_INLINE
 static inline dispatch_block_private_data_t
 bh_dispatch_block_get_private_data(struct _BHBlock *block)
@@ -119,7 +119,7 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block)
 
 我知道这种暴力 Memory Overflow 的行为有潜在隐患，而且[调试时开启了 Address Sanitizer 后会必现 crash](https://github.com/yulingtianxia/BlockHook/issues/11)。当时这么做的原因我也在[文章](http://yulingtianxia.com/blog/2019/06/19/BlockHook-with-Private-Data/)里写了，GCD 源码中会检查 Block 的 `invoke` 指针是否为 `_dispatch_block_special_invoke`，以此判断 Block 是否包含 Private Data。而这个标志位指针是私有的，我无法在没有符号表的场景下获取到。现在想想当时的自己真是个 SB，当初这么简单的问题，其实现在换个思路不就解决了：
 
-```
+```objc
 DISPATCH_ALWAYS_INLINE
 static inline dispatch_block_private_data_t
 bh_dispatch_block_get_private_data(struct _BHBlock *block) {
