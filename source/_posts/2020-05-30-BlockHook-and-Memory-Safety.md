@@ -148,7 +148,7 @@ bh_dispatch_block_get_private_data(struct _BHBlock *block) {
 
 其实 [BlockHook](https://github.com/yulingtianxia/BlockHook) 的诞生纯属偶然，起初是我本想做些其他关于 Block 的事情，但技术太菜一直没搞成。一顿瞎折腾失败后，剩余的代码就是 [BlockHook](https://github.com/yulingtianxia/BlockHook) 的雏形。然后业余时间不断踩坑和填坑，收到用户反馈后不断打磨，最终搞出了个能用的版本。我本以为打磨了这么久，应该没啥大问题了，然而还是不断有新的问题和挑战出现。毕竟自己曾经吹下了牛皮，含着泪也要继续打磨下去。有时候兴趣带来的动力真的远超 KPI 的压力，让人干劲十足，哈哈。
 
-我曾经吹牛说 [BlockHook](https://github.com/yulingtianxia/BlockHook) 『（应该是）填补了 Objective-C 业界在 Hook Block 技术领域的空白』，这件事也一直被五子棋嘲讽。后来他跟我说之前肯定有人做过这件事，不过记不清是哪个项目了。我也很想知道在这之前是否有人 Hook 过 Objective-C 的 Block，也跪求打脸并虚心接受。但我对 Hook 的理解并不是局限于替换个函数指针 IMP 就可以了，我个人觉得能配得上是 Hook/AOP 的框架，至少要满足下面几个要求中的大部分吧：
+我曾经吹牛说 [BlockHook](https://github.com/yulingtianxia/BlockHook) 『（应该是）填补了 Objective-C 业界在 Hook Block 技术领域的空白』，后来五子棋跟我说之前肯定有人做过这件事，不过记不清是哪个项目了。我也很想知道在这之前是否有人 Hook 过 Objective-C 的 Block，也跪求打脸并虚心接受。但我对 Hook 的理解并不是局限于替换个函数指针 IMP 就可以了，我个人觉得能配得上是 Hook/AOP 的框架，至少要满足下面几个要求中的大部分吧：
 
 1. 用同一个 Hook 框架多次 Hook，能够有完整的 Hook 调用链。甚至能兼容其他框架。
 2. 兼容 90% 以上的使用场景，经得住大规模验证（不一定线上，也可以是作为测试工具）。
