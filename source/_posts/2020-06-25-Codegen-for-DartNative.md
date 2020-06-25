@@ -16,7 +16,7 @@ tags:
 
 <!--more-->
 
-如果你还一脸懵逼，来看一段实操视频吧（第一次做 UP 主，跪求一键三连）：
+如果你还一脸懵逼，来看一段[实操视频](https://www.bilibili.com/video/BV1Bt4y197Jg)吧（第一次做 UP 主，跪求一键三连）：
 
 <iframe src="//player.bilibili.com/player.html?aid=626168423&bvid=BV1Bt4y197Jg&cid=205348003&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
 
