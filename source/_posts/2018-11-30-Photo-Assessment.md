@@ -14,7 +14,7 @@ tags:
 
 [Demo](https://github.com/yulingtianxia/PhotoAssessment) 中展示了图片在 NIMA 模型预测结合人脸识别的主观评分、图片的 HSB 色彩空间、以及边缘检测结果的平均值和方差。代码兼容 iOS 和 macOS。下面示例图片拍摄自胡里山炮王和西塘。
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult1.png?raw=true)![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/AssessmentResult2.png?raw=true)
+![](http://yulingtianxia.com/resources/PhotoAssessment/AssessmentResult1.png)![](http://yulingtianxia.com/resources/PhotoAssessment/AssessmentResult2.png)
 
 <!--more-->
 
@@ -37,7 +37,7 @@ iOS 无法直接创建 HSB 色彩空间，需要借助 `UIColor` 等 API 将其�
 
 Sobel 算子卷积运算后的方差值可以用来检测模糊程度。下面的代码用了两个 Filter 串联起来，三种格式的数据：rgba8[w*h]->r8[w*h]->r8[2*1]。也就是 RGBA 色彩空间图片转成含有边缘信息的灰度图（如下所示），最后出计算均值和方差。
 
-![PhotoAssessment](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/PhotoAssessment/SobelImageFilter.png?raw=true)
+![PhotoAssessment](http://yulingtianxia.com/resources/PhotoAssessment/SobelImageFilter.png)
 
 ```
 @objc public func edgeDetect(imagePixels: [Int32], width: Int, height: Int, _ block: @escaping (_ mean: Int8, _ variance: Int8) -> Void) -> Void {

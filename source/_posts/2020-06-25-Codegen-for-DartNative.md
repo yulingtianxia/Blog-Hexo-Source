@@ -29,7 +29,7 @@ tags:
 3. **DartNative Dispatch**: 各平台 API 终究是有差异的，且只能靠开发者手动抹平。通过分发机制为开发者提供一个抹平平台差异代码的地方。
 4. **DartNative Component Market**：基于 DartNative 的开源组件市场，未来会有越来越多的 Native 组件通过 DartNative 转为 Flutter 组件。
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/DartObjC/DartNative%20Future.png?raw=true)
+![](http://yulingtianxia.com/resources/DartObjC/DartNative%20Future.png)
 
 从 2019 年的九月份开始做 [DartNative](https://github.com/dart-native/dart_native) 的第一个版本（那时候还叫 DartObjC），到如今初具规模并在线上小范围使用，可谓是有些漫长。漫长的原因有亮点：
 

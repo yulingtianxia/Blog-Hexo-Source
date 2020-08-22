@@ -17,7 +17,7 @@ tags:
 
 最终我决定开发一款命令行工具。它可以解析 Native 代码中的 API，生成对应的 Dart 代码，再进而支持生成 Flutter Plugin/Package 工程。生成的 Flutter 工程会通过 pub 依赖 [DartNative](https://github.com/dart-native/dart_native):
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/DartObjC/codegen_workflow.png?raw=true)
+![](http://yulingtianxia.com/resources/DartObjC/codegen_workflow.png)
 
 工具需要满足以下需求：
 
@@ -39,7 +39,7 @@ tags:
 3. 将 Native AST 转换成 Dart 语言所需的 AST
 4. 通过 Dart AST 生成 dart 代码
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/DartObjC/codegen_theory.png?raw=true)
+![](http://yulingtianxia.com/resources/DartObjC/codegen_theory.png)
 
 ## 遇到的坑
 

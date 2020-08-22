@@ -54,7 +54,7 @@ tags:
 
 在[上一篇文章](http://yulingtianxia.com/blog/2019/07/27/BlockHook-with-Invocation/)中介绍了过了 `retainArguments` 的实现思路，针对每个指向参数或返回值的指针都需要经历 "Copy" 和 "Retain" 两步：
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/retainArguments.png?raw=true)
+![](http://yulingtianxia.com/resources/BlockHook/retainArguments.png)
 
 ### Copy Pointer
 

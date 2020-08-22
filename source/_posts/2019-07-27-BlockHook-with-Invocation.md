@@ -64,19 +64,19 @@ testblock(testArg);
 
 对于 Block 来说，虽然也能通过 `NSInvocation` 来进行调用，但是经过 Hook 过后已经不再适用。因为 `NSInvocation` 的实现机制以及生命周期管理是个黑盒，且无法承载 Hook 相关的信息，需要自己来实现个 `BHInvocation`。
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/BlockInterceptor.png?raw=true)
+![](http://yulingtianxia.com/resources/BlockHook/BlockInterceptor.png)
 
 ### BHInvocation 结构
 
 我之前的 [BlockHook with Struct](http://yulingtianxia.com/blog/2019/04/27/BlockHook-with-Struct/) 这篇文章提到了个技术点：在 x86 架构下，当 Block 返回值是大于 16 Byte 的 `struct` 时，参数列表有些变化：
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/realArgs.png?raw=true)
+![](http://yulingtianxia.com/resources/BlockHook/realArgs.png)
 
 为了兼容这种情况，需要两套 `args` 和 `retValue`。一套『真的』用于传给 libffi 调用原始函数指针，另一套『假的』提供给使用方读写参数和返回值。这样使用方无需关心底层特殊逻辑，直接用就行了。
 
 `BHInvocation` 主要结构如下：
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/BHInvocation.png?raw=true)
+![](http://yulingtianxia.com/resources/BlockHook/BHInvocation.png)
 
 PS：`BHInvocation` 与 `NSInvocation` 的场景和用法有些不同，所以实现上也会有差异。`NSInvocation` 没有公开源码，想了解原理的可以看看 mikeash 的实现： [MAInvocation](https://github.com/mikeash/MAInvocation)。但我并没有参考过 mikeash 的源码，因为等我写完了才发现它。。。
 
@@ -89,7 +89,7 @@ PS：`BHInvocation` 与 `NSInvocation` 的场景和用法有些不同，所以�
 4. 如果参数中有 C-string，则 `strcpy` 过来
 
 
-![](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/BlockHook/retainArguments.png?raw=true)
+![](http://yulingtianxia.com/resources/BlockHook/retainArguments.png)
 
 需要注意的是这里依然要考虑两套 `args` 和 `retValue` 的问题。代码就不贴了，有兴趣的可以自己去看。
 

@@ -24,11 +24,11 @@ tags:
 
 还有些跨平台框架不通过 Bridge 或 Channel 调用 Native，而是直接将某种语言代码编译成对应平台的二进制。比如最近出的 Kotlin/Native，或是古老的 Xamarin，也都逃不掉这条真理。
 
-![Flutter vs RN/Weex](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/DartObjC/flutter_rn.png?raw=true)
+![Flutter vs RN/Weex](http://yulingtianxia.com/resources/DartObjC/flutter_rn.png)
 
 Flutter 通过图形引擎的跨平台帮我们抹平了 UI 层面的平台差异，这在跨平台开发框架中已经是个突破了。但其余的部分仍然需要开发者编写很多 Channel 代码来抹平不同平台的差异。不妨将二者结合下，取其精华去其糟粕，于是有了一种新的开发方式：
 
-![DartNative](https://github.com/yulingtianxia/Blog-Hexo-Source/blob/master/source/resources/DartObjC/dart_native.png?raw=true)
+![DartNative](http://yulingtianxia.com/resources/DartObjC/dart_native.png)
 
 ### 为何这样设计
 
