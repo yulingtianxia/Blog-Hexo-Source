@@ -1,6 +1,6 @@
 ---
 title: 如何实现 Flutter 同步调用 Native API
-date: 2020-09-26 17:53:16
+date: 2020-09-28 17:53:16
 tags:
 - Dart
 - Flutter
@@ -25,15 +25,17 @@ final int result = await platform.invokeMethod('hello channel');
 
 ## Why DartNative?
 
-1. [DartNative](https://github.com/dart-native/dart_native) 是『真同步』，保证了执行顺序。
+1. [DartNative](https://github.com/dart-native/dart_native) 是『真同步』，保证了执行顺序。同时也支持异步调用。
 2. 一行代码实现同步调用，告别 Flutter Channel 胶水代码带来的开发成本。
-3. 同步调用性能是 Flutter Channel 的数倍。分别使用 Flutter Channel 和 [DartNative](https://github.com/dart-native/dart_native) 调用 `fooNSString:` 方法，耗时相差三到四倍。详见 [Benchmark 代码](https://github.com/dart-native/dart_native/blob/3af52f7d3cfa0d93fd9fc04a10a05d4a2e0d5398/dart_native/example/lib/ios/ios_main.dart)。
+3. 同步调用性能是 Flutter Channel 的数倍。分别使用 Flutter Channel 和 [DartNative](https://github.com/dart-native/dart_native) 调用 `fooNSString:` 方法，**耗时相差三到四倍**。性能数据可能在不同场景下有波动，可以通过执行 [Benchmark 代码](https://github.com/dart-native/dart_native/blob/3af52f7d3cfa0d93fd9fc04a10a05d4a2e0d5398/dart_native/example/lib/ios/ios_main.dart) 来对比结果。
 
 ## 实现原理
 
 下图以 Dart 同步调用 iOS Objective-C API 为例，描述了 [DartNative](https://github.com/dart-native/dart_native) 同步调用的原理。以一个字符串参数为例，讲述了从 Dart `String` 自动转为 Objective-C `NSString` 并传递给 `hello:` 方法的过程。返回值也是自动转换类型的，由于篇幅原因没在图片中描述。
 
 ![](http://yulingtianxia.com/resources/DartObjC/sync_call_whole.png)
+
+在实现了基本的同步调用后，开发重点也转向了性能优化。
 
 ## 方法签名的优化
 
@@ -92,4 +94,4 @@ String str = String.fromCharCodes(list);
 
 写了这么多 [DartNative](https://github.com/dart-native/dart_native) 的相关文章，终于轮到了介绍最基础最核心的同步调用功能。其实异步调用也是支持的，看来用 [DartNative](https://github.com/dart-native/dart_native) 来替换 Flutter Channel 的理由又多了。
 
-这篇文章主要讲的是 iOS 的实现，Android 也已经实现同步调用中基本类型的自动转换。
+这篇文章主要讲的是 iOS 的同步调用实现以及性能优化，Android 也已经实现同步调用中基本类型的自动转换。
