@@ -5,6 +5,7 @@ tags:
 - Dart
 - Flutter
 - NodeJS
+- DartNative
 ---
 
 在 [DartNative](https://github.com/dart-native/dart_native) 自研超级通道的性能已经数倍优于 Flutter Channel 之后，我将目光转向了开发成本的优化。于是 [Codegen](https://github.com/dart-native/codegen) 应运而生，开发者可以用它很方便地将 Native API 转为 Dart 封装，直接拿来用就可以了！从而优化 Flutter 调用 Native API 的开发体验，实现『**运行性能和开发效率的双提升**』：

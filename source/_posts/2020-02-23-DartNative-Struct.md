@@ -4,6 +4,7 @@ date: 2020-02-24 00:15:12
 tags:
 - Dart
 - Flutter
+- DartNative
 ---
 
 [dart_native](https://github.com/dart-native/dart_native) 基于 Dart FFI，通过 C++ 调用 Native 的 API。很多 Objective-C 接口的参数和返回值都有 Struct，比如最常见的 `CGSize` 等。这就需要能够用 Dart 语言表示 Struct 类型，尤其是 Cocoa 内建的这些常用结构体。

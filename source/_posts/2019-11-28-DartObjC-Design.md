@@ -4,6 +4,7 @@ date: 2019-11-28 17:07:22
 tags:
 - Flutter
 - Dart
+- DartNative
 ---
 
 我之前在 『[用 Dart 来写 Objective-C 代码](http://yulingtianxia.com/blog/2019/10/27/Write-Objective-C-Code-using-Dart/)』 这篇文章讲了下我在解决 Flutter 三端开发问题的一个思路和方案，并给出了 Demo 和简单的对比。这次讲下 [dart_native](https://github.com/dart-native/dart_native) 的设计，这包含了上层使用方式和底层技术方案的设计。由于涉及到的技术点很多，这次不会深入太多技术实现细节，不过后续可能会分篇讲下。

@@ -5,6 +5,7 @@ tags:
 - Objective-C
 - Flutter
 - Dart
+- DartNative
 ---
 
 [dart_native](https://github.com/dart-native/dart_native) 作为一条比 Channel 性能更高开发成本更低的超级通道，通过 C++ 调用 Native 的 API，深入底层且考虑全面。很多 Objective-C 接口含有 `NSError **` 这种 out parameter，[dart_native](https://github.com/dart-native/dart_native) 也对这种场景做了支持。

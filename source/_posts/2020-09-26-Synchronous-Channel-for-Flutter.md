@@ -1,9 +1,10 @@
 ---
-title: 如何实现 Flutter 同步调用通道
+title: 如何实现 Flutter 同步调用 Native API
 date: 2020-09-26 17:53:16
 tags:
 - Dart
 - Flutter
+- DartNative
 ---
 
 Flutter Channel 是一个异步调用通道，如果想在 Dart 侧同步获取到 Native 返回的结果，调用的时候加上 `await` 就可以了：
@@ -34,4 +35,61 @@ final int result = await platform.invokeMethod('hello channel');
 
 ![](http://yulingtianxia.com/resources/DartObjC/sync_call_whole.png)
 
+## 方法签名的优化
+
+在 Dart 同步调用 Native 时，为了实现跨语言调用时参数和返回值类型的自动转换，需要先获取到 Native 的方法签名。这里做了两方面的性能优化：
+
+1. 通过 DartFFI 调用 OC Runtime 获取方法签名占据了一定耗时。可以在 Dart 侧加一层 Cache 来减少通信和反射次数。
+2. 方法签名字符串的构成是 "TypeEncoding+offset" 的组合，跨语言之间传递字符串的编解码的耗时较多，而只有 TypeEncoding 那部分才是类型自动转换所需要的。绝大部分类型对应的 TypeEncoding 都是固定的，于是只需要传递 TypeEncoding 的指针即可。
+
 ![](http://yulingtianxia.com/resources/DartObjC/sync_call_optimize.png)
+
+## 字符串转换的优化
+
+Dart `String` 在与 Objective-C `NSString` 相互转换的过程中，数据传输的格式的选择至关重要。因为 Dart `String` 是使用 UTF16 编码的，所以 [DartNative](https://github.com/dart-native/dart_native) 使用 `Uint16List` 作为数据传输的格式。通过性能测试，使用 UTF16 来回传输字符串的总耗时（包含 Native 方法自身耗时）相比 UTF8 [减少了 35% 左右](https://github.com/dart-native/dart_native/issues/22)，如果只计算通道自动类型转换耗时减少的比例会更多。
+
+### 转换 Dart `String` 为 Objective-C `NSString`:
+
+使用 DartFFI 在堆上创建 `uint16_t` 数组，将 Dart `String` 转为 UTF16 格式后装载进去。最终通过 `perform` 方法反射调用 `stringWithCharacters:length:` 方法来创建 `NSString` 对象。
+
+```dart
+final units = value.codeUnits;
+final Pointer<Uint16> charPtr = allocate<Uint16>(count: units.length + 1);
+final Uint16List nativeString = charPtr.asTypedList(units.length + 1);
+nativeString.setAll(0, units);
+nativeString[units.length] = 0;
+NSObject result = Class('NSString').perform(
+    SEL('stringWithCharacters:length:'),
+    args: [charPtr, units.length]);
+free(charPtr);
+```
+
+### 转换 Objective-C `NSString` 为 Dart `String`:
+
+`NSString` 转为 UTF16 稍微麻烦一点。这里的方案是先转为 UTF16 的 `NSData`，然后将 `uint16_t` 数组的地址和字符长度（不是字节长度）返回给 Dart 侧。
+
+```objc
+const void *
+native_convert_nsstring_to_utf16(NSString *string, NSUInteger *length) {
+    NSData *data = [string dataUsingEncoding:NSUTF16StringEncoding];
+    // UTF16, 2-byte per unit
+    *length = data.length / 2;
+    return data.bytes;
+}
+```
+
+Dart 拿到 `uint16_t` 数组后会转为 `Uint16List` 类型，并用它初始化一个 `String` 对象。
+
+```dart
+Pointer<Uint64> length = allocate<Uint64>();
+Pointer<Void> result = convertNSStringToUTF16(ptr, length);
+Uint16List list = result.cast<Uint16>().asTypedList(length.value);
+free(length);
+String str = String.fromCharCodes(list);
+```
+
+## 后记
+
+写了这么多 [DartNative](https://github.com/dart-native/dart_native) 的相关文章，终于轮到了介绍最基础最核心的同步调用功能。其实异步调用也是支持的，看来用 [DartNative](https://github.com/dart-native/dart_native) 来替换 Flutter Channel 的理由又多了。
+
+这篇文章主要讲的是 iOS 的实现，Android 也已经实现同步调用中基本类型的自动转换。

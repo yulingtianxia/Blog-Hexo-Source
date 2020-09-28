@@ -4,6 +4,7 @@ date: 2019-12-26 12:49:13
 tags:
 - Dart
 - Flutter
+- DartNative
 ---
 
 [dart_native](https://github.com/dart-native/dart_native) 基于 Dart FFI，通过 C++ 调用 Native 的 API。这种跨多语言的 bridge 就需要考虑到内存管理的问题。由于篇幅有限，会分开来讲，本篇文章只涉及 Objective-C 对象类型的管理。

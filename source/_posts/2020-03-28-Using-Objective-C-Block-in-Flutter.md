@@ -5,6 +5,7 @@ tags:
 - Dart
 - Flutter
 - Objective-C
+- DartNative
 ---
 
 [dart_native](https://github.com/dart-native/dart_native) 作为一条比 Channel 性能更高开发成本更低的超级通道，通过 C++ 调用 Native 的 API，深入底层且考虑全面。很多 Objective-C 接口的参数和返回值是 Block，所以这就需要支持用 Dart 语言创建和调用 Objective-C Block。

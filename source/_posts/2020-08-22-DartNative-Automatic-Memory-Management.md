@@ -4,6 +4,7 @@ date: 2020-08-22 23:05:38
 tags:
 - Dart
 - Flutter
+- DartNative
 ---
 
 [DartNative](https://github.com/dart-native/dart_native) 可以让开发者一行代码实现调用 Native 代码，且支持高性能同步调用。之前曾经写过一篇文章讲述 Dart 与 Objective-C 对象的生命周期管理，当时的实现是『半自动』的解决方案。如今 [DartNative](https://github.com/dart-native/dart_native) 更新到 0.3 后实现了生命周期的自动管理，也就是『全自动』的解决方案。

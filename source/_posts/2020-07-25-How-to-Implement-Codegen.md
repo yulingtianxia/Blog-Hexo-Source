@@ -5,6 +5,7 @@ tags:
 - Dart
 - Flutter
 - NodeJS
+- DartNative
 ---
 
 在上一篇文章[《告别 Flutter Channel，调用 Native API 仅需一行代码！》](http://yulingtianxia.com/blog/2020/06/25/Codegen-for-DartNative/) 发出后，收到了很多关注。仔细想想，其实不是仅仅只需一行代码的，还需要敲一行 [codegen](https://github.com/dart-native/codegen) 命令来生成 Dart 代码。这回就简单讲下自动生成代码这块的设计和实现原理。
