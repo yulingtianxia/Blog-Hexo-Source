@@ -19,7 +19,12 @@ final int result = await platform.invokeMethod('hello channel');
 
 因为 Flutter Channel 设计之初就是异步的，使用 `await` 来回切换线程所带来的开销不小。而且协程的 `await` 语法具有传递性，上层调用方也需要使用 `await`，层层传递。
 
-而 [DartNative](https://github.com/dart-native/dart_native) 设计之初就是同步调用的，且也支持异步调用。
+而 [DartNative](https://github.com/dart-native/dart_native) 设计之初就是同步调用的，且也支持异步调用：
+
+```dart
+// new DNTest instance and call hello method.
+DNTest().hello('DartNative');
+```
 
 <!--more-->
 
