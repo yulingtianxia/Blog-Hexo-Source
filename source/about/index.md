@@ -9,7 +9,7 @@ date: 2015-02-07 19:19:08
 - [这里](http://about.me/yulingtianxia/)有我的名片  
 
 - [个人寄语](http://yulingtianxia.com/about/aboutme.html)  
-- [我的简历](http://resume.yulingtianxia.com)  
+- [我的简历](http://yangxiaoyu.me/#/welcome)  
 - 我的APP
 	- [Similarimagehunter](http://similarimagehunter.yulingtianxia.com)
 	- [TFSHelper](https://github.com/yulingtianxia/TFSHelper)
