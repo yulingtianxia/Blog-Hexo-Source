@@ -32,7 +32,7 @@ tags:
 
 ![](http://yulingtianxia.com/resources/DartObjC/DartNative%20Future.png)
 
-从 2019 年的九月份开始做 [DartNative](https://github.com/dart-native/dart_native) 的第一个版本（那时候还叫 DartObjC），到如今初具规模并在线上小范围使用，可谓是有些漫长。漫长的原因有亮点：
+从 2019 年的九月份开始做 [DartNative](https://github.com/dart-native/dart_native) 的第一个版本（那时候还叫 DartObjC），到如今初具规模并在线上小范围使用，可谓是有些漫长。漫长的原因有两点：
 
 1. 为了追求性能与效率双提升，技术方案上走了 Hard 模式。抛弃 Channel 是一条没人走过的路，虽说 [DartNative](https://github.com/dart-native/dart_native) 开源后陆陆续续出现了一些相同 idea 的项目，但都没有走我这条最艰难的路。不仅技术有难度，设计方案也要反复推翻，打磨，优化。。。做新的解决方案就是很漫长，我最然做的很早，但是战线拉得太长。
 2. 这是一个利用打游戏剩下的业余时间搞出来的 side project，全凭自身兴趣和满腔热血。有时候也羡慕那些有 KPI 的开源项目，起码有排期的保证，能够快速推进项目进度。
