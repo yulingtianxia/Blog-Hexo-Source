@@ -133,243 +133,227 @@ BOOL class_swizzleMethodAndStore(Class class, SEL original, IMP replacement, IMP
 
 这个顺序本身就不被大众认可却又不得不广泛被使用，因为很多想 Hook 系统 API 只能从 Category 下手。当子类同样的方法也被 Hook 后，奇怪的事情便发生了。
 
-### Super 未实现方法,Child 未实现方法
+### Super 未实现方法, Child 未实现方法
 
-#### Super:Plan A,Child:Plan A
+#### Super:PlanA, Child:PlanA
 
 ![CS_SuperAChildA](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperAChildA.png)
 
-
 方法执行结果：
 
-1. Child 对象：Child->Base (Super 被忽略)
+1. Child 对象：Child_Swizzle->Base (Super_Swizzle 被忽略)
 2. Super 和 Base 对象均正常
 
-#### Super:Plan B,Child:Plan A
+#### Super:PlanB, Child:PlanA
 
 ![CS_SuperBChildA](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperBChildA.png)
 
-
 方法执行结果：
 
-1. Child 对象：Child->Base (Super 被忽略)
-2. Super 对象正常
-3. Base 对象产生 `unrecognized selector` 异常，此情况亦等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。（Super 是 Base 的子类）
+1. Child 对象：Child_Swizzle->Base (Super_Swizzle 被忽略)
+2. Super 对象正常：Super_Swizzle->Base
+3. Base 对象：产生 `unrecognized selector` 异常，此情况亦等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。（Super 是 Base 的子类）
 
-#### Super:Plan A,Child Plan B
+#### Super:PlanA, Child:PlanB
 
 ![CS_SuperAChildB](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperAChildB.png)
 
 
 方法执行结果：
 
-1. Child 对象：Child->Base (Super 被忽略)
-2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则会一直调用 Child_Swizzle 进入死循环
-3. Base 对象产生 `unrecognized selector` 异常，此情况亦间接等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。（Super 是 Base 的子类）
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，结果是 Super_Swizzle->Child_Swizzle->Base (顺序错误)；如果两个 `selector` 相同，则导致 Super_Swizzle 调用的是 Child_Swizzle 方法，结果是 Super_Swizzle->Base (Child_Swizzle 被忽略)。
+2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则会一直调用 Child_Swizzle 进入死循环。
+3. Base 对象产生 `unrecognized selector` 异常，此情况亦间接等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。
 
-#### Super:Plan B,Child Plan B
+#### Super:PlanB, Child: PlanB
 
 ![CS_SuperBChildB](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperBChildB.png)
 
-
 方法执行结果：
 
-1. Child 对象：Super->Child->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，结果是 Super_Swizzle->Child_Swizzle->Base (顺序错误)；如果两个 `selector` 相同，则导致 Super_Swizzle 调用的是 Child_Swizzle 方法，结果是 Super_Swizzle->Base (Child_Swizzle 被忽略)。
 2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则会一直调用 Child_Swizzle 进入死循环
-3. Base 对象产生 `unrecognized selector` 异常
+3. Base 对象产生 `unrecognized selector` 异常，此情况亦间接等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。
 
-### Super 实现方法,Child 未实现方法
+### Super 实现方法, Child 未实现方法
 
 由于 Super 类被 Hook 的方法已经被实现，所以只需区分 Child 的 Hook 方案。
 
-#### Child:Plan A
+#### Child:PlanA
 
 ![CS_ChildA](http://yulingtianxia.com/resources/MethodSwizzling/CS_ChildA.png)
 
-
 方法执行结果：
 
-1. Child 对象：Child->Base (Super 被忽略)
+1. Child 对象：Child_Swizzle->Super->Base (Super_Swizzle 被忽略)
 2. Super 和 Base 对象均正常
 
-#### Child:Plan B
+#### Child:PlanB
 
 ![CS_ChildB](http://yulingtianxia.com/resources/MethodSwizzling/CS_ChildB.png)
 
-
 方法执行结果：
 
-1. Child 对象：Super->Child->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果为 Super_Swizzle->Child_Swizzle->Super->Base (顺序错误)；如果两个 `selector` 相同则结果为 Super_Swizzle->Super->Base (Child_Swizzle 被忽略)
 2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则会一直调用 Child_Swizzle 进入死循环
 3. Base 对象正常
 
-### Super 未实现方法,Child 实现方法
+### Super 未实现方法, Child 实现方法
 
 由于 Child 类被 Hook 的方法已经被实现，所以只需区分 Super 的 Hook 方案。
 
-#### Super:Plan A
+#### Super:PlanA
 
 ![CS_SuperA](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperA.png)
 
+方法执行结果：
 
-方法执行结果（一切正常）：
-
-1. Child 对象正常：Child->Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Child->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Child 和 Super_Swizzle 死循环。
 2. Super 和 Base 对象均正常
 
-#### Super:Plan B
+#### Super:PlanB
 
 ![CS_SuperB](http://yulingtianxia.com/resources/MethodSwizzling/CS_SuperB.png)
 
-
 方法执行结果：
 
-1. Child 对象正常：Child->Super->Base
-2. Super 对象正常：Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Child->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Child 和 Super_Swizzle 死循环。
+2. Super 对象正常：Super_Swizzle->Base
 3. Base 对象产生 `unrecognized selector` 异常，此情况亦等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。（Super 是 Base 的子类）
 
-### Super 实现方法,Child 实现方法
+### Super 实现方法, Child 实现方法
 
 相当于 Super 和 Child 都使用方案 B 进行 Hook，所以只有一种情况。
 
 ![CS_Perfect](http://yulingtianxia.com/resources/MethodSwizzling/CS_Perfect.png)
 
+方法执行结果：
 
-方法执行结果（一切正常）：
-
-1. Child 对象正常：Child->Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Child->Super_Swizzle->Super->Base；如果两个 `selector` 相同则会一直调用 Child 和 Super_Swizzle 死循环。
 2. Super 和 Base 对象均正常
 
 ## Hook 顺序：先 Super 后 Child
 
 并不是 Hook 顺序对了就能保平安，姿势也同样重要。
 
-### Super 未实现方法,Child 未实现方法
+### Super 未实现方法, Child 未实现方法
 
-#### Super:Plan A,Child:Plan A
+#### Super:PlanA, Child:PlanA
 
 ![SC_SuperAChildA](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperAChildA.png)
 
+方法执行结果：
 
-方法执行结果（一切正常）：
-
-1. Child 对象正常：Child->Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Super_Swizzle 死循环。
 2. Super 和 Base 对象均正常
 
-#### Super:Plan B,Child:Plan A
+#### Super:PlanB, Child:PlanA
 
 ![SC_SuperBChildA](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperBChildA.png)
 
-
 方法执行结果：
 
-1. Child 对象正常：Child->Super->Base
-2. Super 对象正常：Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Super_Swizzle 死循环。
+2. Super 对象正常：Super_Swizzle->Base
 3. Base 对象产生 `unrecognized selector` 异常，此情况亦等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。（Super 是 Base 的子类）
 
-#### Super:Plan A,Child Plan B
+#### Super:PlanA, Child PlanB
 
 ![SC_SuperAChildB](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperAChildB.png)
 
-
 方法执行结果：
 
-1. Child 对象正常：Child->Super->Base
-2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则 Child->Base (Super 被忽略)
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常：Child_Swizzle->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Super_Swizzle 死循环。
+2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则 Child_Swizzle->Base (Super_Swizzle 被忽略)
 3. Base 对象正常
 
-#### Super:Plan B,Child Plan B
+#### Super:PlanB, Child PlanB
 
 ![SC_SuperBChildB](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperBChildB.png)
 
-
-1. Child 对象正常：Child->Super->Base
-2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则 Child->Base (Super 被忽略)
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常为 Child_Swizzle->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Super_Swizzle 死循环。
+2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则 Child_Swizzle->Base (Super_Swizzle 被忽略)
 3. Base 对象产生 `unrecognized selector` 异常
 
-### Super 实现方法,Child 未实现方法
+### Super 实现方法, Child 未实现方法
 
 由于 Super 类被 Hook 的方法已经被实现，所以只需区分 Child 的 Hook 方案。
 
-#### Child:Plan A
+#### Child:PlanA
 
 ![SC_ChildA](http://yulingtianxia.com/resources/MethodSwizzling/SC_ChildA.png)
 
+方法执行结果：
 
-方法执行结果（一切正常）：
-
-1. Child 对象正常：Child->Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Super_Swizzle->Super->Base；如果两个 `selector` 相同则会一直调用 Super_Swizzle 死循环。
 2. Super 和 Base 对象均正常
 
-#### Child:Plan B
+#### Child:PlanB
 
 ![SC_ChildB](http://yulingtianxia.com/resources/MethodSwizzling/SC_ChildB.png)
 
-
 方法执行结果：
 
-1. Child 对象正常：Child->Super->Base
-2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则 Child->Base (Super 被忽略)
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Super_Swizzle->Super->Base；如果两个 `selector` 相同则会一直调用 Super_Swizzle 死循环。
+2. Super 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则会产生 `unrecognized selector` 异常；如果两个 `selector` 相同则结果为 Child_Swizzle->Super->Base (Super_Swizzle 被忽略)
 3. Base 对象正常
 
-### Super 未实现方法,Child 实现方法
+### Super 未实现方法, Child 实现方法
 
 由于 Child 类被 Hook 的方法已经被实现，所以只需区分 Super 的 Hook 方案。
 
-#### Super:Plan A
+#### Super:PlanA
 
 ![SC_SuperA](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperA.png)
 
+方法执行结果：
 
-方法执行结果（一切正常）：
-
-1. Child 对象正常：Child->Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Child->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Child 和 Super_Swizzle 死循环。
 2. Super 和 Base 对象均正常
 
-#### Super:Plan B
+#### Super:PlanB
 
 ![SC_SuperB](http://yulingtianxia.com/resources/MethodSwizzling/SC_SuperB.png)
 
-
 方法执行结果：
 
-1. Child 对象正常：Child->Super->Base
-2. Super 对象正常：Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Child->Super_Swizzle->Base；如果两个 `selector` 相同则会一直调用 Child 和 Super_Swizzle 死循环。
+2. Super 对象正常：Super_Swizzle->Base
 3. Base 对象产生 `unrecognized selector` 异常，此情况亦等同于：在子类类别中 Hook 了子类未实现而父类实现了的方法。（Super 是 Base 的子类）
 
-### Super 实现方法,Child 实现方法
+### Super 实现方法, Child 实现方法
 
 相当于 Super 和 Child 都使用方案 B 进行 Hook，所以只有一种情况。
 
 ![SC_Perfect](http://yulingtianxia.com/resources/MethodSwizzling/SC_Perfect.png)
 
+方法执行结果：
 
-方法执行结果（一切正常）：
-
-1. Child 对象正常：Child->Super->Base
+1. Child 对象：如果 Super_Swizzle 与 Child_Swizzle 的 `selector` 不同，则结果正常 Child_Swizzle->Child->Super_Swizzle->Super->Base；如果两个 `selector` 相同则会一直调用 Child 和 Super_Swizzle 死循环。
 2. Super 和 Base 对象均正常
 
 ## 结论
 
 ### Hook 顺序：先 Child 类后 Super 类
 
-为了保证 Hook 后方法调用顺序是对的，需要同时满足以下两个条件：
+为了保证 Hook 后方法调用顺序是对的，需要同时满足以下三个条件：
 
 1. Child 类实现被 Hook 的方法
-2. Super 类实现被 Hook 的方法或使用 A 方案 Hook
+2. Super 和 Child 中用于 Swizzle 新增的方法命名不同
+3. Super 类实现被 Hook 的方法或使用 A 方案 Hook
 
 ### Hook 顺序：先 Super 类后 Child 类
 
-因为 Hook 的顺序是正确的，所以只需满足以下任意一个条件即可：
+虽然 Hook 的顺序是正确的，也需要同时满足以下两个条件才能保证调用顺序也是对的：
 
-1. 实现被 Hook 的方法
-2. 使用方案 A 进行 Hook
+1. Super 类和 Child 类中用于 Swizzle 新增的方法命名不同
+2. 类实现了被 Hook 的方法或使用方案 A 来 Hook
 
 ### Objective-C Method Swizzling 最佳实践
 
-1. Hook 顺序并不能保证结果一定正确，但先 Super 后 Child 效果更佳
-2. 方案 A 明显优于方案 B
-3. 方案 A 中的『静态方法版本』固然更缜密，但操作复杂。为了提升开发效率，建议参考 CaptainHook 的宏定义实现。
+1. Hook 顺序并不能保证结果一定正确，但先 Super 后 Child 更加安全
+2. 如果 Hook 父类和子类的同一个方法，用于 Swizzle 的方法名需要保持唯一。如果子类用于 Hook 的新增方法名与父类相同，则会导致调用逻辑错误或死循环。
+3. 方案 A 明显优于方案 B。方案 A 中的『静态方法版本』固然更缜密，但操作复杂。为了提升开发效率，建议参考 CaptainHook 的宏定义实现。
 4. [RSSwizzle](https://github.com/rabovik/RSSwizzle) 被很多人推荐，它用很复杂的方式解决了 [What are the Dangers of Method Swizzling in Objective C?](http://stackoverflow.com/questions/5339276/what-are-the-dangers-of-method-swizzling-in-objective-c) 中提到的一系列问题。不过引入它还是有一些成本的，建议在本文列举的那些极端特殊情况下才使用它，毕竟方案 A 已经能 Cover 到大部分情况了。
 5. [jrswizzle](https://github.com/rentzsch/jrswizzle) 尝试解决在不同平台和系统版本上的 Method Swizzling 与类继承关系的冲突。对各平台低版本系统兼容性较强。
 
