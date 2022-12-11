@@ -7,7 +7,11 @@ tags:
 - Dart
 ---
 
-2022 年 8 月底，Flutter 发布了 3.3 稳定版，随之发布的 Dart 2.18 宣布[支持 Dart 与 Objective-C 和 Swift 互调](https://flutter.cn/posts/dart-2-18#dart-与-objective-c-和-swift-互调)，而 [Java 与 Java/Kotlin 的互调也在开发中](https://github.com/dart-lang/sdk/issues/49674)。整体思路跟 DartNative 三年前的思路类似，走的也是跨语言 API 直接调用(但官方目前只支持同步)，然后通过工具链生成接口绑定。发布当天就有人给我提 Issue 了：[老哥，考虑一下这个库未来何去何从吧，官方有了](https://github.com/dart-native/dart_native/issues/105)。联想到之前 5 月份 Flutter 3.0(Dart 2.17) 发布时官方支持了 Dart Finalizer，跟 DartNative 一年前就支持的 Finalizer 冲突了，想必是有备而来了。
+2022 年 8 月底，Flutter 发布了 3.3 稳定版，随之发布的 Dart 2.18 宣布[支持 Dart 与 Objective-C 和 Swift 互调](https://flutter.cn/posts/dart-2-18#dart-与-objective-c-和-swift-互调)，而 [Java 与 Java/Kotlin 的互调也在开发中](https://github.com/dart-lang/sdk/issues/49674)。整体思路跟 DartNative 三年前的思路类似，走的也是跨语言 API 直接调用(但官方目前只支持同步)，然后通过工具链生成接口绑定。发布当天就有人给我提 Issue 了：[老哥，考虑一下这个库未来何去何从吧，官方有了](https://github.com/dart-native/dart_native/issues/105)，竟如此『不讲武德』
+
+![](http://yulingtianxia.com/resources/DartNative/20221212-025211@2x.png)
+
+联想到之前 5 月份 Flutter 3.0(Dart 2.17) 发布时官方支持了 Dart Finalizer，跟 DartNative 一年前就支持的 Finalizer 冲突了，看来是『有备而来』啊:
 
 ![](http://yulingtianxia.com/resources/DartNative/14035340227.png)
 
