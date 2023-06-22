@@ -9,7 +9,7 @@
     "braces": "^3.0.2",
     "dtrace": "0.0.0",
     "dtrace-provider": "^0.8.8",
-    "eslint": "^6.8.0",
+    "eslint": "^8.43.0",
     "hexo": "^3.9.0",
     "hexo-deployer-git": "^1.0.0",
     "hexo-deployer-heroku": "^0.1.2",
@@ -27,6 +27,6 @@
     "hexo-renderer-stylus": "^0.3.3",
     "hexo-server": "^0.3.3",
     "minimist": "^1.2.6",
-    "node-gyp": "^4.0.0"
+    "node-gyp": "^9.4.0"
   }
 }
