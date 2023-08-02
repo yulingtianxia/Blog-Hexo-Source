@@ -27,6 +27,6 @@
     "hexo-renderer-stylus": "^0.3.3",
     "hexo-server": "^0.3.3",
     "minimist": "^1.2.6",
-    "node-gyp": "^4.0.0"
+    "node-gyp": "^9.4.0"
   }
 }
