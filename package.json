@@ -6,7 +6,7 @@
     "version": "3.9.0"
   },
   "dependencies": {
-    "braces": "^3.0.2",
+    "braces": "^3.0.3",
     "dtrace": "0.0.0",
     "dtrace-provider": "^0.8.8",
     "eslint": "^6.8.0",
